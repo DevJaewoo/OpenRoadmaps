@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../logo.svg";
 
@@ -10,9 +10,6 @@ interface NavItemProps {
 
 const NavItem: React.FC<NavItemProps> = ({ text, path }) => {
   const location = useLocation();
-  useEffect(() => {
-    console.log(location);
-  }, [location]);
 
   return (
     <div
@@ -76,7 +73,6 @@ const Navigation = () => {
           </div>
         </div>
       </nav>
-      <div className=""></div>
     </header>
   );
 };
