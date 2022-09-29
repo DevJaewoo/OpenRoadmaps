@@ -1,13 +1,14 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Main from "./routes/Main";
+import Navigation from "./routes/Navigation";
 
 function App() {
   return (
-    <div className="App">
+    <div className="App min-w-[640px]">
       <BrowserRouter>
+        <Navigation />
         <Routes>
-          <Route path="/" element={<Main />} />
+          <Route path="/" element={<></>} />
         </Routes>
       </BrowserRouter>
     </div>
