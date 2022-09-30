@@ -11,9 +11,8 @@ interface SectionProps {
 }
 
 const Welcome: React.FC<{}> = () => {
-  //그라데이션
   return (
-    <div className="flex flex-col justify-center items-center w-full h-[36rem] bg-indigo-500">
+    <div className="flex flex-col justify-center items-center w-full h-[36rem] bg-gradient-to-br from-blue-500 to-violet-700">
       <h1 className="text-7xl font-bold">OpenRoadmaps</h1>
       <p className="mt-8 text-2xl font-semibold">Lorem ipsum dolor sit amet</p>
     </div>
