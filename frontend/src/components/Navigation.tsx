@@ -16,7 +16,6 @@ const NavItem: React.FC<NavItemProps> = ({ text, path }) => {
       className={`flex flex-col justify-center h-full px-5 ${
         location.pathname === path ? "font-semibold" : null
       }`}
-      key={text}
     >
       <Link to={path}>{text}</Link>
     </div>
@@ -54,7 +53,7 @@ const Navigation = () => {
               </Link>
             </div>
             {navItems.map((navItem) => (
-              <NavItem {...navItem} />
+              <NavItem {...navItem} key={navItem.text} />
             ))}
           </div>
           <div className="flex flex-row items-center h-full">
