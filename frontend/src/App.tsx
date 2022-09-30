@@ -6,7 +6,7 @@ import Main from "./pages/main/Main";
 
 function App() {
   return (
-    <div className="App min-w-[640px]">
+    <div className="App min-w-[640px] pt-16">
       <BrowserRouter>
         <Navigation />
         <Routes>

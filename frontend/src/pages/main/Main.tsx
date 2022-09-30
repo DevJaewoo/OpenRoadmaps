@@ -92,7 +92,7 @@ const Main: React.FC<{}> = () => {
     },
   ];
   return (
-    <div className="flex flex-col items-center w-full pt-16">
+    <div className="flex flex-col items-center w-full">
       <Welcome />
       {sections.map((section) => (
         <Section {...section} key={section.title} />

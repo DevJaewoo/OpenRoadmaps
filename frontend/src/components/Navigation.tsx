@@ -44,7 +44,7 @@ const Navigation = () => {
   ];
 
   return (
-    <header className="w-full h-16 min-w-[640px] bg-white shadow-md fixed">
+    <header className="top-0 w-full h-16 min-w-[640px] bg-white shadow-md fixed">
       <nav className="max-w-screen-xl h-full mx-auto">
         <div className="flex flex-row justify-between items-center w-full h-full px-4">
           <div className="flex flex-row items-center h-full">
