@@ -60,12 +60,36 @@ const Section: React.FC<SectionProps> = (props) => {
 const Main: React.FC<{}> = () => {
   const sections: SectionProps[] = [
     {
-      title: "Roadmap",
+      title: "Roadmaps",
       text: "개발 공부는 하고 싶은데 어떻게 시작해야 할지 막막하신가요?\n로드맵을 따라 기초부터 차근차근 공부해보세요!",
-      button: "로드맵 바로가기 ",
+      button: "로드맵 바로가기",
       link: "/roadmaps",
       src: "/assets/roadmap.png",
       l2r: true,
+    },
+    {
+      title: "Projects",
+      text: "내가 만든 프로젝트도 자랑하고,\n다른 사람이 만든 프로젝트도 구경해보세요!",
+      button: "프로젝트 바로가기",
+      link: "/projects",
+      src: "/assets/roadmap.png",
+      l2r: false,
+    },
+    {
+      title: "Blog",
+      text: "나만의 지식과 노하우를 공유해보세요!",
+      button: "블로그 바로가기 ",
+      link: "/blog",
+      src: "/assets/roadmap.png",
+      l2r: true,
+    },
+    {
+      title: "Community",
+      text: "궁금하거나 내 힘으로 해결되지 않는 문제가 있으신가요?\n혼자 해결하기 힘들 땐 다른 사람들에게 도음움을 받아보세요!",
+      button: "커뮤니티 바로가기",
+      link: "/community",
+      src: "/assets/roadmap.png",
+      l2r: false,
     },
   ];
   return (
