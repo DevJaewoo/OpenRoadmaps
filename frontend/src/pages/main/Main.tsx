@@ -85,7 +85,7 @@ const Main: React.FC<{}> = () => {
     },
     {
       title: "Community",
-      text: "궁금하거나 내 힘으로 해결되지 않는 문제가 있으신가요?\n혼자 해결하기 힘들 땐 다른 사람들에게 도음움을 받아보세요!",
+      text: "궁금하거나 내 힘으로 해결되지 않는 문제가 있으신가요?\n혼자 해결하기 힘들 땐 다른 사람들에게 도움을 받아보세요!",
       button: "커뮤니티 바로가기",
       link: "/community",
       src: "/assets/roadmap.png",
