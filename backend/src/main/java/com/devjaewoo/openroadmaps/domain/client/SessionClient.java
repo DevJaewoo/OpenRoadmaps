@@ -1,0 +1,20 @@
+package com.devjaewoo.openroadmaps.domain.client;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class SessionClient implements Serializable {
+    private Long id;
+    private String name;
+
+    public SessionClient(Client client) {
+        this.id = client.getId();
+        this.name = client.getName();
+    }
+}
