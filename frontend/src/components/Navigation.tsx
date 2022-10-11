@@ -58,7 +58,11 @@ const Navigation = () => {
             ))}
           </div>
           <div className="flex flex-row items-center h-full">
-            <PrimaryButton to="/register" class="w-25 h-12" text="회원가입" />
+            <PrimaryButton
+              to="/register"
+              class="mr-2 w-25 h-12"
+              text="회원가입"
+            />
             <OutlinedButton to="/login" class="w-25 h-12" text="로그인" />
           </div>
         </div>
