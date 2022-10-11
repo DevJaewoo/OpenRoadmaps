@@ -1,6 +1,8 @@
 package com.devjaewoo.openroadmaps.global.config;
 
 import com.devjaewoo.openroadmaps.domain.client.Role;
+import com.devjaewoo.openroadmaps.global.handler.OAuthSuccessHandler;
+import com.devjaewoo.openroadmaps.global.handler.UnauthorizedHandler;
 import com.devjaewoo.openroadmaps.global.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,18 +14,27 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final UnauthorizedHandler unauthorizedHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuthSuccessHandler oAuth2SuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .formLogin().disable()
+                .exceptionHandling()
+                    .authenticationEntryPoint(unauthorizedHandler).and()
                 .authorizeRequests()
-                .antMatchers("/oauth/**").permitAll()
-                .antMatchers("/login/**").permitAll()
-                .antMatchers("/api/**").hasAnyRole(Role.CLIENT.name())
-                .anyRequest().authenticated()
-                .and().oauth2Login().userInfoEndpoint().userService(customOAuth2UserService);
+                    .antMatchers("/login/**").permitAll()
+                    .antMatchers("/oauth/**").permitAll()
+                    .antMatchers("/api/**").hasAnyRole(Role.CLIENT.name())
+                    .anyRequest().authenticated().and()
+                .oauth2Login()
+                    .authorizationEndpoint().baseUri("/oauth/authorization").and()
+                    .redirectionEndpoint().baseUri("/login/oauth2/code/**").and()
+                    .userInfoEndpoint().userService(customOAuth2UserService).and()
+                    .successHandler(oAuth2SuccessHandler);
 
         return http.build();
     }
