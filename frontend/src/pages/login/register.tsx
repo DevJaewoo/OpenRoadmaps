@@ -61,14 +61,14 @@ const Register: React.FC<{}> = () => {
       <div className="flex flex-col w-full max-w-2xl mt-10 p-10 border-gray-100 border rounded-xl shadow-md">
         <a
           href="http://localhost:8080/oauth/authorization/google"
-          className="flex justify-center items-center w-full py-3 text-xl rounded-lg bg-gray-50 hover:bg-gray-200 border border-gray-200 transition-colors"
+          className="flex justify-center items-center w-full py-3 text-xl font-semibold rounded-lg bg-gray-50 hover:bg-gray-200 border border-gray-200 transition-colors"
         >
           <FcGoogle className="inline mr-3 text-2xl" />
           Google 회원가입
         </a>
         <a
           href="http://localhost:8080/oauth/authorization/github"
-          className="flex justify-center items-center w-full mt-3 py-3 text-xl text-center text-white rounded-lg bg-gray-700 hover:bg-gray-500 border border-gray-200 transition-colors"
+          className="flex justify-center items-center w-full mt-3 py-3 text-xl font-semibold text-center text-white rounded-lg bg-gray-700 hover:bg-gray-500 border border-gray-200 transition-colors"
         >
           <FaGithub className="inline mr-3 text-2xl" />
           Github 회원가입
