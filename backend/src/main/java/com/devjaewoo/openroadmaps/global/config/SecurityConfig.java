@@ -31,6 +31,8 @@ public class SecurityConfig {
                 .authorizeRequests()
                     .antMatchers("/login/**").permitAll()
                     .antMatchers("/oauth/**").permitAll()
+                    .antMatchers("/api/*/client/register").permitAll()
+                    .antMatchers("/api/*/client/login").permitAll()
                     .antMatchers("/api/**").hasAnyRole(Role.CLIENT.name())
                     .antMatchers("/admin/**").hasAnyRole(Role.ADMIN.name())
                     .anyRequest().authenticated().and()
