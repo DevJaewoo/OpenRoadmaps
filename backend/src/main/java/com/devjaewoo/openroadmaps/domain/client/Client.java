@@ -32,6 +32,7 @@ public class Client {
     private String githubOAuthId;
 
     private String picture;
+    private int reputation;
 
     @Enumerated(EnumType.STRING)
     private Role role;
