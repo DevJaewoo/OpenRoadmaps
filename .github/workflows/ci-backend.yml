@@ -38,4 +38,4 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         arguments: build
-        gradle-executable: ./backend/gradlew
+        build-root-directory: ./backend
