@@ -1,4 +1,5 @@
 *.yml
+!**/src/test/**/*.yml
 
 HELP.md
 .gradle

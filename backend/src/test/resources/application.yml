@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=postgresql
+    driver-class-name: org.h2.Driver
+    username: postgres
+    password: postgres
+
+  h2:
+    console:
+      enabled: true
+      path: /h2
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: client-id
+            client-secret: client-secret
+            scope: profile, email
