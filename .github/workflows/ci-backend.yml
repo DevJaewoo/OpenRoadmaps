@@ -12,7 +12,7 @@ permissions:
 jobs:
   build-and-test:
     # main에 push하거나, Backend branch에서 pull_request를 요청했을 경우
-    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'pull_request' && contains(github.base_ref, '/be/')) }}
+    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.base_ref, '/be/')) }}
 
     runs-on: ubuntu-latest
     
