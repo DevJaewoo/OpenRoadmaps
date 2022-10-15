@@ -6,15 +6,15 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.persistence.EntityManager;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,13 +22,17 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
 class ClientControllerTest {
 
     @LocalServerPort
     private int port;
 
-    @Autowired EntityManager em;
+    @Autowired JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void clear() {
+        jdbcTemplate.execute("TRUNCATE TABLE client");
+    }
 
     @DisplayName("회원가입 테스트")
     @Nested
@@ -122,7 +126,7 @@ class ClientControllerTest {
         @Test
         @DisplayName("이메일 중복")
         public void emailConflict() {
-            String email = "conflict@email.com";
+            String email = "test@email.com";
             ClientDto.Register register = new ClientDto.Register(email, "!Asd1234");
 
             given()
