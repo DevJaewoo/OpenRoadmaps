@@ -22,10 +22,6 @@ jobs:
         ports:
           - 6379:6379
           
-    defaults:
-      run:
-        working-directory: ./backend
-
     steps:
     - uses: actions/checkout@v3
     
@@ -36,9 +32,10 @@ jobs:
         distribution: 'corretto'
     
     - name: Add executable permission to gradlew
-      run: chmod +x ./gradlew
+      run: chmod +x ./backend/gradlew
     
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2
       with:
         arguments: build
+        gradle-executable: ./backend/gradlew
