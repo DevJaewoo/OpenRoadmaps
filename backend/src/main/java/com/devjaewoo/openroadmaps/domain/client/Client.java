@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {
-        @UniqueConstraint(name = "unique_email", columnNames = {"email"}),
         @UniqueConstraint(name = "unique_google", columnNames = {"google_oauth_id"}),
         @UniqueConstraint(name = "unique_github", columnNames = {"github_oauth_id"}),
 })
@@ -42,7 +41,7 @@ public class Client {
     public static Client create(String name, String email, String password) {
         Client client = new Client();
         client.name = name;
-        client.email = email;
+        client.email = email.toLowerCase();
         client.password = password;
         client.role = Role.CLIENT;
 
@@ -51,7 +50,7 @@ public class Client {
     public static Client createOAuth(String name, String email, String picture, String googleOAuthId, String githubOAuthId) {
         Client client = new Client();
         client.name = name;
-        client.email = email;
+        client.email = email.toLowerCase();
         client.picture = picture;
         client.googleOAuthId = googleOAuthId;
         client.githubOAuthId = githubOAuthId;
