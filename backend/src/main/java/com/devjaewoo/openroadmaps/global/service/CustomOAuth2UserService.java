@@ -1,7 +1,8 @@
 package com.devjaewoo.openroadmaps.global.service;
 
-import com.devjaewoo.openroadmaps.domain.client.*;
-import com.devjaewoo.openroadmaps.global.config.SessionConfig;
+import com.devjaewoo.openroadmaps.domain.client.ClientDto;
+import com.devjaewoo.openroadmaps.domain.client.ClientService;
+import com.devjaewoo.openroadmaps.domain.client.OAuth2Attributes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,7 +15,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpSession;
 import java.util.Collections;
 
 @Slf4j
@@ -23,7 +23,6 @@ import java.util.Collections;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final ClientService clientService;
-    private final HttpSession httpSession;
 
     @Override
     @Transactional
@@ -39,7 +38,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         log.info("Save OAuth2 user {}", oAuth2User.getAttributes());
 
         ClientDto clientDto = clientService.registerOAuth(attributes);
-        httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(clientDto));
 
         return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(clientDto.role().key)), attributes.getAttributes(), userNameAttributeName);
     }

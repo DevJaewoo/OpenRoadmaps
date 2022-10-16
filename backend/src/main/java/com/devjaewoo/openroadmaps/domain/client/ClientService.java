@@ -1,21 +1,36 @@
 package com.devjaewoo.openroadmaps.domain.client;
 
+import com.devjaewoo.openroadmaps.global.config.SessionConfig;
 import com.devjaewoo.openroadmaps.global.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
+import java.util.Collections;
+import java.util.Set;
+
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ClientService {
 
+    private final HttpSession httpSession;
     private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public ClientDto register(ClientDto.Register request) {
+
+        // 강제 로그아웃
+        logout();
 
         // 이메일 중복 여부 체크
         if(clientRepository.existsByEmail(request.email().toLowerCase())) {
@@ -29,6 +44,14 @@ public class ClientService {
         Client client = Client.create("", request.email().toLowerCase(), password);
         clientRepository.save(client);
         client.setName("User#" + client.getId());
+
+        // SessionAttribute에 Client 정보 저장
+        if(httpSession != null) {
+            httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
+        }
+
+        // Client 권한 부여
+        grantAuthority(client);
 
         return new ClientDto(client);
     }
@@ -53,6 +76,52 @@ public class ClientService {
             client.setName("User#" + client.getId());
         }
 
+        // SessionAttribute에 Client 정보 저장
+        if(httpSession != null) {
+            httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
+        }
+
         return new ClientDto(client);
+    }
+
+    public ClientDto login(ClientDto.Register request) {
+
+        // 강제 로그아웃
+        logout();
+
+        Client client = clientRepository.findByEmailAndPasswordIsNotNull(request.email().toLowerCase())
+                .orElseThrow(() -> new RestApiException(ClientErrorCode.INCORRECT_EMAIL));
+
+        if(!client.isEnabled()) {
+            throw new RestApiException(ClientErrorCode.DISABLED_CLIENT);
+        }
+
+        if(!passwordEncoder.matches(request.password(), client.getPassword())) {
+            throw new RestApiException(ClientErrorCode.INCORRECT_PASSWORD);
+        }
+
+        // SessionAttribute에 Client 정보 저장
+        if(httpSession != null) {
+            httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
+        }
+
+        // Client 권한 부여
+        grantAuthority(client);
+
+        return new ClientDto(client);
+    }
+
+    public void logout() {
+        if(httpSession != null) {
+            httpSession.invalidate();
+            SecurityContextHolder.clearContext();
+        }
+    }
+
+    private void grantAuthority(Client client) {
+        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(client.getRole().key));
+        User principal = new User(client.getName(), client.getPassword(), authorities);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 }

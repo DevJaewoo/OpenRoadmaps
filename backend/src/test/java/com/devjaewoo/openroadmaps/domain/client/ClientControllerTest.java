@@ -2,14 +2,12 @@ package com.devjaewoo.openroadmaps.domain.client;
 
 import com.devjaewoo.openroadmaps.global.exception.CommonErrorCode;
 import com.devjaewoo.openroadmaps.global.exception.ErrorResponse;
+import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -29,13 +27,13 @@ class ClientControllerTest {
 
     @Autowired JdbcTemplate jdbcTemplate;
 
-    @BeforeEach
+    @AfterEach
     void clear() {
         jdbcTemplate.execute("TRUNCATE TABLE client");
     }
 
-    @DisplayName("회원가입 테스트")
     @Nested
+    @DisplayName("회원가입 테스트")
     class Register {
 
         @Test
@@ -155,6 +153,262 @@ class ClientControllerTest {
 
             ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
             assertThat(errorResponse.code()).isEqualTo(ClientErrorCode.DUPLICATE_EMAIL.name());
+        }
+    }
+
+    @Nested
+    @DisplayName("로그인 테스트")
+    class Login {
+
+        String registerEmail = "test@email.com";
+        String registerPassword = "!Asd1234";
+
+        @BeforeEach
+        void register() {
+            ClientDto.Register register = new ClientDto.Register(registerEmail, registerPassword);
+
+            given()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .sessionId("SESSION")
+                    .body(register)
+            .when()
+                    .post("/api/v1/client/register")
+             .then()
+                    .statusCode(HttpStatus.SC_OK);
+        }
+
+        @Test
+        @DisplayName("성공")
+        public void success() {
+            //given
+            ClientDto.Register register = new ClientDto.Register(registerEmail, registerPassword);
+
+            //when
+            ExtractableResponse<Response> response =
+                    given()
+                        .log().all()
+                        .port(port)
+                        .accept(ContentType.JSON)
+                        .contentType(ContentType.JSON)
+                        .body(register)
+                    .when()
+                        .post("/api/v1/client/login")
+                    .then()
+                        .statusCode(HttpStatus.SC_OK)
+                        .extract();
+
+            //then
+            ClientDto.Response client = response.body().jsonPath().getObject(".", ClientDto.Response.class);
+            assertThat(client.name()).startsWith("User#");
+            assertThat(client.email()).isEqualTo(registerEmail.toLowerCase());
+        }
+
+        @Test
+        @DisplayName("이메일 형식 오류")
+        public void emailPatternError() {
+            List<String> emailList = Arrays.asList(null, "", "@email.com", "test@.com", "test@email.");
+
+            emailList.forEach((email) -> {
+                ClientDto.Register register = new ClientDto.Register(email, "!Asd1234");
+                ExtractableResponse<Response> response =
+                        given()
+                                .log().all()
+                                .port(port)
+                                .accept(ContentType.JSON)
+                                .contentType(ContentType.JSON)
+                                .body(register)
+                        .when()
+                                .post("/api/v1/client/login")
+                        .then()
+                                .log().all()
+                                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                                .extract();
+
+                ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
+                assertThat(errorResponse.code()).isEqualTo(CommonErrorCode.INVALID_PARAMETER.name());
+            });
+        }
+
+        @Test
+        @DisplayName("비밀번호 패턴 불일치")
+        public void passwordPatternError() {
+            List<String> passwordList = Arrays.asList(
+                    null,   // null
+                    "",     // empty
+                    "a",    // length < 8
+                    "abcdefghijklmnopqrstuvwxyz",   // length > 14
+                    "!ABCDE123",    // Does not contain lowercase
+                    "!abcde123",    // Does not contain uppercase
+                    "Abcde1234",    // Does not contain special character
+                    "!@#Abcdef"     // Does not contain number
+            );
+
+            passwordList.forEach((password) -> {
+                ClientDto.Register register = new ClientDto.Register("test@email.com", password);
+                ExtractableResponse<Response> response =
+                        given()
+                                .log().all()
+                                .port(port)
+                                .accept(ContentType.JSON)
+                                .contentType(ContentType.JSON)
+                                .body(register)
+                        .when()
+                                .post("/api/v1/client/login")
+                        .then()
+                                .log().all()
+                                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                                .extract();
+
+                ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
+                assertThat(errorResponse.code()).isEqualTo(CommonErrorCode.INVALID_PARAMETER.name());
+            });
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 사용자")
+        public void incorrectEmail() {
+            //given
+            ClientDto.Register register = new ClientDto.Register("incorrect@email.com", registerPassword);
+
+            //when
+            ExtractableResponse<Response> response =
+                    given()
+                            .log().all()
+                            .port(port)
+                            .accept(ContentType.JSON)
+                            .contentType(ContentType.JSON)
+                            .body(register)
+                    .when()
+                            .post("/api/v1/client/login")
+                    .then()
+                            .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                            .extract();
+
+            //then
+            ErrorResponse errorResponse = response.body().jsonPath().getObject(".", ErrorResponse.class);
+            assertThat(errorResponse.code()).isEqualTo(ClientErrorCode.INCORRECT_EMAIL.name());
+        }
+
+        @Test
+        @DisplayName("비밀번호 불일치")
+        public void incorrectPassword() {
+            //given
+            ClientDto.Register register = new ClientDto.Register(registerEmail, "P@ssw0rd");
+
+            //when
+            ExtractableResponse<Response> response =
+                    given()
+                            .log().all()
+                            .port(port)
+                            .accept(ContentType.JSON)
+                            .contentType(ContentType.JSON)
+                            .body(register)
+                    .when()
+                            .post("/api/v1/client/login")
+                    .then()
+                            .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                            .extract();
+
+            //then
+            ErrorResponse errorResponse = response.body().jsonPath().getObject(".", ErrorResponse.class);
+            assertThat(errorResponse.code()).isEqualTo(ClientErrorCode.INCORRECT_PASSWORD.name());
+        }
+
+        @Test
+        @DisplayName("비활성화된 사용자")
+        public void disabledClient() {
+            //given
+            jdbcTemplate.execute("UPDATE client set is_enabled='f' WHERE email='" + registerEmail + "'");
+            ClientDto.Register register = new ClientDto.Register(registerEmail, registerPassword);
+
+            //when
+            ExtractableResponse<Response> response =
+                    given()
+                            .log().all()
+                            .port(port)
+                            .accept(ContentType.JSON)
+                            .contentType(ContentType.JSON)
+                            .body(register)
+                    .when()
+                            .post("/api/v1/client/login")
+                    .then()
+                            .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                            .extract();
+
+            //then
+            ErrorResponse errorResponse = response.body().jsonPath().getObject(".", ErrorResponse.class);
+            assertThat(errorResponse.code()).isEqualTo(ClientErrorCode.DISABLED_CLIENT.name());
+        }
+    }
+
+    @Nested
+    @DisplayName("로그아웃")
+    class Logout {
+
+        @Test
+        @DisplayName("성공")
+        public void success() {
+            //given
+            ClientDto.Register register = new ClientDto.Register("test@email.com", "!Asd1234");
+            CookieFilter cookieFilter = new CookieFilter(false);
+
+            given()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .body(register)
+            .when()
+                    .post("/api/v1/client/register")
+            .then()
+                    .statusCode(HttpStatus.SC_OK);
+
+            //when
+            given()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .body(register)
+                    .filter(cookieFilter)
+            .when()
+                    .post("/api/v1/client/login")
+            .then()
+                    .statusCode(HttpStatus.SC_OK);
+
+            //then
+            given()
+                    .log().all()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .filter(cookieFilter)
+                    .when()
+                    .get("/api/v1/client/logout")
+                    .then()
+                    .statusCode(HttpStatus.SC_NO_CONTENT);
+        }
+
+        @Test
+        @DisplayName("로그인되지 않은 상태로 로그아웃 시도")
+        public void notLoggedIn() {
+            //given
+
+            //when
+            ExtractableResponse<Response> response = given()
+                    .log().all()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+            .when()
+                    .get("/api/v1/client/logout")
+            .then()
+                    .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                    .extract();
+
+            //then
+            ErrorResponse errorResponse = response.body().jsonPath().getObject(".", ErrorResponse.class);
+            assertThat(errorResponse.code()).isEqualTo(CommonErrorCode.UNAUTHORIZED.name());
         }
     }
 }

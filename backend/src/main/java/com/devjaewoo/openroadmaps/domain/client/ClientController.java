@@ -2,10 +2,7 @@ package com.devjaewoo.openroadmaps.domain.client;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -20,5 +17,17 @@ public class ClientController {
     public ResponseEntity<?> register(@Valid @RequestBody ClientDto.Register request) {
         ClientDto client = clientService.register(request);
         return ResponseEntity.ok(new ClientDto.Response(client));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody ClientDto.Register request) {
+        ClientDto client = clientService.login(request);
+        return ResponseEntity.ok(new ClientDto.Response(client));
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout() {
+        clientService.logout();
+        return ResponseEntity.noContent().build();
     }
 }

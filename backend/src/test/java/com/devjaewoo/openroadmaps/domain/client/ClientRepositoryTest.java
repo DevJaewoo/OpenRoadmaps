@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.Arrays;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -39,21 +37,25 @@ class ClientRepositoryTest {
         @DisplayName("Email/Password")
         public void TestEmailPassword() {
             //given
-            String email = "client@gmail.com";
-            String password = "password";
-            Client client = Client.create("client", email, password);
-            clientRepository.save(client);
+            String email1 = "client1@gmail.com";
+            Client client1 = Client.create("client", email1, "password");
+
+            String email2 = "client2@gmail.com";
+            Client client2 = Client.create("client", email2, null);
+
+            clientRepository.save(client1);
+            clientRepository.save(client2);
 
             //when
-            Client result = clientRepository.findByEmailAndPassword(email, password).orElse(null);
-            Client result1 = clientRepository.findByEmailAndPassword(email, "").orElse(null);
-            Client result2 = clientRepository.findByEmailAndPassword("", password).orElse(null);
-            Client result3 = clientRepository.findByEmailAndPassword("", "").orElse(null);
+            Client result1 = clientRepository.findByEmailAndPasswordIsNotNull(email1).orElse(null);
+            Client result2 = clientRepository.findByEmailAndPasswordIsNotNull(email2).orElse(null);
+            Client result3 = clientRepository.findByEmailAndPasswordIsNotNull("").orElse(null);
 
             //then
-            assertThat(result).isNotNull();
-            assertThat(result.getId()).isGreaterThan(0);
-            assertThat(Arrays.asList(result1, result2, result3)).containsOnlyNulls();
+            assertThat(result1).isNotNull();
+            assertThat(result1.getId()).isGreaterThan(0);
+            assertThat(result2).isNull();
+            assertThat(result3).isNull();
         }
 
         @Test

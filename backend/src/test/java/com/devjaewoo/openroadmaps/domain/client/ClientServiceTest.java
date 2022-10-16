@@ -9,10 +9,13 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,6 +27,7 @@ class ClientServiceTest {
 
     @Mock ClientRepository clientRepository;
     @Mock PasswordEncoder passwordEncoder;
+    @Mock HttpSession httpSession;
 
     @InjectMocks
     ClientService clientService;
@@ -73,7 +77,7 @@ class ClientServiceTest {
                 Executable executable = () -> clientService.register(request);
 
                 //then
-                assertThrows(RestApiException.class, executable);
+                assertThrows(RestApiException.class, executable, ClientErrorCode.DUPLICATE_EMAIL.message);
             }
         }
 
@@ -121,9 +125,113 @@ class ClientServiceTest {
                 Executable executable = () -> clientService.registerOAuth(oAuth2Attributes);
 
                 //then
-                assertThrows(RestApiException.class, executable);
+                assertThrows(RestApiException.class, executable, ClientErrorCode.UNSUPPORTED_REGISTRATION.message);
             }
         }
     }
 
+    @Nested
+    @DisplayName("로그인")
+    class Login {
+
+        @Test
+        @DisplayName("성공")
+        public void success() {
+            //given
+            String email = "DevJaewoo@email.com";
+            ClientDto.Register request = new ClientDto.Register(email, "12345678");
+            Client client = Client.create("name", email, "password");
+
+            given(clientRepository.findByEmailAndPasswordIsNotNull(any())).willReturn(Optional.of(client));
+            given(passwordEncoder.matches(any(), any())).willReturn(true);
+
+            //when
+            assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
+            ClientDto clientDto = clientService.login(request);
+
+            //then
+            assertThat(clientDto.email()).isEqualTo(email.toLowerCase());
+            assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
+        }
+
+        @Test
+        @DisplayName("미등록된 이메일")
+        public void incorrectEmail() {
+            //given
+            String email = "DevJaewoo@email.com";
+            ClientDto.Register request = new ClientDto.Register(email, "12345678");
+
+            given(clientRepository.findByEmailAndPasswordIsNotNull(any())).willReturn(Optional.empty());
+
+            //when
+            Executable executable = () -> clientService.login(request);
+
+            //then
+            assertThrows(RestApiException.class, executable, ClientErrorCode.INCORRECT_EMAIL.message);
+        }
+
+        @Test
+        @DisplayName("비밀번호 불일치")
+        public void incorrectPassword() {
+            //given
+            String email = "DevJaewoo@email.com";
+            ClientDto.Register request = new ClientDto.Register(email, "12345678");
+            Client client = Client.create("name", email, "password");
+
+            given(clientRepository.findByEmailAndPasswordIsNotNull(any())).willReturn(Optional.of(client));
+            given(passwordEncoder.matches(any(), any())).willReturn(false);
+
+            //when
+            Executable executable = () -> clientService.login(request);
+
+            //then
+            assertThrows(RestApiException.class, executable, ClientErrorCode.INCORRECT_PASSWORD.message);
+        }
+
+        @Test
+        @DisplayName("비활성화된 사용자에 로그인 시도")
+        public void disabledClient() {
+            //given
+            String email = "DevJaewoo@email.com";
+            ClientDto.Register request = new ClientDto.Register(email, "12345678");
+            Client client = Client.create("name", email, "password");
+            client.setEnabled(false);
+
+            given(clientRepository.findByEmailAndPasswordIsNotNull(any())).willReturn(Optional.of(client));
+            // given(passwordEncoder.matches(any(), any())).willReturn(false); unnecessary code라고 함
+
+            //when
+            Executable executable = () -> clientService.login(request);
+
+            //then
+            assertThrows(RestApiException.class, executable, ClientErrorCode.INCORRECT_PASSWORD.message);
+        }
+    }
+
+    @Nested
+    @DisplayName("로그아웃")
+    class Logout {
+
+        @Test
+        @DisplayName("성공")
+        public void success() {
+            //given
+            String email = "DevJaewoo@email.com";
+            ClientDto.Register request = new ClientDto.Register(email, "12345678");
+            Client client = Client.create("name", email, "password");
+
+            given(clientRepository.findByEmailAndPasswordIsNotNull(any())).willReturn(Optional.of(client));
+            given(passwordEncoder.matches(any(), any())).willReturn(true);
+
+            clientService.login(request);
+
+            assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
+
+            //when
+            clientService.logout();
+
+            //then
+            assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
+        }
+    }
 }
