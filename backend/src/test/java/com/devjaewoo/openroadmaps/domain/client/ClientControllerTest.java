@@ -2,6 +2,7 @@ package com.devjaewoo.openroadmaps.domain.client;
 
 import com.devjaewoo.openroadmaps.global.exception.CommonErrorCode;
 import com.devjaewoo.openroadmaps.global.exception.ErrorResponse;
+import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -200,7 +201,7 @@ class ClientControllerTest {
 
             //then
             ClientDto.Response client = response.body().jsonPath().getObject(".", ClientDto.Response.class);
-            assertThat(client.name()).isEqualTo("User#1");
+            assertThat(client.name()).startsWith("User#");
             assertThat(client.email()).isEqualTo(registerEmail.toLowerCase());
         }
 
@@ -316,10 +317,10 @@ class ClientControllerTest {
         }
 
         @Test
-        @DisplayName("비밀번호 불일치")
+        @DisplayName("비활성화된 사용자")
         public void disabledClient() {
             //given
-            jdbcTemplate.execute("UPDATE client set is_enabled='f' WHERE client_id=1");
+            jdbcTemplate.execute("UPDATE client set is_enabled='f' WHERE email='" + registerEmail + "'");
             ClientDto.Register register = new ClientDto.Register(registerEmail, registerPassword);
 
             //when
@@ -339,6 +340,75 @@ class ClientControllerTest {
             //then
             ErrorResponse errorResponse = response.body().jsonPath().getObject(".", ErrorResponse.class);
             assertThat(errorResponse.code()).isEqualTo(ClientErrorCode.DISABLED_CLIENT.name());
+        }
+    }
+
+    @Nested
+    @DisplayName("로그아웃")
+    class Logout {
+
+        @Test
+        @DisplayName("성공")
+        public void success() {
+            //given
+            ClientDto.Register register = new ClientDto.Register("test@email.com", "!Asd1234");
+            CookieFilter cookieFilter = new CookieFilter(false);
+
+            given()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .body(register)
+            .when()
+                    .post("/api/v1/client/register")
+            .then()
+                    .statusCode(HttpStatus.SC_OK);
+
+            //when
+            given()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .body(register)
+                    .filter(cookieFilter)
+            .when()
+                    .post("/api/v1/client/login")
+            .then()
+                    .statusCode(HttpStatus.SC_OK);
+
+            //then
+            given()
+                    .log().all()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .filter(cookieFilter)
+                    .when()
+                    .get("/api/v1/client/logout")
+                    .then()
+                    .statusCode(HttpStatus.SC_NO_CONTENT);
+        }
+
+        @Test
+        @DisplayName("로그인되지 않은 상태로 로그아웃 시도")
+        public void notLoggedIn() {
+            //given
+
+            //when
+            ExtractableResponse<Response> response = given()
+                    .log().all()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+            .when()
+                    .get("/api/v1/client/logout")
+            .then()
+                    .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                    .extract();
+
+            //then
+            ErrorResponse errorResponse = response.body().jsonPath().getObject(".", ErrorResponse.class);
+            assertThat(errorResponse.code()).isEqualTo(CommonErrorCode.UNAUTHORIZED.name());
         }
     }
 }
