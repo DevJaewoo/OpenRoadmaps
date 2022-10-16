@@ -46,7 +46,9 @@ public class ClientService {
         client.setName("User#" + client.getId());
 
         // SessionAttribute에 Client 정보 저장
-        httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
+        if(httpSession != null) {
+            httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
+        }
 
         // Client 권한 부여
         grantAuthority(client);
@@ -75,7 +77,9 @@ public class ClientService {
         }
 
         // SessionAttribute에 Client 정보 저장
-        httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
+        if(httpSession != null) {
+            httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
+        }
 
         return new ClientDto(client);
     }
@@ -88,16 +92,18 @@ public class ClientService {
         Client client = clientRepository.findByEmailAndPasswordIsNotNull(request.email().toLowerCase())
                 .orElseThrow(() -> new RestApiException(ClientErrorCode.INCORRECT_EMAIL));
 
-        if(!passwordEncoder.matches(request.password(), client.getPassword())) {
-            throw new RestApiException(ClientErrorCode.INCORRECT_PASSWORD);
-        }
-
         if(!client.isEnabled()) {
             throw new RestApiException(ClientErrorCode.DISABLED_CLIENT);
         }
 
+        if(!passwordEncoder.matches(request.password(), client.getPassword())) {
+            throw new RestApiException(ClientErrorCode.INCORRECT_PASSWORD);
+        }
+
         // SessionAttribute에 Client 정보 저장
-        httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
+        if(httpSession != null) {
+            httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
+        }
 
         // Client 권한 부여
         grantAuthority(client);
