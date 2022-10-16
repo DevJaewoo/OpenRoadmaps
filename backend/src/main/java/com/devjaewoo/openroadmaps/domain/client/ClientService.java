@@ -18,7 +18,7 @@ public class ClientService {
     public ClientDto register(ClientDto.Register request) {
 
         // 이메일 중복 여부 체크
-        if(clientRepository.existsByEmail(request.email())) {
+        if(clientRepository.existsByEmail(request.email().toLowerCase())) {
             throw new RestApiException(ClientErrorCode.DUPLICATE_EMAIL);
         }
 
@@ -26,8 +26,9 @@ public class ClientService {
         String password = passwordEncoder.encode(request.password());
 
         // Client 객체 생성 및 저장
-        Client client = Client.create(request.email(), request.email(), password);
+        Client client = Client.create("", request.email().toLowerCase(), password);
         clientRepository.save(client);
+        client.setName("User#" + client.getId());
 
         return new ClientDto(client);
     }
