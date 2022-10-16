@@ -10,10 +10,11 @@ public record ClientDto(
         String email,
         String picture,
         int reputation,
-        boolean isEnabled) {
+        boolean isEnabled,
+        Role role) {
 
     public ClientDto(Client client) {
-        this(client.getId(), client.getName(), client.getEmail(), client.getPicture(), client.getReputation(), client.isEnabled());
+        this(client.getId(), client.getName(), client.getEmail(), client.getPicture(), client.getReputation(), client.isEnabled(), client.getRole());
     }
 
     public record Response(
