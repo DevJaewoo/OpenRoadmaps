@@ -13,6 +13,11 @@ public class SessionClient implements Serializable {
     private Long id;
     private String name;
 
+    public SessionClient(Client client) {
+        this.id = client.getId();
+        this.name = client.getName();
+    }
+
     public SessionClient(ClientDto clientDto) {
         this.id = clientDto.id();
         this.name = clientDto.name();
