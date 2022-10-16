@@ -4,11 +4,17 @@ import com.devjaewoo.openroadmaps.global.config.SessionConfig;
 import com.devjaewoo.openroadmaps.global.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
+import java.util.Collections;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -38,6 +44,9 @@ public class ClientService {
         Client client = Client.create("", request.email().toLowerCase(), password);
         clientRepository.save(client);
         client.setName("User#" + client.getId());
+
+        // Client 권한 부여
+        grantAuthority(client);
 
         return new ClientDto(client);
     }
@@ -84,10 +93,23 @@ public class ClientService {
         // SessionAttribute에 Client 정보 저장
         httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
 
+        // Client 권한 부여
+        grantAuthority(client);
+
         return new ClientDto(client);
     }
 
     public void logout() {
-        if(httpSession != null) httpSession.invalidate();
+        if(httpSession != null) {
+            httpSession.invalidate();
+            SecurityContextHolder.clearContext();
+        }
+    }
+
+    private void grantAuthority(Client client) {
+        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(client.getRole().key));
+        User principal = new User(client.getName(), client.getPassword(), authorities);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 }
