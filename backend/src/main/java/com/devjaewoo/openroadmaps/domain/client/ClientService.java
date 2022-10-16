@@ -45,6 +45,9 @@ public class ClientService {
         clientRepository.save(client);
         client.setName("User#" + client.getId());
 
+        // SessionAttribute에 Client 정보 저장
+        httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
+
         // Client 권한 부여
         grantAuthority(client);
 
@@ -70,6 +73,9 @@ public class ClientService {
             client = clientRepository.save(attributes.toClient());
             client.setName("User#" + client.getId());
         }
+
+        // SessionAttribute에 Client 정보 저장
+        httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
 
         return new ClientDto(client);
     }
