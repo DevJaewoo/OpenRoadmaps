@@ -1,5 +1,6 @@
 package com.devjaewoo.openroadmaps.domain.client;
 
+import com.devjaewoo.openroadmaps.global.exception.RestApiException;
 import lombok.*;
 
 import java.util.Map;
@@ -25,7 +26,7 @@ public class OAuth2Attributes {
             return ofGithub(registrationId, userNameAttributeName, attributes);
         }
         else {
-            throw new IllegalArgumentException("지원하지 않는 Registration입니다.");
+            throw new RestApiException(ClientErrorCode.UNSUPPORTED_REGISTRATION);
         }
     }
 
