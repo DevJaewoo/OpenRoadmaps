@@ -1,21 +1,30 @@
 package com.devjaewoo.openroadmaps.domain.client;
 
+import com.devjaewoo.openroadmaps.global.config.SessionConfig;
 import com.devjaewoo.openroadmaps.global.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
+
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ClientService {
 
+    private final HttpSession httpSession;
     private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public ClientDto register(ClientDto.Register request) {
+
+        // 강제 로그아웃
+        logout();
 
         // 이메일 중복 여부 체크
         if(clientRepository.existsByEmail(request.email().toLowerCase())) {
@@ -54,5 +63,31 @@ public class ClientService {
         }
 
         return new ClientDto(client);
+    }
+
+    public ClientDto login(ClientDto.Register request) {
+
+        // 강제 로그아웃
+        logout();
+
+        Client client = clientRepository.findByEmailAndPasswordIsNotNull(request.email().toLowerCase())
+                .orElseThrow(() -> new RestApiException(ClientErrorCode.INCORRECT_EMAIL));
+
+        if(!passwordEncoder.matches(request.password(), client.getPassword())) {
+            throw new RestApiException(ClientErrorCode.INCORRECT_PASSWORD);
+        }
+
+        if(!client.isEnabled()) {
+            throw new RestApiException(ClientErrorCode.DISABLED_CLIENT);
+        }
+
+        // SessionAttribute에 Client 정보 저장
+        httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
+
+        return new ClientDto(client);
+    }
+
+    public void logout() {
+        if(httpSession != null) httpSession.invalidate();
     }
 }
