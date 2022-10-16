@@ -44,6 +44,7 @@ public class Client {
         client.email = email.toLowerCase();
         client.password = password;
         client.role = Role.CLIENT;
+        client.isEnabled = true;
 
         return client;
     }
@@ -55,6 +56,7 @@ public class Client {
         client.googleOAuthId = googleOAuthId;
         client.githubOAuthId = githubOAuthId;
         client.role = Role.CLIENT;
+        client.isEnabled = true;
 
         return client;
     }
