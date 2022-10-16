@@ -146,6 +146,7 @@ class ClientServiceTest {
             given(passwordEncoder.matches(any(), any())).willReturn(true);
 
             //when
+            assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
             ClientDto clientDto = clientService.login(request);
 
             //then
@@ -207,4 +208,30 @@ class ClientServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("로그아웃")
+    class Logout {
+
+        @Test
+        @DisplayName("성공")
+        public void success() {
+            //given
+            String email = "DevJaewoo@email.com";
+            ClientDto.Register request = new ClientDto.Register(email, "12345678");
+            Client client = Client.create("name", email, "password");
+
+            given(clientRepository.findByEmailAndPasswordIsNotNull(any())).willReturn(Optional.of(client));
+            given(passwordEncoder.matches(any(), any())).willReturn(true);
+
+            clientService.login(request);
+
+            assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
+
+            //when
+            clientService.logout();
+
+            //then
+            assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
+        }
+    }
 }
