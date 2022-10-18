@@ -6,18 +6,24 @@ interface ButtonProps {
   text?: string | JSX.Element;
   class?: string;
   onClick?: React.MouseEventHandler<this>;
+  props?: object;
 }
 
 const BaseButton: React.FC<ButtonProps> = (props) => {
   if (props.type === "button") {
     return (
-      <button onClick={props.onClick} className={props.class}>
+      <button onClick={props.onClick} className={props.class} {...props.props}>
         {props.text}
       </button>
     );
   } else if (props.type === "anchor") {
     return (
-      <a href={props.to || "."} onClick={props.onClick} className={props.class}>
+      <a
+        href={props.to || "."}
+        onClick={props.onClick}
+        className={props.class}
+        {...props.props}
+      >
         {props.text}
       </a>
     );
@@ -27,6 +33,7 @@ const BaseButton: React.FC<ButtonProps> = (props) => {
         to={props.to || "."}
         onClick={props.onClick}
         className={props.class}
+        {...props.props}
       >
         {props.text}
       </Link>
