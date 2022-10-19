@@ -9,12 +9,12 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { useRef } from "react";
 import axios, { AxiosError } from "axios";
-import useRegister from "../../apis/useRegister";
 import { ErrorResponse } from "../../apis/errorResponse";
+import useLogin from "../../apis/useLogin";
 
 axios.defaults.withCredentials = true;
 
-const Register: React.FC<{}> = () => {
+const Login: React.FC<{}> = () => {
   const {
     register,
     handleSubmit,
@@ -24,7 +24,7 @@ const Register: React.FC<{}> = () => {
   const password = useRef({});
   password.current = watch("password", "");
 
-  const { isLoading, isError, error, mutate } = useRegister();
+  const { isLoading, isError, error, mutate } = useLogin();
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     if (isLoading) return;
@@ -48,7 +48,7 @@ const Register: React.FC<{}> = () => {
 
   return (
     <div className="flex flex-col items-center flex-1 w-full h-full my-10">
-      <h1 className="w-full text-center text-3xl font-semibold">회원가입</h1>
+      <h1 className="w-full text-center text-3xl font-semibold">로그인</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col w-full max-w-2xl mt-5 p-10 border-gray-100 border rounded-xl shadow-md"
@@ -93,23 +93,10 @@ const Register: React.FC<{}> = () => {
           />
           <PatternError field={errors.password as FieldError} />
         </div>
-        <div className="w-full mb-5">
-          <h3 className="text-lg">비밀번호 확인</h3>
-          <input
-            type="password"
-            placeholder="Re-enter password"
-            className="w-full mt-2 p-3 border border-gray-300 rounded-md"
-            {...register("repassword", {
-              validate: (value) =>
-                value === password.current || "비밀번호가 일치하지 않습니다.",
-            })}
-          />
-          <PatternError field={errors.repassword as FieldError} />
-        </div>
 
         <PrimaryButton
           type="button"
-          text="회원가입"
+          text="로그인"
           to="http://localhost:8080/oauth2/authorization/google"
           class="w-full mt-4 py-3 justify-center text-xl"
           props={{ disabled: isLoading }}
@@ -122,18 +109,18 @@ const Register: React.FC<{}> = () => {
           className="flex justify-center items-center w-full py-3 text-xl font-semibold rounded-lg bg-gray-50 hover:bg-gray-200 border border-gray-200 transition-colors"
         >
           <FcGoogle className="inline mr-3 text-2xl" />
-          Google 회원가입
+          Google 로그인
         </a>
         <a
           href="http://localhost:8080/oauth/authorization/github"
           className="flex justify-center items-center w-full mt-3 py-3 text-xl font-semibold text-center text-white rounded-lg bg-gray-700 hover:bg-gray-500 border border-gray-200 transition-colors"
         >
           <FaGithub className="inline mr-3 text-2xl" />
-          Github 회원가입
+          Github 로그인
         </a>
       </div>
     </div>
   );
 };
 
-export default Register;
+export default Login;
