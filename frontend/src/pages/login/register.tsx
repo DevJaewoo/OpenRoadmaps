@@ -10,7 +10,8 @@ import { FaGithub } from "react-icons/fa";
 import { useRef } from "react";
 import axios, { AxiosError } from "axios";
 import useRegister from "../../apis/useRegister";
-import { ErrorResponse } from "../../apis/errorResponse";
+import ErrorMessage from "./ErrorMessage";
+import PatternError from "./PatternError";
 
 axios.defaults.withCredentials = true;
 
@@ -34,18 +35,6 @@ const Register: React.FC<{}> = () => {
     });
   };
 
-  const PatternError = ({ field }: { field: FieldError | undefined }) => {
-    return (
-      <>
-        {field?.message && (
-          <small role="alert" className="text-red-500">
-            {field?.message.toString()}
-          </small>
-        )}
-      </>
-    );
-  };
-
   return (
     <div className="flex flex-col items-center flex-1 w-full h-full my-10">
       <h1 className="w-full text-center text-3xl font-semibold">회원가입</h1>
@@ -53,11 +42,7 @@ const Register: React.FC<{}> = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col w-full max-w-2xl mt-5 p-10 border-gray-100 border rounded-xl shadow-md"
       >
-        {isError && (
-          <div className="flex items-center w-full mb-5 p-3 border border-red-600 bg-red-100 rounded-md text-red-500">
-            {((error as AxiosError).response?.data as ErrorResponse).message}
-          </div>
-        )}
+        {isError && <ErrorMessage error={error as AxiosError} />}
 
         <div className="w-full mb-5">
           <h3 className="text-lg">이메일</h3>
