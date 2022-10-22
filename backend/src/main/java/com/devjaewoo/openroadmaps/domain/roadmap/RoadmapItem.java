@@ -24,6 +24,8 @@ public class RoadmapItem {
     @Enumerated(EnumType.STRING)
     private Recommend recommend;
 
+    @Enumerated(EnumType.STRING)
+    private ConnectionType connectionType;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private RoadmapItem parent;

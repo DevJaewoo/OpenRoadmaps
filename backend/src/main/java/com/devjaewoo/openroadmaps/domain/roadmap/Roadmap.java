@@ -1,6 +1,7 @@
 package com.devjaewoo.openroadmaps.domain.roadmap;
 
 import com.devjaewoo.openroadmaps.domain.client.Client;
+import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,9 @@ public class Roadmap {
     private Long id;
 
     private String title;
+
+    @Enumerated(EnumType.STRING)
+    private Accessibility accessibility;
 
     @OneToMany(mappedBy = "roadmap", cascade = CascadeType.ALL)
     private List<RoadmapItem> roadmapItemList = new ArrayList<>();
