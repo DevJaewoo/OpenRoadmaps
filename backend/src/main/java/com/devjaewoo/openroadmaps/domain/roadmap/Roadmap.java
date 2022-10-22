@@ -25,6 +25,8 @@ public class Roadmap {
     @Enumerated(EnumType.STRING)
     private Accessibility accessibility;
 
+    private boolean isOfficial;
+
     @OneToMany(mappedBy = "roadmap", cascade = CascadeType.ALL)
     private List<RoadmapItem> roadmapItemList = new ArrayList<>();
 
