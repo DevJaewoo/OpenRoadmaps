@@ -124,4 +124,11 @@ public class ClientService {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, "", authorities);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
+
+    public ClientDto findClientById(Long id) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND));
+
+        return new ClientDto(client);
+    }
 }
