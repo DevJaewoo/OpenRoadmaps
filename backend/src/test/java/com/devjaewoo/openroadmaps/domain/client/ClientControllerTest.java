@@ -411,4 +411,184 @@ class ClientControllerTest {
             assertThat(errorResponse.code()).isEqualTo(CommonErrorCode.UNAUTHORIZED.name());
         }
     }
+
+    @Nested
+    @DisplayName("Client 정보")
+    class ClientInfo {
+
+        @Test
+        @DisplayName("인증되지 않은 상태로 조회")
+        public void getCurrentClientWithoutAuthentication() {
+            // given
+
+            // when
+            ExtractableResponse<Response> response =
+                    given()
+                            .log().all()
+                            .port(port)
+                            .contentType(ContentType.JSON)
+                            .accept(ContentType.JSON)
+                    .when()
+                            .get("/api/v1/client")
+                    .then()
+                            .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                            .extract();
+
+            // then
+            ErrorResponse errorResponse = response.body().jsonPath().getObject(".", ErrorResponse.class);
+            assertThat(errorResponse.code()).isEqualTo(CommonErrorCode.UNAUTHORIZED.name());
+        }
+
+        @Test
+        @DisplayName("회원가입 후 조회")
+        public void getCurrentClientAfterRegister() {
+            // given
+            String email = "TEST@email.com";
+            ClientDto.Register register = new ClientDto.Register(email, "!Asd1234");
+            CookieFilter cookieFilter = new CookieFilter(false);
+
+            // 회원가입 및 세션 쿠키 저장
+            given()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .body(register)
+                    .filter(cookieFilter)
+            .when()
+                    .post("/api/v1/client/register")
+            .then()
+                    .statusCode(HttpStatus.SC_OK);
+
+            // when
+            ExtractableResponse<Response> response =
+                    given()
+                            .port(port)
+                            .accept(ContentType.JSON)
+                            .contentType(ContentType.JSON)
+                            .filter(cookieFilter)
+                    .when()
+                            .get("/api/v1/client")
+                    .then()
+                            .statusCode(HttpStatus.SC_OK)
+                            .extract();
+
+            // then
+            ClientDto.Response clientDto = response.body().jsonPath().getObject(".", ClientDto.Response.class);
+            assertThat(clientDto.email()).isEqualTo(email.toLowerCase());
+            assertThat(clientDto.name()).startsWith("User#");
+        }
+
+        //로그인 후 현재 사용자 조회
+        @Test
+        @DisplayName("로그인 후 조회")
+        public void getCurrentClientAfterLogin() {
+            // given
+            String email = "TEST@email.com";
+            ClientDto.Register register = new ClientDto.Register(email, "!Asd1234");
+            CookieFilter cookieFilter = new CookieFilter(false);
+
+            // 회원가입
+            given()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .body(register)
+            .when()
+                    .post("/api/v1/client/register")
+            .then()
+                    .statusCode(HttpStatus.SC_OK);
+
+
+            // 로그인 및 세션 쿠키 저장
+            given()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .body(register)
+                    .filter(cookieFilter)
+            .when()
+                    .post("/api/v1/client/login")
+            .then()
+                    .statusCode(HttpStatus.SC_OK);
+
+            // when
+            ExtractableResponse<Response> response =
+                    given()
+                            .port(port)
+                            .accept(ContentType.JSON)
+                            .contentType(ContentType.JSON)
+                            .filter(cookieFilter)
+                    .when()
+                            .get("/api/v1/client")
+                    .then()
+                            .statusCode(HttpStatus.SC_OK)
+                            .extract();
+
+            // then
+            ClientDto.Response clientDto = response.body().jsonPath().getObject(".", ClientDto.Response.class);
+            assertThat(clientDto.email()).isEqualTo(email.toLowerCase());
+            assertThat(clientDto.name()).startsWith("User#");
+        }
+
+        @Test
+        @DisplayName("ID로 조회")
+        public void findClientById() {
+            // given
+            String email = "TEST@email.com";
+            ClientDto.Register register = new ClientDto.Register(email, "!Asd1234");
+
+            // 회원가입
+            ExtractableResponse<Response> registerResponse = given()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .body(register)
+                    .when()
+                    .post("/api/v1/client/register")
+                    .then()
+                    .statusCode(HttpStatus.SC_OK)
+                    .extract();
+
+            Long clientId = registerResponse.body().jsonPath().getObject("id", Long.class);
+
+            // when
+            ExtractableResponse<Response> response =
+                    given()
+                            .port(port)
+                            .accept(ContentType.JSON)
+                            .contentType(ContentType.JSON)
+                    .when()
+                            .get("/api/v1/client/" + clientId)
+                    .then()
+                            .statusCode(HttpStatus.SC_OK)
+                            .extract();
+
+            // then
+            ClientDto.Response clientDto = response.body().jsonPath().getObject(".", ClientDto.Response.class);
+            assertThat(clientDto.id()).isEqualTo(clientId);
+            assertThat(clientDto.email()).isEqualTo(email.toLowerCase());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 사용자 조회")
+        public void findNotExistingClient() {
+            // given
+
+            // when
+            ExtractableResponse<Response> response =
+                    given()
+                            .port(port)
+                            .accept(ContentType.JSON)
+                            .contentType(ContentType.JSON)
+                    .when()
+                            .get("/api/v1/client/999")
+                    .then()
+                            .statusCode(HttpStatus.SC_NOT_FOUND)
+                            .extract();
+
+            // then
+            ErrorResponse errorResponse = response.body().jsonPath().getObject(".", ErrorResponse.class);
+            assertThat(errorResponse.code()).isEqualTo(ClientErrorCode.CLIENT_NOT_FOUND.name());
+        }
+    }
 }

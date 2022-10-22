@@ -18,13 +18,14 @@ public record ClientDto(
     }
 
     public record Response(
+            Long id,
             String name,
             String email,
             String picture,
             int reputation) {
 
         public Response(ClientDto client) {
-            this(client.name, client.email, client.picture, client.reputation);
+            this(client.id, client.name, client.email, client.picture, client.reputation);
         }
     }
 

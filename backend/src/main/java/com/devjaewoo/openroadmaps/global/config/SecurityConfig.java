@@ -8,6 +8,7 @@ import com.devjaewoo.openroadmaps.global.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -34,6 +35,7 @@ public class SecurityConfig {
                     .antMatchers("/api/*/client/register", "/api/*/client/login").permitAll()
                     .antMatchers("/api/*/client/logout").hasAnyRole(Role.CLIENT.name())
                     .antMatchers("/api/admin/**").hasAnyRole(Role.ADMIN.name())
+                    .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                     .antMatchers("/api/**").hasAnyRole(Role.CLIENT.name())
                     .anyRequest().authenticated().and()
                 .oauth2Login()

@@ -234,4 +234,37 @@ class ClientServiceTest {
             assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
         }
     }
+
+    @Nested
+    @DisplayName("Client 정보 조회")
+    class ClientInfo {
+
+        @Test
+        @DisplayName("성공")
+        public void success() {
+            // given
+            String email = "DevJaewoo@email.com";
+            Client client = Client.create("name", email, "password");
+            given(clientRepository.findById(1L)).willReturn(Optional.of(client));
+
+            // when
+            ClientDto clientDto = clientService.findClientById(1L);
+
+            // then
+            assertThat(clientDto.email()).isEqualTo(email.toLowerCase());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 사용자 조회")
+        public void findNotExistingClient() {
+            // given
+            given(clientRepository.findById(any())).willReturn(Optional.empty());
+
+            // when
+            Executable executable = () -> clientService.findClientById(999L);
+
+            // then
+            assertThrows(RestApiException.class, executable, ClientErrorCode.CLIENT_NOT_FOUND.message);
+        }
+    }
 }

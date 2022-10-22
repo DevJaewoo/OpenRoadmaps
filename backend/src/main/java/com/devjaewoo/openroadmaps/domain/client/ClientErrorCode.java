@@ -13,6 +13,7 @@ public enum ClientErrorCode implements ErrorCode {
     INCORRECT_EMAIL(HttpStatus.UNAUTHORIZED, "존재하지 않는 사용자입니다."),
     INCORRECT_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
     DISABLED_CLIENT(HttpStatus.UNAUTHORIZED, "비활성화된 계정입니다."),
+    CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
     ;
 
     public final HttpStatus httpStatus;
