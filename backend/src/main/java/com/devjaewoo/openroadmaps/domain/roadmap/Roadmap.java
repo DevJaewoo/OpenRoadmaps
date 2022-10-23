@@ -22,10 +22,14 @@ public class Roadmap {
 
     private String title;
 
+    private String image;
+
     @Enumerated(EnumType.STRING)
     private Accessibility accessibility;
 
     private boolean isOfficial;
+
+    private int likes;
 
     @OneToMany(mappedBy = "roadmap", cascade = CascadeType.ALL)
     private List<RoadmapItem> roadmapItemList = new ArrayList<>();

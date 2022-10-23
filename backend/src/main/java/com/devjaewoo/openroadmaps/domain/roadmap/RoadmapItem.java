@@ -33,6 +33,9 @@ public class RoadmapItem {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<RoadmapItem> roadmapItemList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "roadmapItem", cascade = CascadeType.ALL)
+    private List<RoadmapItemReference> referenceList = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "roadmap_id")
     private Roadmap roadmap;
