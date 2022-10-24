@@ -1,5 +1,6 @@
 package com.devjaewoo.openroadmaps.domain.client;
 
+import com.devjaewoo.openroadmaps.global.domain.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ import javax.persistence.*;
         @UniqueConstraint(name = "unique_github", columnNames = {"github_oauth_id"}),
 })
 @ToString
-public class Client {
+public class Client extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "client_id")

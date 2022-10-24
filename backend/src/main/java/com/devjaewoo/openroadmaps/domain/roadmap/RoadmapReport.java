@@ -1,6 +1,7 @@
 package com.devjaewoo.openroadmaps.domain.roadmap;
 
 import com.devjaewoo.openroadmaps.domain.client.Client;
+import com.devjaewoo.openroadmaps.global.domain.BaseCreateTimeEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class RoadmapReport {
+public class RoadmapReport extends BaseCreateTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "roadmap_report_id")

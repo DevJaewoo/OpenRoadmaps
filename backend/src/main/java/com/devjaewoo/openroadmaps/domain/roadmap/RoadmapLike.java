@@ -1,6 +1,7 @@
 package com.devjaewoo.openroadmaps.domain.roadmap;
 
 import com.devjaewoo.openroadmaps.domain.client.Client;
+import com.devjaewoo.openroadmaps.global.domain.BaseCreateTimeEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class RoadmapLike {
+public class RoadmapLike extends BaseCreateTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "roadmap_like_id")

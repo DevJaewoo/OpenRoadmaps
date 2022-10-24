@@ -1,5 +1,6 @@
 package com.devjaewoo.openroadmaps.domain.roadmap;
 
+import com.devjaewoo.openroadmaps.global.domain.BaseTimeEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RoadmapItem {
+public class RoadmapItem extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "roadmap_item_id")
