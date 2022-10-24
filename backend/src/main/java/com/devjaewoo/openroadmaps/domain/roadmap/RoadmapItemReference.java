@@ -1,14 +1,15 @@
 package com.devjaewoo.openroadmaps.domain.roadmap;
 
 import com.devjaewoo.openroadmaps.global.domain.BaseCreateTimeEntity;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RoadmapItemReference extends BaseCreateTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +21,8 @@ public class RoadmapItemReference extends BaseCreateTimeEntity {
     private RoadmapItem roadmapItem;
 
     private String url;
+
+    public static RoadmapItemReference create(RoadmapItem roadmapItem, String url) {
+        return new RoadmapItemReference(null, roadmapItem, url);
+    }
 }

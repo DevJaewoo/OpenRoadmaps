@@ -20,6 +20,6 @@ public class OAuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
     @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         String redirectUrl = request.getParameter("redirect");
-        return "http://localhost:3000" + ((redirectUrl != null) ? redirectUrl : "");
+        return "http://localhost:3000/oauth?redirect=" + ((redirectUrl != null) ? redirectUrl : "/");
     }
 }

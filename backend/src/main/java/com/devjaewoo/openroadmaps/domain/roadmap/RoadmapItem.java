@@ -1,9 +1,7 @@
 package com.devjaewoo.openroadmaps.domain.roadmap;
 
 import com.devjaewoo.openroadmaps.global.domain.BaseTimeEntity;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,7 +10,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RoadmapItem extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,12 +32,56 @@ public class RoadmapItem extends BaseTimeEntity {
     private RoadmapItem parent;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    private List<RoadmapItem> roadmapItemList = new ArrayList<>();
+    private List<RoadmapItem> roadmapItemList;
 
     @OneToMany(mappedBy = "roadmapItem", cascade = CascadeType.ALL)
-    private List<RoadmapItemReference> referenceList = new ArrayList<>();
+    private List<RoadmapItemReference> referenceList;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "roadmap_id")
     private Roadmap roadmap;
+
+    public void updateRoadmap(Roadmap roadmap) {
+        this.roadmap = roadmap;
+        if(roadmap != null) {
+            roadmap.getRoadmapItemList().add(this);
+        }
+    }
+
+    public void updateParent(RoadmapItem parent) {
+        this.parent = parent;
+        if(parent != null) {
+            parent.getRoadmapItemList().add(this);
+        }
+    }
+
+    public void addReference(RoadmapItemReference roadmapItemReference) {
+        if(roadmapItemReference != null) {
+            this.referenceList.add(roadmapItemReference);
+            roadmapItemReference.setRoadmapItem(this);
+        }
+    }
+
+    public static RoadmapItem create(
+            String name,
+            String content,
+            Recommend recommend,
+            ConnectionType connectionType,
+            RoadmapItem parent,
+            Roadmap roadmap) {
+
+        RoadmapItem roadmapItem = RoadmapItem.builder()
+                .name(name)
+                .content(content)
+                .recommend(recommend)
+                .connectionType(connectionType)
+                .roadmapItemList(new ArrayList<>())
+                .referenceList(new ArrayList<>())
+                .build();
+
+        roadmapItem.updateParent(parent);
+        roadmapItem.updateRoadmap(roadmap);
+
+        return roadmapItem;
+    }
 }

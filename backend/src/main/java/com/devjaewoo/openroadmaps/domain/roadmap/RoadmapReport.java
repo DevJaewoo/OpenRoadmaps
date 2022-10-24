@@ -2,14 +2,15 @@ package com.devjaewoo.openroadmaps.domain.roadmap;
 
 import com.devjaewoo.openroadmaps.domain.client.Client;
 import com.devjaewoo.openroadmaps.global.domain.BaseCreateTimeEntity;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RoadmapReport extends BaseCreateTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +26,8 @@ public class RoadmapReport extends BaseCreateTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
     private Client client;
+
+    public static RoadmapReport create(String cause, Roadmap roadmap, Client client) {
+        return new RoadmapReport(null, cause, roadmap, client);
+    }
 }
