@@ -22,6 +22,13 @@ public class RoadmapItemReference extends BaseCreateTimeEntity {
 
     private String url;
 
+    public void updateRoadmapItem(RoadmapItem roadmapItem) {
+        this.roadmapItem = roadmapItem;
+        if(roadmapItem != null) {
+            roadmapItem.getReferenceList().add(this);
+        }
+    }
+
     public static RoadmapItemReference create(RoadmapItem roadmapItem, String url) {
         return new RoadmapItemReference(null, roadmapItem, url);
     }

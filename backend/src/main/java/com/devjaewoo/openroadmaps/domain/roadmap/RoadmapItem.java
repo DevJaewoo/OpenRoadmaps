@@ -55,6 +55,13 @@ public class RoadmapItem extends BaseTimeEntity {
         }
     }
 
+    public void addRoadmapItem(RoadmapItem child) {
+        if(child != null) {
+            this.roadmapItemList.add(child);
+            child.setParent(this);
+        }
+    }
+
     public void addReference(RoadmapItemReference roadmapItemReference) {
         if(roadmapItemReference != null) {
             this.referenceList.add(roadmapItemReference);
