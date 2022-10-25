@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import Navigation from "./components/Navigation";
 import NotFound from "./pages/error/NotFound";
 import Login from "./pages/login/login";
+import OAuth from "./pages/login/oauth";
 import Register from "./pages/login/register";
 import Main from "./pages/main/Main";
 
@@ -32,6 +33,12 @@ function App() {
             path="/login"
             element={
               clientInfo === undefined ? <Login /> : <Navigate replace to="/" />
+            }
+          />
+          <Route
+            path="/oauth"
+            element={
+              clientInfo === undefined ? <OAuth /> : <Navigate replace to="/" />
             }
           />
           <Route path="*" element={<NotFound />} />

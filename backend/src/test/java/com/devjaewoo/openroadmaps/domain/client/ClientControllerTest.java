@@ -1,5 +1,6 @@
 package com.devjaewoo.openroadmaps.domain.client;
 
+import com.devjaewoo.openroadmaps.AcceptanceTest;
 import com.devjaewoo.openroadmaps.global.exception.CommonErrorCode;
 import com.devjaewoo.openroadmaps.global.exception.ErrorResponse;
 import io.restassured.filter.cookie.CookieFilter;
@@ -7,9 +8,11 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -19,18 +22,13 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AcceptanceTest
 class ClientControllerTest {
 
     @LocalServerPort
     private int port;
 
     @Autowired JdbcTemplate jdbcTemplate;
-
-    @AfterEach
-    void clear() {
-        jdbcTemplate.execute("TRUNCATE TABLE client");
-    }
 
     @Nested
     @DisplayName("회원가입 테스트")
