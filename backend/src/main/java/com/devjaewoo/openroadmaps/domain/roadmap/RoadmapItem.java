@@ -22,6 +22,9 @@ public class RoadmapItem extends BaseTimeEntity {
     private String name;
     private String content;
 
+    private double x;
+    private double y;
+
     @Enumerated(EnumType.STRING)
     private Recommend recommend;
 
@@ -72,6 +75,8 @@ public class RoadmapItem extends BaseTimeEntity {
     public static RoadmapItem create(
             String name,
             String content,
+            double x,
+            double y,
             Recommend recommend,
             ConnectionType connectionType,
             RoadmapItem parent,
@@ -80,6 +85,7 @@ public class RoadmapItem extends BaseTimeEntity {
         RoadmapItem roadmapItem = RoadmapItem.builder()
                 .name(name)
                 .content(content)
+                .x(x).y(y)
                 .recommend(recommend)
                 .connectionType(connectionType)
                 .roadmapItemList(new ArrayList<>())

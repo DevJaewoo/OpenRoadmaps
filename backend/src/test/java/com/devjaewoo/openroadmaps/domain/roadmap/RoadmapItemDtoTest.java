@@ -20,7 +20,7 @@ class RoadmapItemDtoTest {
             Roadmap roadmap = Roadmap.create("title", "image", Accessibility.PRIVATE, null);
             roadmap.setId(1L);
 
-            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", Recommend.RECOMMEND, ConnectionType.B2B, null, roadmap);
+            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 1, 2, Recommend.RECOMMEND, ConnectionType.B2B, null, roadmap);
             roadmapItem.setId(1L);
 
             RoadmapItemReference reference1 = RoadmapItemReference.create(roadmapItem, "url1");
@@ -42,7 +42,7 @@ class RoadmapItemDtoTest {
         @DisplayName("Response")
         public void response() {
             // given
-            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", Recommend.RECOMMEND, ConnectionType.B2B, null, null);
+            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 1, 2, Recommend.RECOMMEND, ConnectionType.B2B, null, null);
             roadmapItem.setId(1L);
 
             RoadmapItemReference reference1 = RoadmapItemReference.create(roadmapItem, "url1");
@@ -73,10 +73,10 @@ class RoadmapItemDtoTest {
             Roadmap roadmap = Roadmap.create("title", "image", Accessibility.PRIVATE, null);
             roadmap.setId(1L);
 
-            RoadmapItem parent = RoadmapItem.create("parent", "parentContent", null, null, null, roadmap);
+            RoadmapItem parent = RoadmapItem.create("parent", "parentContent", 1, 2, null, null, null, roadmap);
             parent.setId(1L);
 
-            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", Recommend.RECOMMEND, ConnectionType.B2B, parent, roadmap);
+            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 3, 4, Recommend.RECOMMEND, ConnectionType.B2B, parent, roadmap);
             roadmapItem.setId(2L);
 
             // when
@@ -85,6 +85,8 @@ class RoadmapItemDtoTest {
             // then
             assertThat(listItem.id()).isEqualTo(roadmapItem.getId());
             assertThat(listItem.name()).isEqualTo(roadmapItem.getName());
+            assertThat(listItem.x()).isEqualTo(roadmapItem.getX());
+            assertThat(listItem.y()).isEqualTo(roadmapItem.getY());
             assertThat(listItem.recommend()).isEqualTo(roadmapItem.getRecommend());
             assertThat(listItem.connectionType()).isEqualTo(roadmapItem.getConnectionType());
             assertThat(listItem.isCleared()).isFalse(); // Default false
@@ -96,10 +98,10 @@ class RoadmapItemDtoTest {
         @DisplayName("Response")
         public void response() {
             // given
-            RoadmapItem parent = RoadmapItem.create("parent", "parentContent", null, null, null, null);
+            RoadmapItem parent = RoadmapItem.create("parent", "parentContent", 1, 2, null, null, null, null);
             parent.setId(1L);
 
-            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", Recommend.RECOMMEND, ConnectionType.B2B, parent, null);
+            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 3, 4, Recommend.RECOMMEND, ConnectionType.B2B, parent, null);
             roadmapItem.setId(2L);
 
             RoadmapItemDto.ListItem listItem = RoadmapItemDto.ListItem.of(roadmapItem);
@@ -110,6 +112,8 @@ class RoadmapItemDtoTest {
             // then
             assertThat(response.id()).isEqualTo(roadmapItem.getId());
             assertThat(response.name()).isEqualTo(roadmapItem.getName());
+            assertThat(response.x()).isEqualTo(roadmapItem.getX());
+            assertThat(response.y()).isEqualTo(roadmapItem.getY());
             assertThat(response.recommend()).isEqualTo(roadmapItem.getRecommend().name());
             assertThat(response.connectionType()).isEqualTo(roadmapItem.getConnectionType().name());
             assertThat(response.isCleared()).isEqualTo(listItem.isCleared());

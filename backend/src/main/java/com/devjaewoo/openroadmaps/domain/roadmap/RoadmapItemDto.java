@@ -58,6 +58,8 @@ public record RoadmapItemDto(
     public record ListItem(
             Long id,
             String name,
+            double x,
+            double y,
             Recommend recommend,
             ConnectionType connectionType,
             boolean isCleared,
@@ -79,6 +81,8 @@ public record RoadmapItemDto(
             return new ListItem(
                     roadmapItem.getId(),
                     roadmapItem.getName(),
+                    roadmapItem.getX(),
+                    roadmapItem.getY(),
                     roadmapItem.getRecommend(),
                     roadmapItem.getConnectionType(),
                     isCleared,
@@ -93,6 +97,8 @@ public record RoadmapItemDto(
         public record Response(
                 Long id,
                 String name,
+                double x,
+                double y,
                 String recommend,
                 String connectionType,
                 boolean isCleared,
@@ -113,6 +119,8 @@ public record RoadmapItemDto(
                 return new Response(
                         listItem.id,
                         listItem.name,
+                        listItem.x,
+                        listItem.y,
                         recommend,
                         connectionType,
                         listItem.isCleared,

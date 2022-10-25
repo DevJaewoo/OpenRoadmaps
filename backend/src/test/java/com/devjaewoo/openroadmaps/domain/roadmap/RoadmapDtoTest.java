@@ -25,8 +25,8 @@ class RoadmapDtoTest {
             Roadmap roadmap2 = Roadmap.create("title", "image", Accessibility.PRIVATE, client);
             roadmap2.setId(1L);
 
-            RoadmapItem roadmapItem1 = RoadmapItem.create("name1", "content1", null, null, null, roadmap1);
-            RoadmapItem roadmapItem2 = RoadmapItem.create("name2", "content2", null, null, null, roadmap1);
+            RoadmapItem roadmapItem1 = RoadmapItem.create("name1", "content1", 0, 0, null, null, null, roadmap1);
+            RoadmapItem roadmapItem2 = RoadmapItem.create("name2", "content2", 0, 0, null, null, null, roadmap1);
 
             // when
             RoadmapDto roadmapDto1 = RoadmapDto.of(roadmap1);
@@ -54,8 +54,8 @@ class RoadmapDtoTest {
             Roadmap roadmap = Roadmap.create("title", "image", Accessibility.PRIVATE, null);
             roadmap.setId(1L);
 
-            RoadmapItem roadmapItem1 = RoadmapItem.create("name1", "content1", null, null, null, roadmap);
-            RoadmapItem roadmapItem2 = RoadmapItem.create("name2", "content2", null, null, null, roadmap);
+            RoadmapItem roadmapItem1 = RoadmapItem.create("name1", "content1", 0, 0, null, null, null, roadmap);
+            RoadmapItem roadmapItem2 = RoadmapItem.create("name2", "content2", 0, 0, null, null, null, roadmap);
 
             RoadmapDto roadmapDto = RoadmapDto.of(roadmap);
 
