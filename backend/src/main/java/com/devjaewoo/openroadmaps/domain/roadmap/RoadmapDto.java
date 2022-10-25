@@ -10,15 +10,15 @@ public record RoadmapDto(
         String image,
         Accessibility accessibility,
         boolean isOfficial,
-        List<RoadmapItemDto> roadmapItemList,
+        List<RoadmapItemDto.ListItem> roadmapItemList,
         int likes,
         Long clientId
 ) {
 
     public static RoadmapDto of(Roadmap roadmap) {
 
-        List<RoadmapItemDto> roadmapItemDtoList = roadmap.getRoadmapItemList().stream()
-                .map(RoadmapItemDto::of)
+        List<RoadmapItemDto.ListItem> roadmapItemDtoList = roadmap.getRoadmapItemList().stream()
+                .map(RoadmapItemDto.ListItem::of)
                 .toList();
 
         Long clientId = null;
@@ -41,17 +41,23 @@ public record RoadmapDto(
             Long id,
             String title,
             String image,
-            Accessibility accessibility,
-            List<RoadmapItemDto> roadmapItemList,
+            String accessibility,
+            List<RoadmapItemDto.ListItem.Response> roadmapItemList,
             int likes) {
 
-        public Response (RoadmapDto roadmapDto) {
-            this(
+        public static Response of(RoadmapDto roadmapDto) {
+
+            // RoadmapItem ListItem을 ListItem.Response로 변환
+            List<RoadmapItemDto.ListItem.Response> roadmapItemList = roadmapDto.roadmapItemList.stream()
+                    .map(RoadmapItemDto.ListItem.Response::of)
+                    .toList();
+
+            return new Response(
                     roadmapDto.id,
                     roadmapDto.title,
                     roadmapDto.image,
-                    roadmapDto.accessibility,
-                    roadmapDto.roadmapItemList,
+                    roadmapDto.accessibility.name(),
+                    roadmapItemList,
                     roadmapDto.likes);
         }
     }
@@ -86,18 +92,26 @@ public record RoadmapDto(
                 Long id,
                 String title,
                 String image,
-                Accessibility accessibility,
+                String accessibility,
                 boolean isOfficial,
-                int likes) {
+                int likes,
+                Long clientId) {
 
-            public Response(ListItem listItem) {
-                this(
+            public static Response of(ListItem listItem) {
+
+                String accessibility = null;
+                if(listItem.accessibility != null) {
+                    accessibility = listItem.accessibility.name();
+                }
+
+                return new Response(
                         listItem.id,
                         listItem.title,
                         listItem.image,
-                        listItem.accessibility,
+                        accessibility,
                         listItem.isOfficial,
-                        listItem.likes);
+                        listItem.likes,
+                        listItem.clientId);
             }
         }
     }

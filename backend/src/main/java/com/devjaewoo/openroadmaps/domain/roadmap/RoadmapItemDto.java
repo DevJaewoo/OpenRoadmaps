@@ -35,17 +35,16 @@ public record RoadmapItemDto(
             Long id,
             String name,
             String content,
-            Recommend recommend,
+            String recommend,
             List<String> referenceList
     ) {
 
-        public Response(RoadmapItemDto roadmapItemDto) {
-
-            this(
+        public static Response of(RoadmapItemDto roadmapItemDto) {
+            return new Response(
                     roadmapItemDto.id,
                     roadmapItemDto.name,
                     roadmapItemDto.content,
-                    roadmapItemDto.recommend,
+                    roadmapItemDto.recommend.name(),
                     roadmapItemDto.referenceList);
         }
     }
@@ -53,8 +52,9 @@ public record RoadmapItemDto(
     public record ListItem(
             Long id,
             String name,
-            boolean isCleared,
             Recommend recommend,
+            ConnectionType connectionType,
+            boolean isCleared,
             Long parentId,
             Long roadmapId) {
 
@@ -73,8 +73,9 @@ public record RoadmapItemDto(
             return new ListItem(
                     roadmapItem.getId(),
                     roadmapItem.getName(),
-                    isCleared,
                     roadmapItem.getRecommend(),
+                    roadmapItem.getConnectionType(),
+                    isCleared,
                     parentId,
                     roadmapId);
         }
@@ -86,16 +87,29 @@ public record RoadmapItemDto(
         public record Response(
                 Long id,
                 String name,
+                String recommend,
+                String connectionType,
                 boolean isCleared,
-                Recommend recommend,
                 Long parentId) {
 
-            public Response(ListItem listItem) {
-                this(
+            public static Response of(ListItem listItem) {
+
+                String recommend = null;
+                if(listItem.recommend != null) {
+                    recommend = listItem.recommend.name();
+                }
+
+                String connectionType = null;
+                if(listItem.connectionType != null) {
+                    connectionType = listItem.connectionType.name();
+                }
+
+                return new Response(
                         listItem.id,
                         listItem.name,
+                        recommend,
+                        connectionType,
                         listItem.isCleared,
-                        listItem.recommend,
                         listItem.parentId);
             }
         }
