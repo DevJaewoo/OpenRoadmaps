@@ -40,11 +40,17 @@ public record RoadmapItemDto(
     ) {
 
         public static Response of(RoadmapItemDto roadmapItemDto) {
+
+            String recommend = null;
+            if(roadmapItemDto.recommend != null) {
+                recommend = roadmapItemDto.recommend.name();
+            }
+
             return new Response(
                     roadmapItemDto.id,
                     roadmapItemDto.name,
                     roadmapItemDto.content,
-                    roadmapItemDto.recommend.name(),
+                    recommend,
                     roadmapItemDto.referenceList);
         }
     }
