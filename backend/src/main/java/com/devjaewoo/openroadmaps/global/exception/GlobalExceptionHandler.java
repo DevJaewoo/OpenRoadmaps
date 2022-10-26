@@ -37,7 +37,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             @NonNull HttpStatus status,
             @NonNull WebRequest request) {
 
-        return buildErrorResponse(ex, CommonErrorCode.INVALID_PARAMETER);
+        return buildErrorResponse(ex);
+    }
+
+    @Override
+    @NonNull
+    protected ResponseEntity<Object> handleBindException(
+            @NonNull BindException ex,
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatus status,
+            @NonNull WebRequest request) {
+
+        return buildErrorResponse(ex);
     }
 
     @ExceptionHandler(Exception.class)
@@ -50,12 +61,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(errorCode.getHttpStatus()).body(new ErrorResponse(errorCode));
     }
 
-    private ResponseEntity<Object> buildErrorResponse(BindException e, ErrorCode errorCode) {
+    private ResponseEntity<Object> buildErrorResponse(BindException e) {
 
         List<ErrorResponse.ValidationError> errorList = e.getBindingResult().getFieldErrors().stream()
                 .map(ErrorResponse.ValidationError::new)
                 .toList();
 
+        ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
         return ResponseEntity.status(errorCode.getHttpStatus()).body(new ErrorResponse(errorCode.name(), errorCode.getMessage(), errorList));
     }
 }
