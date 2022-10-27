@@ -32,6 +32,8 @@ public class Roadmap extends BaseTimeEntity {
 
     private int likes;
 
+    private boolean isDeleted;
+
     @OneToMany(mappedBy = "roadmap", cascade = CascadeType.ALL)
     private List<RoadmapItem> roadmapItemList;
 
@@ -54,6 +56,7 @@ public class Roadmap extends BaseTimeEntity {
                 .accessibility(accessibility)
                 .isOfficial(false)
                 .likes(0)
+                .isDeleted(false)
                 .roadmapItemList(new ArrayList<>())
                 .client(client)
                 .build();
