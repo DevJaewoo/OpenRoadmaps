@@ -1,7 +1,7 @@
 package com.devjaewoo.openroadmaps.global.utils;
 
 
-import com.devjaewoo.openroadmaps.domain.client.SessionClient;
+import com.devjaewoo.openroadmaps.domain.client.dto.SessionClient;
 import com.devjaewoo.openroadmaps.global.config.SessionConfig;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

@@ -1,6 +1,6 @@
 package com.devjaewoo.openroadmaps.global.config;
 
-import com.devjaewoo.openroadmaps.domain.roadmap.RoadmapSearch;
+import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapSearch;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

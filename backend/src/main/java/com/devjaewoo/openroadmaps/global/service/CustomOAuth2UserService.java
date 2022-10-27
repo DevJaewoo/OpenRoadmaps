@@ -1,8 +1,8 @@
 package com.devjaewoo.openroadmaps.global.service;
 
-import com.devjaewoo.openroadmaps.domain.client.ClientDto;
-import com.devjaewoo.openroadmaps.domain.client.ClientService;
-import com.devjaewoo.openroadmaps.domain.client.OAuth2Attributes;
+import com.devjaewoo.openroadmaps.domain.client.dto.ClientDto;
+import com.devjaewoo.openroadmaps.domain.client.service.ClientService;
+import com.devjaewoo.openroadmaps.domain.client.dto.OAuth2Attributes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
