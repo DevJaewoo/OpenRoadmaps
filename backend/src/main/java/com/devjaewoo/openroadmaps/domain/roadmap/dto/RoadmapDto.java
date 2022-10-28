@@ -3,6 +3,8 @@ package com.devjaewoo.openroadmaps.domain.roadmap.dto;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.Roadmap;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 public record RoadmapDto(
@@ -118,4 +120,12 @@ public record RoadmapDto(
     }
 
     public record ResponseList(List<ListItem.Response> roadmapList) { }
+
+    public record CreateRequest(
+            @NotNull
+            @Size(min = 1, max = 50)
+            String title,
+            String image,
+            Accessibility accessibility,
+            @NotNull List<RoadmapItemDto.CreateRequest> roadmapItemList) { }
 }

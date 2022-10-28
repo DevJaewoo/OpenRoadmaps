@@ -18,17 +18,18 @@ public record RoadmapSearch(
 
     public enum Order {
         LIKE,
-        LATEST,
-    }
+        LATEST;
 
-    public static class OrderRequestConverter implements Converter<String, Order> {
+        public static class OrderConverter implements Converter<String, Order> {
 
-        @Override
-        public Order convert(@NonNull String source) {
-            return Arrays.stream(Order.values())
-                    .filter((o) -> o.name().equals(source.toUpperCase()))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException("잘못된 정렬 조건입니다."));
+            @Override
+            public Order convert(@NonNull String source) {
+                return Arrays.stream(Order.values())
+                        .filter((o) -> o.name().equals(source.toUpperCase()))
+                        .findAny()
+                        .orElseThrow(() -> new IllegalArgumentException("잘못된 정렬 조건입니다."));
+            }
         }
     }
+
 }

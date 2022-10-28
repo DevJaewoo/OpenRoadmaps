@@ -10,10 +10,11 @@ public enum Accessibility {
     PROTECTED,
     PUBLIC;
 
-    public static class AccessibiltyConverter implements Converter<String, Accessibility> {
+    public static class AccessibilityConverter implements Converter<String, Accessibility> {
         @Override
         public Accessibility convert(@NonNull String source) {
-            return Arrays.stream(values()).filter(a -> a.name().equals(source.toUpperCase()))
+            return Arrays.stream(values())
+                    .filter((o) -> o.name().equals(source.toUpperCase()))
                     .findAny()
                     .orElseThrow(() -> new IllegalArgumentException("잘못된 접근 조건입니다."));
         }

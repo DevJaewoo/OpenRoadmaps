@@ -1,14 +1,14 @@
 package com.devjaewoo.openroadmaps.domain.roadmap.controller;
 
+import com.devjaewoo.openroadmaps.domain.client.dto.SessionClient;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapDto;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapSearch;
 import com.devjaewoo.openroadmaps.domain.roadmap.service.RoadmapService;
+import com.devjaewoo.openroadmaps.global.utils.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -32,4 +32,10 @@ public class RoadmapController {
     }
 
     // roadmap 등록 (
+    @PostMapping("")
+    public ResponseEntity<?> create(@Valid @RequestBody RoadmapDto.CreateRequest request) {
+        SessionClient sessionClient = SessionUtil.getCurrentClient();
+        roadmapService.create(request, sessionClient.getId());
+        return ResponseEntity.ok("");
+    }
 }

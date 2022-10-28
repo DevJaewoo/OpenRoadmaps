@@ -1,10 +1,8 @@
 package com.devjaewoo.openroadmaps.domain.client.controller;
 
-import com.devjaewoo.openroadmaps.domain.client.service.ClientService;
 import com.devjaewoo.openroadmaps.domain.client.dto.ClientDto;
 import com.devjaewoo.openroadmaps.domain.client.dto.SessionClient;
-import com.devjaewoo.openroadmaps.global.exception.CommonErrorCode;
-import com.devjaewoo.openroadmaps.global.exception.RestApiException;
+import com.devjaewoo.openroadmaps.domain.client.service.ClientService;
 import com.devjaewoo.openroadmaps.global.utils.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -41,8 +39,7 @@ public class ClientController {
     @GetMapping("")
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<?> getCurrentClientInfo() {
-        SessionClient currentClient = SessionUtil.getCurrentClient()
-                .orElseThrow(() -> new RestApiException(CommonErrorCode.UNAUTHORIZED));
+        SessionClient currentClient = SessionUtil.getCurrentClient();
 
         ClientDto clientDto = clientService.findClientById(currentClient.getId());
         return ResponseEntity.ok(new ClientDto.Response(clientDto));

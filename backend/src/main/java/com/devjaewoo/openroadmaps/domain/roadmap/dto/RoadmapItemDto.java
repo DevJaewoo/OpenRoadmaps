@@ -3,6 +3,8 @@ package com.devjaewoo.openroadmaps.domain.roadmap.dto;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItem;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItemReference;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 public record RoadmapItemDto(
@@ -133,4 +135,37 @@ public record RoadmapItemDto(
     }
 
     public record ResponseList(List<ListItem.Response> roadmapItemList) { }
+
+    public record CreateRequest(
+            @NotNull Long id,
+
+            @NotNull
+            @Size(min = 1, max = 50)
+            String name,
+
+            @Size(max = 500)
+            String content,
+
+            @NotNull double x,
+            @NotNull double y,
+            Recommend recommend,
+            ConnectionType connectionType,
+            @Size(max = 10)
+            List<String> referenceList,
+            Long parentId) {
+
+        public RoadmapItem toEntity() {
+            RoadmapItem roadmapItem = RoadmapItem.create(name, content, x, y, recommend, connectionType, null, null);
+
+            if(referenceList != null) {
+                List<RoadmapItemReference> referenceList = this.referenceList.stream()
+                        .map(r -> RoadmapItemReference.create(roadmapItem, r))
+                        .toList();
+
+                roadmapItem.setReferenceList(referenceList);
+            }
+
+            return roadmapItem;
+        }
+    }
 }

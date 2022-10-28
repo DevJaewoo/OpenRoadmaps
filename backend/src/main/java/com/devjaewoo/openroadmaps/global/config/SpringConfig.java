@@ -29,9 +29,9 @@ public class SpringConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new RoadmapSearch.OrderRequestConverter());
+        registry.addConverter(new RoadmapSearch.Order.OrderConverter());
+        registry.addConverter(new Accessibility.AccessibilityConverter());
         registry.addConverter(new ConnectionType.ConnectionTypeConverter());
-        registry.addConverter(new Accessibility.AccessibiltyConverter());
         registry.addConverter(new Recommend.RecommendConverter());
     }
 }
