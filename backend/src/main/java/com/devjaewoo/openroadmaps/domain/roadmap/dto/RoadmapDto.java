@@ -5,6 +5,7 @@ import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record RoadmapDto(
@@ -15,6 +16,7 @@ public record RoadmapDto(
         boolean isOfficial,
         List<RoadmapItemDto.ListItem> roadmapItemList,
         int likes,
+        LocalDateTime createdDate,
         Long clientId
 ) {
 
@@ -37,6 +39,7 @@ public record RoadmapDto(
                 roadmap.isOfficial(),
                 roadmapItemDtoList,
                 roadmap.getLikes(),
+                roadmap.getCreatedDate(),
                 clientId);
     }
 
@@ -45,8 +48,9 @@ public record RoadmapDto(
             String title,
             String image,
             String accessibility,
-            List<RoadmapItemDto.ListItem.Response> roadmapItemList,
-            int likes) {
+            int likes,
+            String createdDate,
+            List<RoadmapItemDto.ListItem.Response> roadmapItemList) {
 
         public static Response of(RoadmapDto roadmapDto) {
 
@@ -60,8 +64,9 @@ public record RoadmapDto(
                     roadmapDto.title,
                     roadmapDto.image,
                     roadmapDto.accessibility.name(),
-                    roadmapItemList,
-                    roadmapDto.likes);
+                    roadmapDto.likes,
+                    roadmapDto.createdDate.toString(),
+                    roadmapItemList);
         }
     }
 
@@ -72,6 +77,7 @@ public record RoadmapDto(
             Accessibility accessibility,
             boolean isOfficial,
             int likes,
+            LocalDateTime createdDate,
             Long clientId) {
 
         public static ListItem of(Roadmap roadmap) {
@@ -88,6 +94,7 @@ public record RoadmapDto(
                     roadmap.getAccessibility(),
                     roadmap.isOfficial(),
                     roadmap.getLikes(),
+                    roadmap.getCreatedDate(),
                     clientId);
         }
 
@@ -98,6 +105,7 @@ public record RoadmapDto(
                 String accessibility,
                 boolean isOfficial,
                 int likes,
+                String createdDate,
                 Long clientId) {
 
             public static Response of(ListItem listItem) {
@@ -114,12 +122,11 @@ public record RoadmapDto(
                         accessibility,
                         listItem.isOfficial,
                         listItem.likes,
+                        listItem.createdDate.toString(),
                         listItem.clientId);
             }
         }
     }
-
-    public record ResponseList(List<ListItem.Response> roadmapList) { }
 
     public record CreateRequest(
             @NotNull
