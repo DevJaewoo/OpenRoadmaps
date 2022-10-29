@@ -22,7 +22,12 @@ public class RoadmapController {
 
     private final RoadmapService roadmapService;
 
-    // roadmap 조회 (paging)
+    @GetMapping("/{roadmapId}")
+    public ResponseEntity<?> find(@PathVariable Long roadmapId) {
+        RoadmapDto result = roadmapService.findById(roadmapId);
+        return ResponseEntity.ok(RoadmapDto.Response.of(result));
+    }
+
     @GetMapping("")
     public ResponseEntity<?> search(@Valid RoadmapSearch roadmapSearch) {
         Page<RoadmapDto.ListItem.Response> responseList = roadmapService.search(roadmapSearch)
