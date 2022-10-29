@@ -1,13 +1,15 @@
-package com.devjaewoo.openroadmaps;
+package com.devjaewoo.openroadmaps.global.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.persistence.EntityManager;
 
-@TestConfiguration
-public class TestConfig {
+@Configuration
+@EnableJpaAuditing
+public class JpaRepositoryConfig {
 
     @Bean
     public JPAQueryFactory jpaQueryFactory(EntityManager em) {
