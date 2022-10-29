@@ -11,13 +11,13 @@ import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItem;
 import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapRepository;
 import com.devjaewoo.openroadmaps.global.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -30,12 +30,10 @@ public class RoadmapService {
     private final ClientRepository clientRepository;
     private final RoadmapRepository roadmapRepository;
 
-    public List<RoadmapDto.ListItem> search(RoadmapSearch roadmapSearch) {
+    public Page<RoadmapDto.ListItem> search(RoadmapSearch roadmapSearch) {
         Pageable pageable = PageRequest.of(roadmapSearch.page(), DEFAULT_PAGE_SIZE);
-        List<Roadmap> roadmapList = roadmapRepository.search(roadmapSearch, pageable);
-        return roadmapList.stream()
-                .map(RoadmapDto.ListItem::of)
-                .toList();
+        return roadmapRepository.search(roadmapSearch, pageable)
+                .map(RoadmapDto.ListItem::of);
     }
 
     @Transactional
