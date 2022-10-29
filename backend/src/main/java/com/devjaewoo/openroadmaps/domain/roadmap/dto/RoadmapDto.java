@@ -59,13 +59,18 @@ public record RoadmapDto(
                     .map(RoadmapItemDto.ListItem.Response::of)
                     .toList();
 
+            String createdDate = LocalDateTime.MIN.toString();
+            if(roadmapDto.createdDate != null) {
+                createdDate = roadmapDto.createdDate.toString();
+            }
+
             return new Response(
                     roadmapDto.id,
                     roadmapDto.title,
                     roadmapDto.image,
                     roadmapDto.accessibility.name(),
                     roadmapDto.likes,
-                    roadmapDto.createdDate.toString(),
+                    createdDate,
                     roadmapItemList);
         }
     }
@@ -115,6 +120,11 @@ public record RoadmapDto(
                     accessibility = listItem.accessibility.name();
                 }
 
+                String createdDate = LocalDateTime.MIN.toString();
+                if(listItem.createdDate != null) {
+                    createdDate = listItem.createdDate.toString();
+                }
+
                 return new Response(
                         listItem.id,
                         listItem.title,
@@ -122,7 +132,7 @@ public record RoadmapDto(
                         accessibility,
                         listItem.isOfficial,
                         listItem.likes,
-                        listItem.createdDate.toString(),
+                        createdDate,
                         listItem.clientId);
             }
         }
