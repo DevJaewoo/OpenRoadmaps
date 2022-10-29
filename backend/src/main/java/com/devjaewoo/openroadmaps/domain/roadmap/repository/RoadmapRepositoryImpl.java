@@ -2,6 +2,7 @@ package com.devjaewoo.openroadmaps.domain.roadmap.repository;
 
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapSearch;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.Roadmap;
+import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -31,6 +32,7 @@ public class RoadmapRepositoryImpl implements RoadmapRepositoryCustom {
                         clientEq(roadmapSearch.client()),
                         nameLike(roadmapSearch.name()),
                         officialEq(roadmapSearch.official()),
+                        roadmap.accessibility.in(Accessibility.PUBLIC, Accessibility.PROTECTED),
                         roadmap.isDeleted.isFalse()
                 )
                 .orderBy(order(roadmapSearch.order()))
