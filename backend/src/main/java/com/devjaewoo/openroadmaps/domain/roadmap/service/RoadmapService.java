@@ -37,7 +37,7 @@ public class RoadmapService {
     public RoadmapDto findById(Long id) {
 
         Roadmap roadmap = roadmapRepository.findById(id)
-                .orElseThrow(() -> new RestApiException(RoadmapErrorCode.ROADMAP_NOT_FOUND));
+                .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
 
         // Public Roadmap이 아닐 경우 권한 체크
         if(roadmap.getAccessibility() != Accessibility.PUBLIC) {

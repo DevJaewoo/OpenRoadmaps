@@ -25,7 +25,7 @@ class RoadmapRepositoryTest {
     @Autowired RoadmapRepository roadmapRepository;
 
     @Nested
-    @DisplayName("Roadmap 조회")
+    @DisplayName("조회")
     class search {
 
         @Test
