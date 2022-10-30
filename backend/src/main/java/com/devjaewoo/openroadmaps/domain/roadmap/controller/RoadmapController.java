@@ -36,7 +36,6 @@ public class RoadmapController {
         return ResponseEntity.ok(new PageResponseDto<>(responseList));
     }
 
-    // roadmap 등록 (
     @PostMapping("")
     public ResponseEntity<?> create(@Valid @RequestBody RoadmapDto.CreateRequest request) {
         SessionClient sessionClient = SessionUtil.getCurrentClient();

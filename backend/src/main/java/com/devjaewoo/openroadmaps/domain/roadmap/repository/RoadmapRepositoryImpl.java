@@ -30,7 +30,7 @@ public class RoadmapRepositoryImpl implements RoadmapRepositoryCustom {
                 .selectFrom(roadmap)
                 .where(
                         clientEq(roadmapSearch.client()),
-                        nameLike(roadmapSearch.name()),
+                        nameLike(roadmapSearch.title()),
                         officialEq(roadmapSearch.official()),
                         roadmap.accessibility.in(Accessibility.PUBLIC, Accessibility.PROTECTED),
                         roadmap.isDeleted.isFalse()
@@ -46,7 +46,7 @@ public class RoadmapRepositoryImpl implements RoadmapRepositoryCustom {
                 .from(roadmap)
                 .where(
                         clientEq(roadmapSearch.client()),
-                        nameLike(roadmapSearch.name()),
+                        nameLike(roadmapSearch.title()),
                         officialEq(roadmapSearch.official()),
                         roadmap.isDeleted.isFalse()
                 );
