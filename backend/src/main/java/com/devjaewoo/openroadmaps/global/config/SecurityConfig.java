@@ -1,6 +1,6 @@
 package com.devjaewoo.openroadmaps.global.config;
 
-import com.devjaewoo.openroadmaps.domain.client.Role;
+import com.devjaewoo.openroadmaps.domain.client.dto.Role;
 import com.devjaewoo.openroadmaps.global.handler.ForbiddenHandler;
 import com.devjaewoo.openroadmaps.global.handler.OAuthSuccessHandler;
 import com.devjaewoo.openroadmaps.global.handler.UnauthorizedHandler;
