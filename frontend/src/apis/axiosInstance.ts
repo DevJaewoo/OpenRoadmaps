@@ -1,6 +1,6 @@
-import { atomClientInfo } from "./../atoms/client";
 import { useRecoilState } from "recoil";
 import axios, { AxiosError } from "axios";
+import { atomClientInfo } from "../atoms/client";
 
 const axiosInstance = axios.create({
   withCredentials: true,
@@ -12,9 +12,9 @@ axiosInstance.interceptors.response.use(
     const [, setClientInfo] = useRecoilState(atomClientInfo);
     if (error?.response?.status === 401) {
       setClientInfo(undefined);
-    } else {
-      return Promise.reject(error);
     }
+
+    return Promise.reject(error);
   }
 );
 

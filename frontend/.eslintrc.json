@@ -26,7 +26,7 @@
   },
   "rules": {
     "arrow-body-style": "off",
-    "semi": ["warn", "never"],
+    "semi": ["warn", "always"],
     "react/display-name": "off",
     "react/jsx-one-expression-per-line": "off",
     "react/jsx-filename-extension": [
@@ -36,8 +36,13 @@
     "react/jsx-props-no-spreading": "off",
     "react/require-default-props": "off",
     "react/jsx-wrap-multilines": "off",
-    "react/react-in-jsx-scope": "off", // 이거 쓸수있도록 변경되어야함 코드 리팩토링 필수
+    "react/react-in-jsx-scope": "off",
+    "react/destructuring-assignment": "off",
     "react/prop-types": "off",
+    "react/function-component-definition": [
+      2,
+      { "namedComponents": "arrow-function" }
+    ],
     "import/prefer-default-export": "off",
     "import/no-anonymous-default-export": "off",
     "import/no-extraneous-dependencies": [
@@ -66,7 +71,7 @@
       "warn",
       { "argsIgnorePattern": "^_" }
     ],
-    "prefer-destructuring": ["error", { "object": true, "array": false }],
+    "prefer-destructuring": ["error", { "object": false, "array": false }],
     "lines-between-class-members": "off",
     "jsx-a11y/click-events-have-key-events": "off",
     "jsx-a11y/label-has-associated-control": [

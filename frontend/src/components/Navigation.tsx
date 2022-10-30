@@ -6,7 +6,6 @@ import { OutlinedButton, PrimaryButton } from "./button/VariantButtons";
 interface NavItemProps {
   text: string;
   path: string;
-  location?: any;
 }
 
 const NavItem: React.FC<NavItemProps> = ({ text, path }) => {
@@ -59,11 +58,17 @@ const Navigation = () => {
           </div>
           <div className="flex flex-row items-center h-full">
             <PrimaryButton
+              type="link"
               to="/register"
-              class="mr-2 w-25 h-12"
+              className="mr-2 w-25 h-12"
               text="회원가입"
             />
-            <OutlinedButton to="/login" class="w-25 h-12" text="로그인" />
+            <OutlinedButton
+              type="link"
+              to="/login"
+              className="w-25 h-12"
+              text="로그인"
+            />
           </div>
         </div>
       </nav>

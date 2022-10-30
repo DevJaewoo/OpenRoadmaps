@@ -11,7 +11,7 @@ import Register from "./pages/login/register";
 import Main from "./pages/main/Main";
 import Roadmaps from "./pages/roadmaps/roadmaps";
 
-function App() {
+const App: React.FC<{}> = () => {
   const [clientInfo] = useRecoilState(atomClientInfo);
 
   return (
@@ -49,6 +49,6 @@ function App() {
       </BrowserRouter>
     </div>
   );
-}
+};
 
 export default App;

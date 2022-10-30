@@ -40,8 +40,9 @@ const Section: React.FC<SectionProps> = (props) => {
           >
             <p className="text-3xl whitespace-pre-line">{props.text}</p>
             <OutlinedButton
+              type="link"
               to={props.link}
-              class="h-12 mt-6"
+              className="h-12 mt-6"
               text={
                 <>
                   {props.button}

@@ -1,6 +1,6 @@
 import { useRecoilState } from "recoil";
 import { useQuery } from "react-query";
-import { atomClientInfo, ClientInfo } from "./../atoms/client";
+import { atomClientInfo, ClientInfo } from "../atoms/client";
 import axiosInstance from "./axiosInstance";
 
 const fetchClient = async (id: number): Promise<ClientInfo> => {

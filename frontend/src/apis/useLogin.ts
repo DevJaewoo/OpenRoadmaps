@@ -1,8 +1,7 @@
 import axios from "axios";
-import { atomClientInfo } from "./../atoms/client";
 import { useRecoilState } from "recoil";
 import { useMutation } from "react-query";
-import { ClientInfo } from "../atoms/client";
+import { ClientInfo, atomClientInfo } from "../atoms/client";
 
 axios.defaults.withCredentials = true;
 

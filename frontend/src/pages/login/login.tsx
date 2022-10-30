@@ -83,7 +83,7 @@ const Login: React.FC<{}> = () => {
           type="button"
           text="로그인"
           to="http://localhost:8080/oauth2/authorization/google"
-          class="w-full mt-4 py-3 justify-center text-xl"
+          className="w-full mt-4 py-3 justify-center text-xl"
           props={{ disabled: isLoading }}
         />
       </form>
