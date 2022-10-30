@@ -9,6 +9,7 @@ import Login from "./pages/login/login";
 import OAuth from "./pages/login/oauth";
 import Register from "./pages/login/register";
 import Main from "./pages/main/Main";
+import Roadmaps from "./pages/roadmaps/roadmaps";
 
 function App() {
   const [clientInfo] = useRecoilState(atomClientInfo);
@@ -41,6 +42,7 @@ function App() {
               clientInfo === undefined ? <OAuth /> : <Navigate replace to="/" />
             }
           />
+          <Route path="/roadmaps" element={<Roadmaps />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
