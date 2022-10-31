@@ -4,7 +4,6 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { PrimaryButton } from "../../components/button/VariantButtons";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { useRef } from "react";
@@ -12,6 +11,7 @@ import axios, { AxiosError } from "axios";
 import useLogin from "../../apis/useLogin";
 import ErrorMessage from "./ErrorMessage";
 import PatternError from "./PatternError";
+import { PrimaryButton } from "../../components/button/VariantButtons";
 
 axios.defaults.withCredentials = true;
 

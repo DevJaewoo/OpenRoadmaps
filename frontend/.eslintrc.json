@@ -37,7 +37,7 @@
     "react/require-default-props": "off",
     "react/jsx-wrap-multilines": "off",
     "react/react-in-jsx-scope": "off",
-    "react/destructuring-assignment": "off",
+    "react/destructuring-assignment": "error",
     "react/prop-types": "off",
     "react/function-component-definition": [
       2,

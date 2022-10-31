@@ -17,7 +17,6 @@ const Footer: React.FC<{}> = () => {
     const result = EnabledPaths.find((path) =>
       location.pathname.startsWith(path)
     );
-    console.log(result, location.pathname);
     setDisabled(location.pathname !== "/" && result === undefined);
   }, [location.pathname]);
 
