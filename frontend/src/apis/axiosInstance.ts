@@ -1,6 +1,6 @@
 import { useRecoilState } from "recoil";
 import axios, { AxiosError } from "axios";
-import { atomClientInfo } from "../atoms/client";
+import { atomClientInfo } from "src/atoms/client";
 
 const axiosInstance = axios.create({
   withCredentials: true,

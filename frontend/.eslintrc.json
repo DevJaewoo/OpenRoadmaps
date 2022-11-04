@@ -82,5 +82,8 @@
         "controlComponents": ["input"]
       }
     ]
+  },
+  "parserOptions": {
+    "project": "./tsconfig.json"
   }
 }

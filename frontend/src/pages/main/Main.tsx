@@ -1,5 +1,5 @@
 import { FaArrowRight } from "react-icons/fa";
-import { OutlinedButton } from "../../components/button/VariantButtons";
+import { OutlinedButton } from "src/components/button/VariantButtons";
 
 interface SectionProps {
   title: string;

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { useCurrentClient } from "../../apis/useClient";
+import { useCurrentClient } from "src/apis/useClient";
 
 const Client: React.FC<{}> = () => {
   const { data } = useCurrentClient();

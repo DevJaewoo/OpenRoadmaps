@@ -8,10 +8,10 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { useRef } from "react";
 import axios, { AxiosError } from "axios";
-import useRegister from "../../apis/useRegister";
+import useRegister from "src/apis/useRegister";
+import { PrimaryButton } from "src/components/button/VariantButtons";
 import ErrorMessage from "./ErrorMessage";
 import PatternError from "./PatternError";
-import { PrimaryButton } from "../../components/button/VariantButtons";
 
 axios.defaults.withCredentials = true;
 

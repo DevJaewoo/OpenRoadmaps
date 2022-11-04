@@ -1,7 +1,10 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import logo from "../logo.svg";
-import { OutlinedButton, PrimaryButton } from "./button/VariantButtons";
+import logo from "src/logo.svg";
+import {
+  OutlinedButton,
+  PrimaryButton,
+} from "src/components/button/VariantButtons";
 
 interface NavItemProps {
   text: string;

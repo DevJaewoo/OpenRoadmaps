@@ -1,15 +1,15 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { atomClientInfo } from "./atoms/client";
-import Footer from "./components/Footer";
-import Navigation from "./components/Navigation";
-import NotFound from "./pages/error/NotFound";
-import Login from "./pages/login/login";
-import OAuth from "./pages/login/oauth";
-import Register from "./pages/login/register";
-import Main from "./pages/main/Main";
-import Roadmaps from "./pages/roadmaps/roadmaps";
+import { atomClientInfo } from "src/atoms/client";
+import Footer from "src/components/Footer";
+import Navigation from "src/components/Navigation";
+import NotFound from "src/pages/error/NotFound";
+import Login from "src/pages/login/login";
+import OAuth from "src/pages/login/oauth";
+import Register from "src/pages/login/register";
+import Main from "src/pages/main/Main";
+import Roadmaps from "src/pages/roadmaps/roadmaps";
 
 const App: React.FC<{}> = () => {
   const [clientInfo] = useRecoilState(atomClientInfo);

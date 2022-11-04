@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { RoadmapSearch, useRoadmapList } from "../../apis/useRoadmap";
+import { RoadmapSearch, useRoadmapList } from "src/apis/useRoadmap";
 
 const RoadmapList = () => {
   const a: RoadmapSearch = {

@@ -1,6 +1,6 @@
 import { BiErrorCircle } from "react-icons/bi";
 import { FaArrowRight } from "react-icons/fa";
-import { OutlinedButton } from "../../components/button/VariantButtons";
+import { OutlinedButton } from "src/components/button/VariantButtons";
 
 const NotFound: React.FC<{}> = () => {
   return (
