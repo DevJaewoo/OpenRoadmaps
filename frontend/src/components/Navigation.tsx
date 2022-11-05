@@ -5,6 +5,9 @@ import {
   OutlinedButton,
   PrimaryButton,
 } from "src/components/button/VariantButtons";
+import { useRecoilState } from "recoil";
+import { atomClientInfo } from "src/atoms/client";
+import ProfileImage from "./ProfileImage";
 
 interface NavItemProps {
   text: string;
@@ -26,6 +29,8 @@ const NavItem: React.FC<NavItemProps> = ({ text, path }) => {
 };
 
 const Navigation = () => {
+  const [clientInfo] = useRecoilState(atomClientInfo);
+
   const navItems: NavItemProps[] = [
     {
       text: "Roadmaps",
@@ -59,20 +64,24 @@ const Navigation = () => {
               <NavItem {...navItem} key={navItem.text} />
             ))}
           </div>
-          <div className="flex flex-row items-center h-full">
-            <PrimaryButton
-              type="link"
-              to="/register"
-              className="mr-2 w-25 h-12"
-              text="회원가입"
-            />
-            <OutlinedButton
-              type="link"
-              to="/login"
-              className="w-25 h-12"
-              text="로그인"
-            />
-          </div>
+          {clientInfo === undefined ? (
+            <div className="flex flex-row items-center h-full">
+              <PrimaryButton
+                type="link"
+                to="/register"
+                className="mr-2 w-25 h-12"
+                text="회원가입"
+              />
+              <OutlinedButton
+                type="link"
+                to="/login"
+                className="w-25 h-12"
+                text="로그인"
+              />
+            </div>
+          ) : (
+            <ProfileImage clientId={clientInfo.id} url={clientInfo.picture} />
+          )}
         </div>
       </nav>
     </header>
