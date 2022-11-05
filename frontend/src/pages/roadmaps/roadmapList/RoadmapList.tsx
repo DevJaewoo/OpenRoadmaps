@@ -17,7 +17,7 @@ const RoadmapListComponent: FC<Props> = ({ search, onSearch, className }) => {
 
   return (
     <div className={`flex flex-col items-center w-full ${className}`}>
-      <div className="flex flex-row flex-wrap items-center w-full p-3 bg-gray-300 rounded-lg">
+      <div className="flex flex-row flex-wrap items-center w-full">
         {!isError &&
           data?.content.map((listItem) => (
             <RoadmapListItemComponent key={listItem.id} data={listItem} />

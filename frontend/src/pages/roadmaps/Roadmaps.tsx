@@ -50,27 +50,29 @@ const Roadmaps: React.FC<{}> = () => {
             "개발 공부는 하고 싶은데 어떻게 시작해야 할지 막막하신가요?\n로드맵을 따라 기초부터 차근차근 공부해보세요!"
           }
         />
-        <div className="flex flex-row w-full justify-between mt-5">
-          <Input ref={titleRef} icon={<FaSearch />} onKeyDown={onKeyDown} />
-          <div className="flex flex-row items-center">
-            <p className="mr-2 text-lg font-semibold">정렬</p>
-            <Select
-              value={search.order}
-              data={[
-                { value: "LATEST", label: "최신 순" },
-                { value: "LIKES", label: "좋아요 순" },
-              ]}
-              onChange={onOrderChange}
-            />
+        <div className="flex flex-col items-center w-full mt-5 p-3 bg-gray-300 rounded-lg">
+          <div className="flex flex-row w-full justify-between px-2">
+            <Input ref={titleRef} icon={<FaSearch />} onKeyDown={onKeyDown} />
+            <div className="flex flex-row items-center">
+              <p className="mr-2 text-lg font-semibold">정렬</p>
+              <Select
+                value={search.order}
+                data={[
+                  { value: "LATEST", label: "최신 순" },
+                  { value: "LIKES", label: "좋아요 순" },
+                ]}
+                onChange={onOrderChange}
+              />
+            </div>
           </div>
+          <Suspense>
+            <RoadmapListComponent
+              search={search}
+              onSearch={onSearch}
+              className="mt-2"
+            />
+          </Suspense>
         </div>
-        <Suspense>
-          <RoadmapListComponent
-            search={search}
-            onSearch={onSearch}
-            className="mt-2"
-          />
-        </Suspense>
         <Pagination
           className="mt-5"
           page={search.page + 1}
