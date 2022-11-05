@@ -5,7 +5,7 @@ export interface RoadmapSearch {
   clientId?: number;
   title?: string;
   official?: boolean;
-  order?: "LIKE" | "LATEST";
+  order?: "LIKES" | "LATEST";
   page: number;
 }
 

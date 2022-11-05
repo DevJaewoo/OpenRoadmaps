@@ -17,7 +17,7 @@ const RoadmapListItemComponent: FC<Props> = ({ data }) => {
       <h4 className="mt-2 text-lg font-semibold">{data.title}</h4>
       <div className="flex flex-row justify-between mt-1">
         <div className="flex flex-row items-center">
-          <FaHeart className="mr-[2px] text-xs text-red-500" />
+          <FaHeart className="mr-1 text-xs text-red-500" />
           <p className="">{data.likes}</p>
         </div>
         <p className="text-sm">{`by. ${data.clientId}`}</p>
