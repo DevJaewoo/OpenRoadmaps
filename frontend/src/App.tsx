@@ -10,6 +10,7 @@ import OAuth from "src/pages/login/OAuth";
 import Register from "src/pages/login/Register";
 import Main from "src/pages/main/Main";
 import Roadmaps from "src/pages/roadmaps/Roadmaps";
+import Profile from "./pages/profile/Profile";
 
 const App: React.FC<{}> = () => {
   const [clientInfo] = useRecoilState(atomClientInfo);
@@ -43,6 +44,7 @@ const App: React.FC<{}> = () => {
             }
           />
           <Route path="/roadmaps" element={<Roadmaps />} />
+          <Route path="/clients/:clientId" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />

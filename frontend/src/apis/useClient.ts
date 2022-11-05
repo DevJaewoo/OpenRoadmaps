@@ -14,12 +14,7 @@ const fetchCurrentClient = async (): Promise<ClientInfo> => {
 };
 
 const useClient = (id: number) => {
-  const [, setClientInfo] = useRecoilState(atomClientInfo);
-  return useQuery(["client", id], () => fetchClient(id), {
-    onSuccess: (data: ClientInfo) => {
-      setClientInfo(data);
-    },
-  });
+  return useQuery(["client", id], () => fetchClient(id), {});
 };
 
 const useCurrentClient = () => {
