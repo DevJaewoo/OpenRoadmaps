@@ -29,9 +29,9 @@ export interface RoadmapList {
 const fetchRoadmapList = async (query: RoadmapSearch): Promise<RoadmapList> => {
   const searchParams = new URLSearchParams();
 
-  Object.entries(query).forEach(([k, v]) =>
-    searchParams.append(k, v.toString())
-  );
+  Object.entries(query).forEach(([k, v]) => {
+    if (v !== undefined) searchParams.append(k, v.toString());
+  });
 
   const response = await axiosInstance.get(`/api/v1/roadmaps?${searchParams}`);
   return response.data;
@@ -39,10 +39,10 @@ const fetchRoadmapList = async (query: RoadmapSearch): Promise<RoadmapList> => {
 
 const useRoadmapList = (
   query: RoadmapSearch,
-  onSuccessCallback?: (data: RoadmapList) => void
+  onSuccess?: (data: RoadmapList) => void
 ) => {
   return useQuery(["roadmapList", query], () => fetchRoadmapList(query), {
-    onSuccess: onSuccessCallback,
+    onSuccess,
   });
 };
 
