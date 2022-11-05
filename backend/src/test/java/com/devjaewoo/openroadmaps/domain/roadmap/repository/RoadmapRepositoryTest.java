@@ -92,7 +92,7 @@ class RoadmapRepositoryTest {
             RoadmapSearch searchOfficialFalse = new RoadmapSearch(null, null, false, null, 0);
 
             RoadmapSearch searchOrderByCreatedDate = new RoadmapSearch(null, null, null, RoadmapSearch.Order.LATEST, 0);
-            RoadmapSearch searchOrderByLike = new RoadmapSearch(null, null, null, RoadmapSearch.Order.LIKE, 0);
+            RoadmapSearch searchOrderByLike = new RoadmapSearch(null, null, null, RoadmapSearch.Order.LIKES, 0);
 
             //when
             PageRequest pageRequest = PageRequest.of(0, 12);

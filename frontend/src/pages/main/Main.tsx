@@ -1,5 +1,5 @@
 import { FaArrowRight } from "react-icons/fa";
-import { OutlinedButton } from "../../components/button/VariantButtons";
+import { OutlinedButton } from "src/components/button/VariantButtons";
 
 interface SectionProps {
   title: string;
@@ -19,32 +19,40 @@ const Welcome: React.FC<{}> = () => {
   );
 };
 
-const Section: React.FC<SectionProps> = (props) => {
-  const bgColor: string = props.l2r ? "bg-white" : "bg-slate-300";
-  const flexDirection: string = props.l2r ? "flex-row" : "flex-row-reverse";
-  const margin: string = props.l2r ? "mr-10" : "ml-10";
-  const bgImage: string = props.l2r ? "bg-indigo-400" : "bg-indigo-600";
+const Section: React.FC<SectionProps> = ({
+  title,
+  text,
+  button,
+  link,
+  src,
+  l2r,
+}) => {
+  const bgColor: string = l2r ? "bg-white" : "bg-slate-300";
+  const flexDirection: string = l2r ? "flex-row" : "flex-row-reverse";
+  const margin: string = l2r ? "mr-10" : "ml-10";
+  const bgImage: string = l2r ? "bg-indigo-400" : "bg-indigo-600";
 
   return (
     <div className={`flex justify-center w-full ${bgColor}`}>
       <div className="flex flex-col items-center w-full max-w-screen-xl py-10">
-        <h2 className="pb-4 text-4xl">{props.title}</h2>
+        <h2 className="pb-4 text-4xl">{title}</h2>
         <div className={`w-full mx-auto flex ${flexDirection}`}>
           <img
-            src={props.src}
+            src={src}
             alt=""
             className={`w-96 h-96 mx-10 p-10 rounded-[3rem] ${bgImage}`}
           />
           <div
             className={`flex flex-col flex-grow ${margin} justify-center items-start`}
           >
-            <p className="text-3xl whitespace-pre-line">{props.text}</p>
+            <p className="text-3xl whitespace-pre-line">{text}</p>
             <OutlinedButton
-              to={props.link}
-              class="h-12 mt-6"
+              type="link"
+              to={link}
+              className="h-12 mt-6"
               text={
                 <>
-                  {props.button}
+                  {button}
                   <FaArrowRight className="ml-2" />
                 </>
               }

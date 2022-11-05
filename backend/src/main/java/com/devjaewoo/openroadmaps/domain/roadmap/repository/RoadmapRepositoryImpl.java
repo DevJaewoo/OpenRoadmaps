@@ -69,7 +69,7 @@ public class RoadmapRepositoryImpl implements RoadmapRepositoryCustom {
     private OrderSpecifier<?> order(RoadmapSearch.Order order) {
         if(order == null) return roadmap.createdDate.desc();
         return switch (order) {
-            case LIKE -> roadmap.likes.desc();
+            case LIKES -> roadmap.likes.desc();
             case LATEST -> roadmap.createdDate.desc();
         };
     }

@@ -1,6 +1,6 @@
-import { OutlinedButton } from "../../components/button/VariantButtons";
 import { BiErrorCircle } from "react-icons/bi";
 import { FaArrowRight } from "react-icons/fa";
+import { OutlinedButton } from "src/components/button/VariantButtons";
 
 const NotFound: React.FC<{}> = () => {
   return (
@@ -10,6 +10,7 @@ const NotFound: React.FC<{}> = () => {
         &nbsp;페이지를 찾을 수 없습니다.
       </h1>
       <OutlinedButton
+        type="link"
         to="/"
         text={
           <>
@@ -17,7 +18,7 @@ const NotFound: React.FC<{}> = () => {
             <FaArrowRight className="ml-2" />
           </>
         }
-        class="mt-16 text-2xl"
+        className="mt-16 text-2xl"
       />
     </div>
   );

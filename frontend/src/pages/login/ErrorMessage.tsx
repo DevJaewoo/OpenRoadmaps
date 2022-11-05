@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { ErrorResponse } from "../../apis/errorResponse";
+import { ErrorResponse } from "src/apis/errorResponse";
 
 const ErrorMessage = ({ error }: { error: AxiosError }) => {
   let message: string | undefined = (error.response?.data as ErrorResponse)

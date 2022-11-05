@@ -1,12 +1,14 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import logo from "../logo.svg";
-import { OutlinedButton, PrimaryButton } from "./button/VariantButtons";
+import logo from "src/logo.svg";
+import {
+  OutlinedButton,
+  PrimaryButton,
+} from "src/components/button/VariantButtons";
 
 interface NavItemProps {
   text: string;
   path: string;
-  location?: any;
 }
 
 const NavItem: React.FC<NavItemProps> = ({ text, path }) => {
@@ -44,7 +46,7 @@ const Navigation = () => {
   ];
 
   return (
-    <header className="top-0 w-full h-16 min-w-[640px] bg-white shadow-md fixed">
+    <header className="top-0 w-full h-16 min-w-[640px] bg-white shadow-md fixed z-50">
       <nav className="max-w-screen-xl h-full mx-auto">
         <div className="flex flex-row justify-between items-center w-full h-full px-4">
           <div className="flex flex-row items-center h-full">
@@ -59,11 +61,17 @@ const Navigation = () => {
           </div>
           <div className="flex flex-row items-center h-full">
             <PrimaryButton
+              type="link"
               to="/register"
-              class="mr-2 w-25 h-12"
+              className="mr-2 w-25 h-12"
               text="회원가입"
             />
-            <OutlinedButton to="/login" class="w-25 h-12" text="로그인" />
+            <OutlinedButton
+              type="link"
+              to="/login"
+              className="w-25 h-12"
+              text="로그인"
+            />
           </div>
         </div>
       </nav>
