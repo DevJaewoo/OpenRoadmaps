@@ -1,0 +1,37 @@
+name: CI Test Frontend
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    # main에 push하거나, Frontend branch에서 pull_request를 요청했을 경우
+    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.head_ref, '/fe/')) }}
+    
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Checkout to frontend directory
+      run: cd ./frontend
+      
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Build
+      run: |
+        npm install
+        npx webpack
+  
+    - name: Run ESLint
+      run: npx eslint src --ext .js,.jsx,.ts,.tsx
