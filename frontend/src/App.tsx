@@ -5,11 +5,11 @@ import { atomClientInfo } from "src/atoms/client";
 import Footer from "src/components/Footer";
 import Navigation from "src/components/Navigation";
 import NotFound from "src/pages/error/NotFound";
-import Login from "src/pages/login/login";
-import OAuth from "src/pages/login/oauth";
-import Register from "src/pages/login/register";
+import Login from "src/pages/login/Login";
+import OAuth from "src/pages/login/OAuth";
+import Register from "src/pages/login/Register";
 import Main from "src/pages/main/Main";
-import Roadmaps from "src/pages/roadmaps/roadmaps";
+import Roadmaps from "src/pages/roadmaps/Roadmaps";
 
 const App: React.FC<{}> = () => {
   const [clientInfo] = useRecoilState(atomClientInfo);
