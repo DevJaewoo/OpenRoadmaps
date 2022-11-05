@@ -1,13 +1,18 @@
 import { FC } from "react";
-import { RoadmapSearch, useRoadmapList } from "src/apis/useRoadmap";
+import {
+  RoadmapList,
+  RoadmapSearch,
+  useRoadmapList,
+} from "src/apis/useRoadmap";
 import RoadmapListItemComponent from "./_RoadmapListItem";
 
 interface Props {
   search: RoadmapSearch;
+  onSearch?: (data: RoadmapList) => void;
 }
 
-const RoadmapList: FC<Props> = ({ search }) => {
-  const { data, isError } = useRoadmapList(search);
+const RoadmapListComponent: FC<Props> = ({ search, onSearch }) => {
+  const { data, isError } = useRoadmapList(search, onSearch);
 
   return (
     <div className="flex flex-col items-center w-full mt-5">
@@ -21,4 +26,4 @@ const RoadmapList: FC<Props> = ({ search }) => {
   );
 };
 
-export default RoadmapList;
+export default RoadmapListComponent;

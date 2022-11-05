@@ -1,17 +1,24 @@
 import { Suspense, useState } from "react";
-import { RoadmapSearch } from "src/apis/useRoadmap";
+import { Pagination } from "@mantine/core";
+import { RoadmapList, RoadmapSearch } from "src/apis/useRoadmap";
 import Header from "src/components/Header";
-import RoadmapList from "./roadmapList/RoadmapList";
+import RoadmapListComponent from "./roadmapList/RoadmapList";
 
 const Roadmaps: React.FC<{}> = () => {
-  const [search] = useState<RoadmapSearch>({
+  const [search, setSearch] = useState<RoadmapSearch>({
     page: 0,
     order: "LATEST",
   });
 
+  const [totalPage, setTotalPage] = useState(1);
+
+  const onSearch = (data: RoadmapList) => {
+    setTotalPage(data.totalPages);
+  };
+
   return (
     <div className="flex flex-col items-center">
-      <div className="flex flex-col w-full max-w-7xl">
+      <div className="flex flex-col items-center w-full max-w-7xl">
         <Header
           title="Roadmaps"
           text={
@@ -19,8 +26,14 @@ const Roadmaps: React.FC<{}> = () => {
           }
         />
         <Suspense>
-          <RoadmapList search={search} />
+          <RoadmapListComponent search={search} onSearch={onSearch} />
         </Suspense>
+        <Pagination
+          className="mt-5"
+          page={search.page + 1}
+          onChange={(page) => setSearch({ ...search, page: page - 1 })}
+          total={totalPage}
+        />
       </div>
     </div>
   );

@@ -37,8 +37,13 @@ const fetchRoadmapList = async (query: RoadmapSearch): Promise<RoadmapList> => {
   return response.data;
 };
 
-const useRoadmapList = (query: RoadmapSearch) => {
-  return useQuery(["roadmapList", query], () => fetchRoadmapList(query), {});
+const useRoadmapList = (
+  query: RoadmapSearch,
+  onSuccessCallback?: (data: RoadmapList) => void
+) => {
+  return useQuery(["roadmapList", query], () => fetchRoadmapList(query), {
+    onSuccess: onSuccessCallback,
+  });
 };
 
 export { useRoadmapList };
