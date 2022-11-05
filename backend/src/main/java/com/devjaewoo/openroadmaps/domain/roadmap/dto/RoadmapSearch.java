@@ -17,7 +17,7 @@ public record RoadmapSearch(
 ) {
 
     public enum Order {
-        LIKE,
+        LIKES,
         LATEST;
 
         public static class OrderConverter implements Converter<String, Order> {
