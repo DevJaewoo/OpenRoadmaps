@@ -2,7 +2,6 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { useMutation } from "react-query";
 import { ClientInfo, atomClientInfo } from "src/atoms/client";
-import axiosInstance from "src/apis/axiosInstance";
 
 axios.defaults.withCredentials = true;
 
@@ -12,7 +11,7 @@ interface LoginRequest {
 }
 
 const fetchLogin = async (request: LoginRequest): Promise<ClientInfo> => {
-  const response = await axiosInstance.post("/api/v1/client/login", request);
+  const response = await axios.post("/api/v1/client/login", request);
   return response.data;
 };
 
