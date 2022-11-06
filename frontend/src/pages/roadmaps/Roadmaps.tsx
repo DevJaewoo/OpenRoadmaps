@@ -1,4 +1,4 @@
-import { Suspense, useState, useRef, KeyboardEvent } from "react";
+import { useState, useRef, KeyboardEvent } from "react";
 import { Input, Select, Pagination } from "@mantine/core";
 import { FaSearch } from "react-icons/fa";
 import { RoadmapList, RoadmapSearch } from "src/apis/useRoadmap";
@@ -65,13 +65,11 @@ const Roadmaps: React.FC<{}> = () => {
               />
             </div>
           </div>
-          <Suspense>
-            <RoadmapListComponent
-              search={search}
-              onSearch={onSearch}
-              className="mt-2"
-            />
-          </Suspense>
+          <RoadmapListComponent
+            search={search}
+            onSearch={onSearch}
+            className="mt-2"
+          />
         </div>
         <Pagination
           className="mt-5"

@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { useCurrentClient } from "src/apis/useClient";
 
 const Client: React.FC<{}> = () => {
@@ -11,9 +10,7 @@ const Client: React.FC<{}> = () => {
 const OAuth: React.FC<{}> = () => {
   return (
     <div className="flex flex-1 justify-center items-center">
-      <Suspense fallback={<>Loading...</>}>
-        <Client />
-      </Suspense>
+      <Client />
     </div>
   );
 };
