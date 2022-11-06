@@ -32,6 +32,12 @@ const Roadmaps: React.FC<{}> = () => {
     setSearch({ ...search, order: currentOrder });
   };
 
+  const onPageChange = (page: number) => {
+    if (page > 0 && page <= totalPage) {
+      setSearch({ ...search, page: page - 1 });
+    }
+  };
+
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       let title = titleRef.current?.value.trim();
@@ -74,7 +80,7 @@ const Roadmaps: React.FC<{}> = () => {
         <Pagination
           className="mt-5"
           page={search.page + 1}
-          onChange={(page) => setSearch({ ...search, page: page - 1 })}
+          onChange={onPageChange}
           total={totalPage}
         />
       </div>
