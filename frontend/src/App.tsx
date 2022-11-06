@@ -10,7 +10,7 @@ import Login from "src/pages/login/Login";
 import OAuth from "src/pages/login/OAuth";
 import Register from "src/pages/login/Register";
 import Main from "src/pages/main/Main";
-import Roadmaps from "src/pages/roadmaps/Roadmaps";
+import RoadmapMain from "src/pages/roadmaps/Roadmaps";
 import Profile from "./pages/profile/Profile";
 
 const App: React.FC<{}> = () => {
@@ -54,7 +54,7 @@ const App: React.FC<{}> = () => {
                   )
                 }
               />
-              <Route path="/roadmaps" element={<Roadmaps />} />
+              <Route path="/roadmaps/*" element={<RoadmapMain />} />
               <Route path="/clients/:clientId" element={<Profile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

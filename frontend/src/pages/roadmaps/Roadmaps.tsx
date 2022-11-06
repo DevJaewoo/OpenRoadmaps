@@ -1,11 +1,15 @@
 import { useState, useRef, KeyboardEvent } from "react";
+import { Route, Routes } from "react-router-dom";
 import { Input, Select, Pagination } from "@mantine/core";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaArrowRight } from "react-icons/fa";
 import { RoadmapList, RoadmapSearch } from "src/apis/useRoadmap";
+import { OutlinedButton } from "src/components/button/VariantButtons";
 import Header from "src/components/Header";
 import RoadmapListComponent from "./roadmapList/RoadmapList";
+import RoadmapCreate from "./RoadmapCreate";
+import NotFound from "../error/NotFound";
 
-const Roadmaps: React.FC<{}> = () => {
+const RoadmapMain: React.FC<{}> = () => {
   const titleRef = useRef<HTMLInputElement>(null);
 
   const [search, setSearch] = useState<RoadmapSearch>({
@@ -50,12 +54,25 @@ const Roadmaps: React.FC<{}> = () => {
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-col items-center w-full max-w-7xl">
-        <Header
-          title="Roadmaps"
-          text={
-            "개발 공부는 하고 싶은데 어떻게 시작해야 할지 막막하신가요?\n로드맵을 따라 기초부터 차근차근 공부해보세요!"
-          }
-        />
+        <div className="flex flex-col items-center w-full">
+          <Header
+            title="Roadmaps"
+            text={
+              "개발 공부는 하고 싶은데 어떻게 시작해야 할지 막막하신가요?\n로드맵을 따라 기초부터 차근차근 공부해보세요!"
+            }
+          />
+          <OutlinedButton
+            className="flex flex-row justify-center items-center mt-5"
+            type="link"
+            to="/roadmaps/create"
+            text={
+              <>
+                로드맵 만들기
+                <FaArrowRight className="ml-1" />
+              </>
+            }
+          />
+        </div>
         <div className="flex flex-col items-center w-full mt-5 p-3 bg-gray-300 rounded-lg">
           <div className="flex flex-row w-full justify-between px-2">
             <Input ref={titleRef} icon={<FaSearch />} onKeyDown={onKeyDown} />
@@ -85,6 +102,16 @@ const Roadmaps: React.FC<{}> = () => {
         />
       </div>
     </div>
+  );
+};
+
+const Roadmaps = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<RoadmapMain />} />
+      <Route path="/create" element={<RoadmapCreate />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 };
 
