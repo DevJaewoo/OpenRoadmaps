@@ -7,6 +7,7 @@ const EnabledPaths: string[] = [
   "/projects",
   "/blog",
   "/community",
+  "/clients",
 ];
 
 const Footer: React.FC<{}> = () => {
