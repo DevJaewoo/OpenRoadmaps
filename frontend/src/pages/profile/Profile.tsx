@@ -40,10 +40,14 @@ const Profile: FC<{}> = () => {
         </div>
         <div className="flex flex-col flex-1">
           <div className="flex flex-col items-center w-full">
-            <h2 className="w-full p-3 rounded-md border border-gray-400 bg-gray-100">
+            <h2 className="w-full p-3 text-xl rounded-md border border-gray-400 bg-gray-100">
               로드맵 목록
             </h2>
-            <RoadmapListComponent search={search} onSearch={onSearch} />
+            <RoadmapListComponent
+              className="mt-4 p-2 rounded-md bg-gray-100"
+              search={search}
+              onSearch={onSearch}
+            />
             <Pagination
               className="mt-3"
               page={search.page + 1}
