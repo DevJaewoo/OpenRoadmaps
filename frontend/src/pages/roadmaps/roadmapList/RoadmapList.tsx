@@ -5,6 +5,7 @@ import {
   useRoadmapList,
 } from "src/apis/useRoadmap";
 import RoadmapListItemComponent from "./_RoadmapListItem";
+import RoadmapNotFound from "./_RoadmapNotFound";
 
 interface Props {
   search: RoadmapSearch;
@@ -18,10 +19,13 @@ const RoadmapListComponent: FC<Props> = ({ search, onSearch, className }) => {
   return (
     <div className={`flex flex-col items-center w-full ${className}`}>
       <div className="flex flex-row flex-wrap items-center w-full">
-        {!isError &&
+        {!isError && (data?.content.length || 0) > 0 ? (
           data?.content.map((listItem) => (
             <RoadmapListItemComponent key={listItem.id} data={listItem} />
-          ))}
+          ))
+        ) : (
+          <RoadmapNotFound />
+        )}
       </div>
     </div>
   );
