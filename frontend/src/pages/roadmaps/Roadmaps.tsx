@@ -1,4 +1,4 @@
-import { Suspense, useState, useRef, KeyboardEvent } from "react";
+import { useState, useRef, KeyboardEvent } from "react";
 import { Input, Select, Pagination } from "@mantine/core";
 import { FaSearch } from "react-icons/fa";
 import { RoadmapList, RoadmapSearch } from "src/apis/useRoadmap";
@@ -30,6 +30,12 @@ const Roadmaps: React.FC<{}> = () => {
     }
 
     setSearch({ ...search, order: currentOrder });
+  };
+
+  const onPageChange = (page: number) => {
+    if (page > 0 && page <= totalPage) {
+      setSearch({ ...search, page: page - 1 });
+    }
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -65,18 +71,16 @@ const Roadmaps: React.FC<{}> = () => {
               />
             </div>
           </div>
-          <Suspense>
-            <RoadmapListComponent
-              search={search}
-              onSearch={onSearch}
-              className="mt-2"
-            />
-          </Suspense>
+          <RoadmapListComponent
+            search={search}
+            onSearch={onSearch}
+            className="mt-2"
+          />
         </div>
         <Pagination
           className="mt-5"
           page={search.page + 1}
-          onChange={(page) => setSearch({ ...search, page: page - 1 })}
+          onChange={onPageChange}
           total={totalPage}
         />
       </div>

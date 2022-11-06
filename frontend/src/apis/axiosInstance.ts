@@ -9,8 +9,8 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error: AxiosError | undefined) => {
-    const [, setClientInfo] = useRecoilState(atomClientInfo);
     if (error?.response?.status === 401) {
+      const [, setClientInfo] = useRecoilState(atomClientInfo);
       setClientInfo(undefined);
     }
 

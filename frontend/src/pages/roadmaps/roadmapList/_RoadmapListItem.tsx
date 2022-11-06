@@ -8,7 +8,7 @@ interface Props {
 
 const RoadmapListItemComponent: FC<Props> = ({ data }) => {
   return (
-    <div className="flex flex-col w-[32%] mx-[calc((100%-(32%*3))/6)] my-1 p-3 bg-white rounded-md hover:cursor-pointer">
+    <div className="flex flex-col w-[32%] mx-[calc((100%-(32%*3))/6)] my-1 p-3 bg-white rounded-md border transition-transform hover:cursor-pointer hover:scale-105">
       <img
         src={data.image}
         alt={data.image}
