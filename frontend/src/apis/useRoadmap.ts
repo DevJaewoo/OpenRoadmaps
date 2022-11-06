@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import axiosInstance from "src/apis/axiosInstance";
 
 export interface RoadmapSearch {
-  clientId?: number;
+  client?: number;
   title?: string;
   official?: boolean;
   order?: "LIKES" | "LATEST";
