@@ -1,5 +1,6 @@
 import { AxiosError } from "axios";
 import { FC, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { useCurrentClient } from "src/apis/useClient";
@@ -11,7 +12,7 @@ const withAuth = (
   adminRoute: boolean = false
 ) => {
   const AuthenticationCheck: FC = () => {
-    const [, setClientInfo] = useRecoilState(atomClientInfo);
+    const [clientInfo, setClientInfo] = useRecoilState(atomClientInfo);
     const navigate = useNavigate();
 
     const onSuccess = (data: ClientInfo) => {
@@ -24,10 +25,12 @@ const withAuth = (
       }
     };
 
-    const onError = (_error: AxiosError) => {
-      setClientInfo(undefined);
-      if (option === true) {
-        navigate("/login");
+    const onError = (error: AxiosError) => {
+      if (clientInfo === undefined || error.response?.status === 401) {
+        setClientInfo(undefined);
+        if (option === true) {
+          navigate("/login");
+        }
       }
     };
 
@@ -35,7 +38,9 @@ const withAuth = (
 
     return (
       <Suspense fallback={<div>Loading...</div>}>
-        <SpecificComponent />
+        <ErrorBoundary fallback={<div>Error!</div>}>
+          <SpecificComponent />
+        </ErrorBoundary>
       </Suspense>
     );
   };
