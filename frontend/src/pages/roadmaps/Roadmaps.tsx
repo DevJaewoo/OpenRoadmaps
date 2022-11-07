@@ -5,9 +5,10 @@ import { FaSearch, FaArrowRight } from "react-icons/fa";
 import { RoadmapList, RoadmapSearch } from "src/apis/useRoadmap";
 import { OutlinedButton } from "src/components/button/VariantButtons";
 import Header from "src/components/Header";
+import NotFound from "src/pages/error/NotFound";
+import withAuth from "src/hoc/withAuth";
 import RoadmapListComponent from "./roadmapList/RoadmapList";
 import RoadmapCreate from "./RoadmapCreate";
-import NotFound from "../error/NotFound";
 
 const RoadmapMain: React.FC<{}> = () => {
   const titleRef = useRef<HTMLInputElement>(null);
@@ -106,10 +107,11 @@ const RoadmapMain: React.FC<{}> = () => {
 };
 
 const Roadmaps = () => {
+  const AuthRoadmapCreate = withAuth(RoadmapCreate, true);
   return (
     <Routes>
       <Route path="/" element={<RoadmapMain />} />
-      <Route path="/create" element={<RoadmapCreate />} />
+      <Route path="/create" element={<AuthRoadmapCreate />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

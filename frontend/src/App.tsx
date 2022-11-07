@@ -1,8 +1,6 @@
 import React, { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { atomClientInfo } from "src/atoms/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "src/components/Footer";
 import Navigation from "src/components/Navigation";
 import NotFound from "src/pages/error/NotFound";
@@ -11,10 +9,13 @@ import OAuth from "src/pages/login/OAuth";
 import Register from "src/pages/login/Register";
 import Main from "src/pages/main/Main";
 import RoadmapMain from "src/pages/roadmaps/Roadmaps";
+import withAuth from "src/hoc/withAuth";
 import Profile from "./pages/profile/Profile";
 
 const App: React.FC<{}> = () => {
-  const [clientInfo] = useRecoilState(atomClientInfo);
+  const AuthRegister = withAuth(Register, false);
+  const AuthLogin = withAuth(Login, false);
+  const AuthOAuth = withAuth(OAuth, false);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -24,36 +25,9 @@ const App: React.FC<{}> = () => {
             <Navigation />
             <Routes>
               <Route path="/" element={<Main />} />
-              <Route
-                path="/register"
-                element={
-                  clientInfo === undefined ? (
-                    <Register />
-                  ) : (
-                    <Navigate replace to="/" />
-                  )
-                }
-              />
-              <Route
-                path="/login"
-                element={
-                  clientInfo === undefined ? (
-                    <Login />
-                  ) : (
-                    <Navigate replace to="/" />
-                  )
-                }
-              />
-              <Route
-                path="/oauth"
-                element={
-                  clientInfo === undefined ? (
-                    <OAuth />
-                  ) : (
-                    <Navigate replace to="/" />
-                  )
-                }
-              />
+              <Route path="/register" element={<AuthRegister />} />
+              <Route path="/login" element={<AuthLogin />} />
+              <Route path="/oauth" element={<AuthOAuth />} />
               <Route path="/roadmaps/*" element={<RoadmapMain />} />
               <Route path="/clients/:clientId" element={<Profile />} />
               <Route path="*" element={<NotFound />} />

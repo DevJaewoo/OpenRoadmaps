@@ -1,4 +1,6 @@
-const RoadmapCreate = () => {
+import { FC } from "react";
+
+const RoadmapCreate: FC = () => {
   return <div>a</div>;
 };
 
