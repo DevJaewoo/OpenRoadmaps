@@ -26,6 +26,30 @@ export interface RoadmapList {
   totalPages: number;
 }
 
+type Accessibility = "PRIVATE" | "PROTECTED" | "PUBLIC";
+type Recommend = "RECOMMEND" | "ALTERNATIVE" | "NOT_RECOMMEND";
+
+export interface RoadmapItem {
+  id: number;
+  name: string;
+  x: number;
+  y: number;
+  recommend: Recommend;
+  connectionType: string;
+  isCleared: boolean;
+  parentId: number;
+}
+
+export interface Roadmap {
+  id: number;
+  title: string;
+  image: string;
+  accessibility: Accessibility;
+  likes: number;
+  createdDate: string;
+  roadmapItemList: RoadmapItem[];
+}
+
 const fetchRoadmapList = async (query: RoadmapSearch): Promise<RoadmapList> => {
   const searchParams = new URLSearchParams();
 
