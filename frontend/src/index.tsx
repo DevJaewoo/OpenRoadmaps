@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { RecoilRoot } from "recoil";
-import { createEmotionCache, MantineProvider } from "@mantine/core";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
@@ -27,13 +26,7 @@ root.render(
   <React.StrictMode>
     <RecoilRoot>
       <QueryClientProvider client={queryClient}>
-        <MantineProvider
-          withGlobalStyles
-          withNormalizeCSS
-          emotionCache={createEmotionCache({ key: "mantine", prepend: true })}
-        >
-          <App />
-        </MantineProvider>
+        <App />
       </QueryClientProvider>
     </RecoilRoot>
   </React.StrictMode>
