@@ -2,15 +2,23 @@ import { FC, MouseEventHandler, RefObject, useState } from "react";
 import Draggable, { DraggableEventHandler } from "react-draggable";
 import { RoadmapItem } from "src/apis/useRoadmap";
 import { pixelToRem } from "src/utils/PixelToRem";
+import { RoadmapColor } from "src/utils/constants";
 
 interface Props {
   refs: RefObject<HTMLButtonElement>;
   roadmapItem: RoadmapItem;
   onClick: (id: number) => void;
+  onDoubleClick: (id: number) => void;
   onDrag: (id: number, x: number, y: number) => void;
 }
 
-const RoadmapEditItem: FC<Props> = ({ refs, roadmapItem, onClick, onDrag }) => {
+const RoadmapEditItem: FC<Props> = ({
+  refs,
+  roadmapItem,
+  onClick,
+  onDoubleClick,
+  onDrag,
+}) => {
   const [defaultCoord] = useState({ x: roadmapItem.x, y: roadmapItem.y });
   const [position, setPosition] = useState<
     { x: number; y: number } | undefined
@@ -23,8 +31,8 @@ const RoadmapEditItem: FC<Props> = ({ refs, roadmapItem, onClick, onDrag }) => {
     if (refs.current) {
       const style = window.getComputedStyle(refs.current);
       const matrix = new DOMMatrixReadOnly(style.transform);
-      x = matrix.m41;
-      y = matrix.m42;
+      x = matrix.m41; // translateX
+      y = matrix.m42; // translateY
     }
 
     x = pixelToRem(x + (refs.current?.offsetLeft || 0));
@@ -44,7 +52,7 @@ const RoadmapEditItem: FC<Props> = ({ refs, roadmapItem, onClick, onDrag }) => {
   };
 
   const handleDoubleClick = () => {
-    // console.log("handleDoubleClick");
+    onDoubleClick(roadmapItem.id);
   };
 
   const handleDrag: DraggableEventHandler = () => {
@@ -62,7 +70,9 @@ const RoadmapEditItem: FC<Props> = ({ refs, roadmapItem, onClick, onDrag }) => {
       <button
         ref={refs}
         type="button"
-        className="flex justify-center items-center absolute p-2 bg-blue-400"
+        className={`flex justify-center items-center absolute max-w-xs px-5 py-2 bg-white border-4 rounded-xl border-${
+          RoadmapColor[roadmapItem.recommend]
+        }`}
         style={{ top: `${defaultCoord.y}rem`, left: `${defaultCoord.x}rem` }}
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}

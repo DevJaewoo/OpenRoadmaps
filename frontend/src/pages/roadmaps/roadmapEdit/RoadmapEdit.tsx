@@ -22,40 +22,15 @@ interface Props {
   height?: string;
 }
 
-const testItem1: RoadmapItem = {
-  id: 1,
-  name: "Test1",
-  isCleared: false,
-  x: 20,
-  y: 30,
-  recommend: "RECOMMEND",
-  connectionType: null,
-  parentId: null,
-};
-
-const testItem2: RoadmapItem = {
-  id: 2,
-  name: "Test2",
-  isCleared: false,
-  x: 30,
-  y: 20,
-  recommend: "RECOMMEND",
-  connectionType: null,
-  parentId: null,
-};
-
 const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
-  const [, setEditMode] = useState<TEditMode>(EditMode.Cursor);
+  const [editMode, setEditMode] = useState<TEditMode>(EditMode.Cursor);
   const roadmapItemRefs = useRef<{
     [key: number]: RefObject<HTMLButtonElement>;
   }>({});
-  const [roadmapItemList, setRoadmapItemList] = useState<RoadmapItem[]>([
-    testItem1,
-    testItem2,
-  ]);
+  const [roadmapItemList, setRoadmapItemList] =
+    useState<RoadmapItem[]>(defaultValue);
 
   const addRef = (key: number) => {
-    console.log(`AddRef with key ${key}`);
     if (roadmapItemRefs.current[key] !== undefined) {
       return roadmapItemRefs.current[key];
     }
@@ -69,13 +44,23 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
   };
 
   const onRoadmapItemClick = (id: number) => {
-    // Drawer 열기
-    console.log(`Clicked ${id}`);
+    switch (editMode) {
+      case EditMode.Cursor:
+        // Drawer 열기
+        break;
+      case EditMode.Delete:
+        removeRef(id);
+        setRoadmapItemList(roadmapItemList.filter((r) => r.id !== id));
+        break;
+    }
   };
 
-  const onRoadmapItemDrag = (id: number, x: number, y: number) => {
+  const onRoadmapItemDoubleClick = (_id: number) => {
+    // 텍스트 수정
+  };
+
+  const onRoadmapItemDrag = (_id: number, _x: number, _y: number) => {
     // ID의 x, y 좌표 업데이트
-    console.log(roadmapItemList.find((r) => r.id === id));
   };
 
   return (
@@ -123,6 +108,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
                   key={roadmapItem.id}
                   roadmapItem={roadmapItem}
                   onClick={onRoadmapItemClick}
+                  onDoubleClick={onRoadmapItemDoubleClick}
                   onDrag={onRoadmapItemDrag}
                 />
               ))}
