@@ -116,7 +116,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
             />
           </div>
           <ScrollArea className="h-full w-full bg-gray-50" scrollHideDelay={0}>
-            <div className={`min-h-[${height}] w-full`}>
+            <div className={`relative min-h-[${height}] w-full`}>
               {roadmapItemList.map((roadmapItem) => (
                 <RoadmapEditItem
                   refs={addRef(roadmapItem.id)}
