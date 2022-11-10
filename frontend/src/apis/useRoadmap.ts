@@ -5,7 +5,7 @@ export interface RoadmapSearch {
   client?: number;
   title?: string;
   official?: boolean;
-  order?: "LIKES" | "LATEST";
+  order?: TRoadmapOrder;
   page: number;
 }
 
@@ -13,7 +13,7 @@ export interface RoadmapListItem {
   id: number;
   title: string;
   image: string;
-  accessibility: "PUBLIC" | "PROTECTED" | "PRIVATE";
+  accessibility: TAccessibility;
   isOfficial: boolean;
   likes: number;
   createdDate: string;
@@ -26,15 +26,33 @@ export interface RoadmapList {
   totalPages: number;
 }
 
-type Accessibility = "PRIVATE" | "PROTECTED" | "PUBLIC";
-type Recommend = "RECOMMEND" | "ALTERNATIVE" | "NOT_RECOMMEND";
+export const RoadmapOrder = {
+  LATEST: "LATEST",
+  LIKES: "LIKES",
+} as const;
+export type TRoadmapOrder = typeof RoadmapOrder[keyof typeof RoadmapOrder];
+
+export const Accessibility = {
+  PRIVATE: "PRIVATE",
+  PROTECTED: "PROTECTED",
+  PUBLIC: "PUBLIC",
+} as const;
+export type TAccessibility = typeof Accessibility[keyof typeof Accessibility];
+
+export const Recommend = {
+  RECOMMEND: "RECOMMEND",
+  ALTERNATIVE: "ALTERNATIVE",
+  NOT_RECOMMEND: "NOT_RECOMMEND",
+  NONE: "NONE",
+} as const;
+export type TRecommend = typeof Recommend[keyof typeof Recommend];
 
 export interface RoadmapItem {
   id: number;
   name: string;
   x: number;
   y: number;
-  recommend: Recommend;
+  recommend: TRecommend;
   isCleared: boolean;
   connectionType: string | null;
   parentId: number | null;
@@ -44,7 +62,7 @@ export interface Roadmap {
   id: number;
   title: string;
   image: string;
-  accessibility: Accessibility;
+  accessibility: TAccessibility;
   likes: number;
   createdDate: string;
   roadmapItemList: RoadmapItem[];

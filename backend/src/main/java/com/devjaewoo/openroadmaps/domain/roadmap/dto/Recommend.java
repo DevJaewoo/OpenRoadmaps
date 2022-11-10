@@ -8,7 +8,8 @@ import java.util.Arrays;
 public enum Recommend {
     RECOMMEND,
     ALTERNATIVE,
-    NOT_RECOMMEND;
+    NOT_RECOMMEND,
+    NONE;
 
     public static class RecommendConverter implements Converter<String, Recommend> {
         @Override

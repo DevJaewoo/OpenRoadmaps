@@ -2,7 +2,12 @@ import { useState, useRef, KeyboardEvent } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Input, Select, Pagination } from "@mantine/core";
 import { FaSearch, FaArrowRight } from "react-icons/fa";
-import { RoadmapList, RoadmapSearch } from "src/apis/useRoadmap";
+import {
+  RoadmapList,
+  RoadmapOrder,
+  RoadmapSearch,
+  TRoadmapOrder,
+} from "src/apis/useRoadmap";
 import { OutlinedButton } from "src/components/button/VariantButtons";
 import Header from "src/components/Header";
 import NotFound from "src/pages/error/NotFound";
@@ -26,9 +31,9 @@ const RoadmapMain: React.FC<{}> = () => {
     setTotalPage(data.totalPages);
   };
 
-  const onOrderChange = (order: string) => {
-    let currentOrder: "LATEST" | "LIKES" | undefined;
-    if (order !== "LATEST" && order !== "LIKES") {
+  const onOrderChange = (order: TRoadmapOrder) => {
+    let currentOrder: TRoadmapOrder | undefined;
+    if (!Object.values(RoadmapOrder).includes(order)) {
       currentOrder = undefined;
     } else {
       currentOrder = order;
@@ -82,8 +87,8 @@ const RoadmapMain: React.FC<{}> = () => {
               <Select
                 value={search.order}
                 data={[
-                  { value: "LATEST", label: "최신 순" },
-                  { value: "LIKES", label: "좋아요 순" },
+                  { value: RoadmapOrder.LATEST, label: "최신 순" },
+                  { value: RoadmapOrder.LIKES, label: "좋아요 순" },
                 ]}
                 onChange={onOrderChange}
               />
