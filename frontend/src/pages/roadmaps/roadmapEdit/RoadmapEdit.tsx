@@ -1,4 +1,4 @@
-import { FC, useState, memo } from "react";
+import { FC, useState, useRef, memo, createRef, RefObject } from "react";
 import { Button, ScrollArea } from "@mantine/core";
 import { BsCursor } from "react-icons/bs";
 import { AiOutlinePlusSquare, AiFillDelete } from "react-icons/ai";
@@ -6,6 +6,7 @@ import { MdOutlineMoving } from "react-icons/md";
 import { RoadmapItem } from "src/apis/useRoadmap";
 import RoadmapEditButton from "./_RoadmapEditButton";
 import RoadmapNameItem from "./_RoadmapNameItem";
+import RoadmapEditItem from "./_RoadmapEditItem";
 
 const EditMode = {
   Cursor: 0,
@@ -21,9 +22,61 @@ interface Props {
   height?: string;
 }
 
+const testItem1: RoadmapItem = {
+  id: 1,
+  name: "Test1",
+  isCleared: false,
+  x: 20,
+  y: 30,
+  recommend: "RECOMMEND",
+  connectionType: null,
+  parentId: null,
+};
+
+const testItem2: RoadmapItem = {
+  id: 2,
+  name: "Test2",
+  isCleared: false,
+  x: 30,
+  y: 20,
+  recommend: "RECOMMEND",
+  connectionType: null,
+  parentId: null,
+};
+
 const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
   const [, setEditMode] = useState<TEditMode>(EditMode.Cursor);
-  const [roadmapItemList] = useState<RoadmapItem[]>(defaultValue);
+  const roadmapItemRefs = useRef<{
+    [key: number]: RefObject<HTMLButtonElement>;
+  }>({});
+  const [roadmapItemList, setRoadmapItemList] = useState<RoadmapItem[]>([
+    testItem1,
+    testItem2,
+  ]);
+
+  const addRef = (key: number) => {
+    console.log(`AddRef with key ${key}`);
+    if (roadmapItemRefs.current[key] !== undefined) {
+      return roadmapItemRefs.current[key];
+    }
+    const newRef = createRef<HTMLButtonElement>();
+    roadmapItemRefs.current[key] = newRef;
+    return newRef;
+  };
+
+  const removeRef = (key: number) => {
+    delete roadmapItemRefs.current[key];
+  };
+
+  const onRoadmapItemClick = (id: number) => {
+    // Drawer 열기
+    console.log(`Clicked ${id}`);
+  };
+
+  const onRoadmapItemDrag = (id: number, x: number, y: number) => {
+    // ID의 x, y 좌표 업데이트
+    console.log(roadmapItemList.find((r) => r.id === id));
+  };
 
   return (
     <div className="flex-1 flex flex-col w-full">
@@ -63,7 +116,17 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
             />
           </div>
           <ScrollArea className="h-full w-full bg-gray-50" scrollHideDelay={0}>
-            <div className={`min-h-[${height}] w-full`}>{}</div>
+            <div className={`min-h-[${height}] w-full`}>
+              {roadmapItemList.map((roadmapItem) => (
+                <RoadmapEditItem
+                  refs={addRef(roadmapItem.id)}
+                  key={roadmapItem.id}
+                  roadmapItem={roadmapItem}
+                  onClick={onRoadmapItemClick}
+                  onDrag={onRoadmapItemDrag}
+                />
+              ))}
+            </div>
           </ScrollArea>
         </div>
       </div>

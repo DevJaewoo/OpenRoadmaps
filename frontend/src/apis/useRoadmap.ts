@@ -35,9 +35,9 @@ export interface RoadmapItem {
   x: number;
   y: number;
   recommend: Recommend;
-  connectionType: string;
   isCleared: boolean;
-  parentId: number;
+  connectionType: string | null;
+  parentId: number | null;
 }
 
 export interface Roadmap {
