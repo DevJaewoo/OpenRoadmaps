@@ -7,6 +7,7 @@ import { RoadmapItem } from "src/apis/useRoadmap";
 import RoadmapEditButton from "./_RoadmapEditButton";
 import RoadmapNameItem from "./_RoadmapNameItem";
 import RoadmapEditItem from "./_RoadmapEditItem";
+import RoadmapEditItemHint from "./_RoadmapEditItemHint";
 
 const EditMode = {
   Cursor: 0,
@@ -63,6 +64,14 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
     // ID의 x, y 좌표 업데이트
   };
 
+  const onHintSelect = (x: number, y: number) => {
+    switch (editMode) {
+      case EditMode.Add:
+        console.log(`x:${x} y:${y}`);
+        break;
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col w-full">
       <div className="flex flex-row justify-start items-center w-full h-20 mt-3 py-2 border-y">
@@ -72,16 +81,16 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
         />
         <Button className="w-24 h-14 bg-blue-600">완료</Button>
       </div>
-      <div className={`flex flex-row h-[${height}] w-full border-b`}>
+      <div className="flex flex-row w-full border-b" style={{ height }}>
         <ScrollArea className="w-72 h-full border-r" scrollHideDelay={0}>
-          <div className={`p-2 min-h-[${height}]`}>
+          <div className="p-2" style={{ height }}>
             {roadmapItemList.map((roadmapItem) => (
               <RoadmapNameItem key={roadmapItem.id} roadmapItem={roadmapItem} />
             ))}
           </div>
         </ScrollArea>
         <div className="flex flex-col items-center flex-1 h-full">
-          <div className="flex flex-row justify-center items-center rounded-b-lg px-1 py-2 text-2xl absolute z-10 text-white bg-blue-600">
+          <div className="flex flex-row justify-center items-center rounded-b-lg px-1 py-2 text-2xl absolute z-30 text-white bg-blue-600">
             <RoadmapEditButton
               icon={<BsCursor />}
               onClick={() => setEditMode(EditMode.Cursor)}
@@ -105,7 +114,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
             />
           </div>
           <ScrollArea className="h-full w-full bg-gray-50" scrollHideDelay={0}>
-            <div className={`relative min-h-[${height}] w-full`}>
+            <div className="relative w-full" style={{ minHeight: height }}>
               {roadmapItemList.map((roadmapItem) => (
                 <RoadmapEditItem
                   refs={addRef(roadmapItem.id)}
@@ -116,6 +125,9 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
                   onDrag={onRoadmapItemDrag}
                 />
               ))}
+              {editMode === EditMode.Add && (
+                <RoadmapEditItemHint onSelect={onHintSelect} />
+              )}
             </div>
           </ScrollArea>
         </div>
