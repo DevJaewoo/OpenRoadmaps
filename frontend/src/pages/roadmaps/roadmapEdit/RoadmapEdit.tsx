@@ -85,18 +85,22 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
             <RoadmapEditButton
               icon={<BsCursor />}
               onClick={() => setEditMode(EditMode.Cursor)}
+              highlight={editMode === EditMode.Cursor}
             />
             <RoadmapEditButton
               icon={<AiOutlinePlusSquare />}
               onClick={() => setEditMode(EditMode.Add)}
+              highlight={editMode === EditMode.Add}
             />
             <RoadmapEditButton
               icon={<MdOutlineMoving />}
               onClick={() => setEditMode(EditMode.Connect)}
+              highlight={editMode === EditMode.Connect}
             />
             <RoadmapEditButton
               icon={<AiFillDelete />}
               onClick={() => setEditMode(EditMode.Delete)}
+              highlight={editMode === EditMode.Delete}
               lastElement
             />
           </div>
