@@ -3,7 +3,7 @@ import { Button, ScrollArea } from "@mantine/core";
 import { BsCursor } from "react-icons/bs";
 import { AiOutlinePlusSquare, AiFillDelete } from "react-icons/ai";
 import { MdOutlineMoving } from "react-icons/md";
-import { RoadmapItem } from "src/apis/useRoadmap";
+import { Recommend, RoadmapItem } from "src/apis/useRoadmap";
 import RoadmapEditButton from "./_RoadmapEditButton";
 import RoadmapNameItem from "./_RoadmapNameItem";
 import RoadmapEditItem from "./_RoadmapEditItem";
@@ -24,10 +24,18 @@ interface Props {
 }
 
 const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
+  const [nextId, setNextId] = useState(
+    defaultValue.length === 0
+      ? 1
+      : Math.max(...defaultValue.map((r) => r.id)) + 1
+  ); // 가장 ID가 큰 element의 ID + 1
+
   const [editMode, setEditMode] = useState<TEditMode>(EditMode.Cursor);
+
   const roadmapItemRefs = useRef<{
     [key: number]: RefObject<HTMLButtonElement>;
   }>({});
+
   const [roadmapItemList, setRoadmapItemList] =
     useState<RoadmapItem[]>(defaultValue);
 
@@ -66,9 +74,21 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
 
   const onHintSelect = (x: number, y: number) => {
     switch (editMode) {
-      case EditMode.Add:
-        console.log(`x:${x} y:${y}`);
+      case EditMode.Add: {
+        const newRoadmapItem: RoadmapItem = {
+          id: nextId,
+          name: "Example",
+          x,
+          y,
+          recommend: Recommend.RECOMMEND,
+          isCleared: false,
+          connectionType: null,
+          parentId: null,
+        };
+        setNextId((id) => id + 1);
+        setRoadmapItemList([...roadmapItemList, newRoadmapItem]);
         break;
+      }
     }
   };
 

@@ -41,9 +41,8 @@ const RoadmapEditItemHint: FC<Props> = ({ onSelect }) => {
       {hintPosition && (
         <div
           ref={hintRef}
-          className="flex justify-center items-center p-2 border-4 rounded-lg border-blue-600 absolute z-10 -translate-x-1/2 -translate-y-1/2"
+          className="flex justify-center items-center absolute max-w-xs px-5 py-2 bg-white border-4 rounded-xl border-blue-600 z-10 -translate-x-1/2 -translate-y-1/2"
           style={{ top: `${hintPosition.y}px`, left: `${hintPosition.x}px` }}
-          role="presentation"
         >
           Example
         </div>
