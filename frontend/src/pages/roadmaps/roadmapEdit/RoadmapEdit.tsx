@@ -14,6 +14,7 @@ import { AiOutlinePlusSquare, AiFillDelete } from "react-icons/ai";
 import { MdOutlineMoving } from "react-icons/md";
 import Connector from "@devjaewoo/react-svg-connector";
 import { Recommend, RoadmapItem } from "src/apis/useRoadmap";
+import { getCurrentPositionPixel } from "src/utils/PixelToRem";
 import RoadmapEditButton from "./_RoadmapEditButton";
 import RoadmapNameItem from "./_RoadmapNameItem";
 import RoadmapEditItem from "./_RoadmapEditItem";
@@ -39,6 +40,8 @@ interface Props {
 
 interface ConnectorInfo {
   id: number;
+  x: number;
+  y: number;
   position: TPosition;
 }
 
@@ -67,6 +70,12 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   const [connectorHintId, setConnectorHintId] = useState<number | undefined>(
     undefined
   );
+
+  const connectorFromRef = useRef<HTMLDivElement>(null);
+  const connectorToRef = useRef<HTMLDivElement>(null);
+  const [connectorHintPosition, setConnectorHintPosition] = useState<
+    { x: number; y: number } | undefined
+  >(undefined);
 
   const addRef = (key: number) => {
     if (roadmapItemRefs.current[key] !== undefined) {
@@ -146,9 +155,35 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     }
   };
 
-  const onConnectorHintSelect = (id: number, position: TPosition) => {
+  const onConnectorHintSelect = (
+    id: number,
+    x: number,
+    y: number,
+    position: TPosition
+  ) => {
+    const itemPosition = getCurrentPositionPixel(roadmapItemRefs.current[id]);
     setConnectorHintId(undefined);
-    setConnectorStatus({ id, position });
+    setConnectorStatus({
+      id,
+      x: itemPosition.x + x,
+      y: itemPosition.y + y,
+      position,
+    });
+  };
+
+  const getHintConnectorDirection = () => {
+    switch (connectorStatus?.position) {
+      case Position.top:
+        return "t2b";
+      case Position.bottom:
+        return "b2t";
+      case Position.left:
+        return "l2r";
+      case Position.right:
+        return "r2l";
+      default:
+        return "t2b";
+    }
   };
 
   useEffect(() => {
@@ -199,7 +234,16 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
               lastElement
             />
           </div>
-          <ScrollArea className="h-full w-full bg-gray-50" scrollHideDelay={0}>
+          <ScrollArea
+            className="h-full w-full bg-gray-50"
+            scrollHideDelay={0}
+            onMouseMove={(event) => {
+              setConnectorHintPosition({
+                x: event.nativeEvent.offsetX,
+                y: event.nativeEvent.offsetY,
+              });
+            }}
+          >
             <div
               className="relative w-full"
               style={{
@@ -231,6 +275,41 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
               ))}
               {editMode === EditMode.Add && (
                 <RoadmapEditItemHint onSelect={onRoadmapAddHintSelect} />
+              )}
+              {editMode === EditMode.Connect && (
+                <>
+                  {connectorStatus && (
+                    <div
+                      ref={connectorFromRef}
+                      className="w-3 h-3 rounded-full absolute bg-yellow-400"
+                      style={{
+                        top: connectorStatus.y,
+                        left: connectorStatus.x,
+                      }}
+                    />
+                  )}
+                  {connectorHintPosition && (
+                    <div
+                      ref={connectorToRef}
+                      className="w-3 h-3 rounded-full absolute bg-yellow-400"
+                      style={{
+                        top: connectorHintPosition.y,
+                        left: connectorHintPosition.x,
+                      }}
+                    />
+                  )}
+                  {connectorFromRef.current && connectorToRef.current && (
+                    <Connector
+                      el1={connectorFromRef.current}
+                      el2={connectorToRef.current}
+                      shape="narrow-s"
+                      direction={getHintConnectorDirection()}
+                      roundCorner
+                      endArrow
+                      className="bg-opacity-100 z-0"
+                    />
+                  )}
+                </>
               )}
             </div>
           </ScrollArea>
