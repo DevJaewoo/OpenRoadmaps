@@ -1,4 +1,13 @@
-import { FC, useState, useRef, memo, createRef, RefObject } from "react";
+import {
+  FC,
+  useState,
+  useRef,
+  memo,
+  createRef,
+  RefObject,
+  useEffect,
+  useCallback,
+} from "react";
 import { Button, ScrollArea } from "@mantine/core";
 import { BsCursor } from "react-icons/bs";
 import { AiOutlinePlusSquare, AiFillDelete } from "react-icons/ai";
@@ -20,15 +29,17 @@ type TEditMode = typeof EditMode[keyof typeof EditMode];
 
 interface Props {
   defaultValue?: RoadmapItem[];
-  height?: string;
+  height?: number;
 }
 
-const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
+const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   const [nextId, setNextId] = useState(
     defaultValue.length === 0
       ? 1
       : Math.max(...defaultValue.map((r) => r.id)) + 1
   ); // 가장 ID가 큰 element의 ID + 1
+
+  const [scrollHeight, setScrollHeight] = useState<number>(height);
 
   const [editMode, setEditMode] = useState<TEditMode>(EditMode.Cursor);
 
@@ -52,6 +63,15 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
     delete roadmapItemRefs.current[key];
   };
 
+  const updateScrollHeight = useCallback(() => {
+    if (roadmapItemList.length === 0) {
+      setScrollHeight(height);
+      return;
+    }
+
+    setScrollHeight(Math.max(...roadmapItemList.map((r) => r.y)) + height / 2);
+  }, [height, roadmapItemList]);
+
   const onRoadmapItemClick = (id: number) => {
     switch (editMode) {
       case EditMode.Cursor:
@@ -60,6 +80,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
       case EditMode.Delete:
         removeRef(id);
         setRoadmapItemList(roadmapItemList.filter((r) => r.id !== id));
+        updateScrollHeight();
         break;
     }
   };
@@ -70,6 +91,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
 
   const onRoadmapItemDrag = (_id: number, _x: number, _y: number) => {
     // ID의 x, y 좌표 업데이트
+    updateScrollHeight();
   };
 
   const onHintSelect = (x: number, y: number) => {
@@ -92,6 +114,10 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
     }
   };
 
+  useEffect(() => {
+    updateScrollHeight();
+  }, [updateScrollHeight]);
+
   return (
     <div className="flex-1 flex flex-col w-full">
       <div className="flex flex-row justify-start items-center w-full h-20 mt-3 py-2 border-y">
@@ -101,9 +127,12 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
         />
         <Button className="w-24 h-14 bg-blue-600">완료</Button>
       </div>
-      <div className="flex flex-row w-full border-b" style={{ height }}>
+      <div
+        className="flex flex-row w-full border-b"
+        style={{ height: `${height}rem` }}
+      >
         <ScrollArea className="w-72 h-full border-r" scrollHideDelay={0}>
-          <div className="p-2" style={{ height }}>
+          <div className="p-2" style={{ height: `${height}rem` }}>
             {roadmapItemList.map((roadmapItem) => (
               <RoadmapNameItem key={roadmapItem.id} roadmapItem={roadmapItem} />
             ))}
@@ -134,7 +163,13 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = "36rem" }) => {
             />
           </div>
           <ScrollArea className="h-full w-full bg-gray-50" scrollHideDelay={0}>
-            <div className="relative w-full" style={{ minHeight: height }}>
+            <div
+              className="relative w-full"
+              style={{
+                minHeight: `${height}rem`,
+                height: `${scrollHeight}rem`,
+              }}
+            >
               {roadmapItemList.map((roadmapItem) => (
                 <RoadmapEditItem
                   refs={addRef(roadmapItem.id)}
