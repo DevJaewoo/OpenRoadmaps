@@ -17,6 +17,7 @@ import RoadmapEditButton from "./_RoadmapEditButton";
 import RoadmapNameItem from "./_RoadmapNameItem";
 import RoadmapEditItem from "./_RoadmapEditItem";
 import RoadmapEditItemHint from "./_RoadmapEditItemHint";
+import RoadmapConnectorHint, { TPosition } from "./_RoadmapConnectorHint";
 
 const EditMode = {
   Cursor: 0,
@@ -30,6 +31,11 @@ type TEditMode = typeof EditMode[keyof typeof EditMode];
 interface Props {
   defaultValue?: RoadmapItem[];
   height?: number;
+}
+
+interface ConnectorInfo {
+  id: number;
+  position: TPosition;
 }
 
 const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
@@ -49,6 +55,14 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
 
   const [roadmapItemList, setRoadmapItemList] =
     useState<RoadmapItem[]>(defaultValue);
+
+  const [connectorStatus, setConnectorStatus] = useState<
+    ConnectorInfo | undefined
+  >(undefined);
+
+  const [connectorHintId, setConnectorHintId] = useState<number | undefined>(
+    undefined
+  );
 
   const addRef = (key: number) => {
     if (roadmapItemRefs.current[key] !== undefined) {
@@ -77,11 +91,25 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
       case EditMode.Cursor:
         // Drawer 열기
         break;
+
       case EditMode.Delete:
         removeRef(id);
         setRoadmapItemList(roadmapItemList.filter((r) => r.id !== id));
         updateScrollHeight();
         break;
+    }
+  };
+
+  const onRoadmapItemEnter = (id: number) => {
+    if (editMode !== EditMode.Connect) return;
+    if ((connectorStatus?.id || -1) === id) return;
+    setConnectorHintId(id);
+  };
+
+  const onRoadmapItemLeave = (id: number) => {
+    if (editMode !== EditMode.Connect) return;
+    if (connectorHintId === id) {
+      setConnectorHintId(undefined);
     }
   };
 
@@ -94,7 +122,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     updateScrollHeight();
   };
 
-  const onHintSelect = (x: number, y: number) => {
+  const onRoadmapAddHintSelect = (x: number, y: number) => {
     switch (editMode) {
       case EditMode.Add: {
         const newRoadmapItem: RoadmapItem = {
@@ -112,6 +140,11 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
         break;
       }
     }
+  };
+
+  const onConnectorHintSelect = (id: number, position: TPosition) => {
+    // console.log(`${id} ${position}`);
+    setConnectorStatus({ id, position });
   };
 
   useEffect(() => {
@@ -177,11 +210,20 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   roadmapItem={roadmapItem}
                   onClick={onRoadmapItemClick}
                   onDoubleClick={onRoadmapItemDoubleClick}
+                  onEnter={onRoadmapItemEnter}
+                  onLeave={onRoadmapItemLeave}
                   onDrag={onRoadmapItemDrag}
                 />
               ))}
               {editMode === EditMode.Add && (
-                <RoadmapEditItemHint onSelect={onHintSelect} />
+                <RoadmapEditItemHint onSelect={onRoadmapAddHintSelect} />
+              )}
+              {editMode === EditMode.Connect && connectorHintId && (
+                <RoadmapConnectorHint
+                  id={connectorHintId}
+                  refs={roadmapItemRefs.current[connectorHintId]}
+                  onSelect={onConnectorHintSelect}
+                />
               )}
             </div>
           </ScrollArea>
