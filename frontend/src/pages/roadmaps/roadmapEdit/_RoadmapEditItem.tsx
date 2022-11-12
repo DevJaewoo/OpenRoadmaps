@@ -12,6 +12,7 @@ interface Props {
   onEnter: (id: number) => void;
   onLeave: (id: number) => void;
   onDrag: (id: number, x: number, y: number) => void;
+  disabled?: boolean;
 }
 
 const RoadmapEditItem: FC<Props> = ({
@@ -22,6 +23,7 @@ const RoadmapEditItem: FC<Props> = ({
   onEnter,
   onLeave,
   onDrag,
+  disabled = true,
 }) => {
   const [defaultCoord] = useState({ x: roadmapItem.x, y: roadmapItem.y });
   const [position, setPosition] = useState<
@@ -53,7 +55,7 @@ const RoadmapEditItem: FC<Props> = ({
   };
 
   return (
-    <Draggable onDrag={handleDrag}>
+    <Draggable onDrag={handleDrag} disabled={disabled}>
       <button
         ref={refs}
         type="button"

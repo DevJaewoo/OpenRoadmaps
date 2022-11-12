@@ -213,6 +213,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   onEnter={onRoadmapItemEnter}
                   onLeave={onRoadmapItemLeave}
                   onDrag={onRoadmapItemDrag}
+                  disabled={editMode !== EditMode.Cursor}
                 />
               ))}
               {editMode === EditMode.Add && (
