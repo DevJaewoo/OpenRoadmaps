@@ -143,7 +143,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   };
 
   const onConnectorHintSelect = (id: number, position: TPosition) => {
-    // console.log(`${id} ${position}`);
+    setConnectorHintId(undefined);
     setConnectorStatus({ id, position });
   };
 
@@ -214,17 +214,19 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   onLeave={onRoadmapItemLeave}
                   onDrag={onRoadmapItemDrag}
                   disabled={editMode !== EditMode.Cursor}
-                />
+                >
+                  {editMode === EditMode.Connect &&
+                    roadmapItem.id === connectorHintId && (
+                      <RoadmapConnectorHint
+                        id={connectorHintId}
+                        refs={roadmapItemRefs.current[connectorHintId]}
+                        onSelect={onConnectorHintSelect}
+                      />
+                    )}
+                </RoadmapEditItem>
               ))}
               {editMode === EditMode.Add && (
                 <RoadmapEditItemHint onSelect={onRoadmapAddHintSelect} />
-              )}
-              {editMode === EditMode.Connect && connectorHintId && (
-                <RoadmapConnectorHint
-                  id={connectorHintId}
-                  refs={roadmapItemRefs.current[connectorHintId]}
-                  onSelect={onConnectorHintSelect}
-                />
               )}
             </div>
           </ScrollArea>

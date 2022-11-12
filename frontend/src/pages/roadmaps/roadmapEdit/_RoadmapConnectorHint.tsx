@@ -1,5 +1,4 @@
 import { FC, RefObject } from "react";
-import { getCurrentPositionPixel } from "src/utils/PixelToRem";
 
 export const Position = {
   top: "t",
@@ -17,8 +16,8 @@ interface Props {
 }
 
 const RoadmapConnectorHintItem: FC<{
-  x: number;
-  y: number;
+  x: number | string;
+  y: number | string;
   onClick: () => void;
 }> = ({ x, y, onClick }) => {
   return (
@@ -36,28 +35,26 @@ const RoadmapConnectorHintItem: FC<{
 const RoadmapConnectorHint: FC<Props> = ({ id, refs, onSelect }) => {
   if (!refs || !refs.current) return null;
 
-  const { x, y } = getCurrentPositionPixel(refs);
-
   return (
     <>
       <RoadmapConnectorHintItem
-        x={x + refs.current.offsetWidth / 2}
-        y={y}
+        x="50%"
+        y="0%"
         onClick={() => onSelect(id, Position.top)}
       />
       <RoadmapConnectorHintItem
-        x={x + refs.current.offsetWidth / 2}
-        y={y + refs.current.offsetHeight}
+        x="50%"
+        y="100%"
         onClick={() => onSelect(id, Position.bottom)}
       />
       <RoadmapConnectorHintItem
-        x={x}
-        y={y + refs.current.offsetHeight / 2}
+        x="0%"
+        y="50%"
         onClick={() => onSelect(id, Position.left)}
       />
       <RoadmapConnectorHintItem
-        x={x + refs.current.offsetWidth}
-        y={y + refs.current.offsetHeight / 2}
+        x="100%"
+        y="50%"
         onClick={() => onSelect(id, Position.right)}
       />
     </>

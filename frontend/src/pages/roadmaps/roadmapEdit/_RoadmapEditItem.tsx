@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler, RefObject, useState } from "react";
+import { FC, MouseEventHandler, RefObject, useState, ReactNode } from "react";
 import Draggable, { DraggableEventHandler } from "react-draggable";
 import { RoadmapItem } from "src/apis/useRoadmap";
 import { getCurrentPositionRem } from "src/utils/PixelToRem";
@@ -13,6 +13,7 @@ interface Props {
   onLeave: (id: number) => void;
   onDrag: (id: number, x: number, y: number) => void;
   disabled?: boolean;
+  children?: ReactNode;
 }
 
 const RoadmapEditItem: FC<Props> = ({
@@ -24,6 +25,7 @@ const RoadmapEditItem: FC<Props> = ({
   onLeave,
   onDrag,
   disabled = true,
+  children,
 }) => {
   const [defaultCoord] = useState({ x: roadmapItem.x, y: roadmapItem.y });
   const [position, setPosition] = useState<
@@ -69,6 +71,7 @@ const RoadmapEditItem: FC<Props> = ({
         onMouseLeave={() => onLeave(roadmapItem.id)}
       >
         {roadmapItem.name}
+        {children}
       </button>
     </Draggable>
   );
