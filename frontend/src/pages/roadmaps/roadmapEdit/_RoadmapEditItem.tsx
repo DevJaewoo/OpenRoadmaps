@@ -61,7 +61,7 @@ const RoadmapEditItem: FC<Props> = ({
         type="button"
         className={`flex justify-center items-center absolute max-w-xs px-5 py-2 bg-white border-4 rounded-xl border-${
           RoadmapColor[roadmapItem.recommend]
-        }`}
+        } ${disabled ? "cursor-default" : "cursor-pointer"}`}
         style={{ top: `${defaultCoord.y}rem`, left: `${defaultCoord.x}rem` }}
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
