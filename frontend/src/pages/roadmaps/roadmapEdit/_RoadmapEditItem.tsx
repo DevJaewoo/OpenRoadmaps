@@ -5,7 +5,7 @@ import { getCurrentPositionRem } from "src/utils/PixelToRem";
 import { RoadmapColor } from "src/utils/constants";
 
 interface Props {
-  refs: RefObject<HTMLButtonElement>;
+  refs: RefObject<HTMLDivElement>;
   roadmapItem: RoadmapItem;
   onClick: (id: number) => void;
   onDoubleClick: (id: number) => void;
@@ -32,7 +32,7 @@ const RoadmapEditItem: FC<Props> = ({
     { x: number; y: number } | undefined
   >(undefined);
 
-  const handleClick: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleClick: MouseEventHandler<HTMLDivElement> = () => {
     const { x, y } = getCurrentPositionRem(refs);
 
     if (position === undefined || (position.x === x && position.y === y)) {
@@ -58,9 +58,8 @@ const RoadmapEditItem: FC<Props> = ({
 
   return (
     <Draggable onDrag={handleDrag} disabled={disabled}>
-      <button
+      <div
         ref={refs}
-        type="button"
         className={`flex justify-center items-center absolute max-w-xs px-5 py-2 bg-white border-4 rounded-xl border-${
           RoadmapColor[roadmapItem.recommend]
         } ${disabled ? "cursor-default" : "cursor-pointer"}`}
@@ -69,10 +68,12 @@ const RoadmapEditItem: FC<Props> = ({
         onDoubleClick={handleDoubleClick}
         onMouseEnter={() => onEnter(roadmapItem.id)}
         onMouseLeave={() => onLeave(roadmapItem.id)}
+        role="button"
+        aria-hidden
       >
         {roadmapItem.name}
         {children}
-      </button>
+      </div>
     </Draggable>
   );
 };

@@ -12,12 +12,16 @@ import { Button, ScrollArea } from "@mantine/core";
 import { BsCursor } from "react-icons/bs";
 import { AiOutlinePlusSquare, AiFillDelete } from "react-icons/ai";
 import { MdOutlineMoving } from "react-icons/md";
+import Connector from "@devjaewoo/react-svg-connector";
 import { Recommend, RoadmapItem } from "src/apis/useRoadmap";
 import RoadmapEditButton from "./_RoadmapEditButton";
 import RoadmapNameItem from "./_RoadmapNameItem";
 import RoadmapEditItem from "./_RoadmapEditItem";
 import RoadmapEditItemHint from "./_RoadmapEditItemHint";
-import RoadmapConnectorHint, { TPosition } from "./_RoadmapConnectorHint";
+import RoadmapConnectorHint, {
+  Position,
+  TPosition,
+} from "./_RoadmapConnectorHint";
 
 const EditMode = {
   Cursor: 0,
@@ -50,7 +54,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   const [editMode, setEditMode] = useState<TEditMode>(EditMode.Cursor);
 
   const roadmapItemRefs = useRef<{
-    [key: number]: RefObject<HTMLButtonElement>;
+    [key: number]: RefObject<HTMLDivElement>;
   }>({});
 
   const [roadmapItemList, setRoadmapItemList] =
@@ -68,7 +72,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     if (roadmapItemRefs.current[key] !== undefined) {
       return roadmapItemRefs.current[key];
     }
-    const newRef = createRef<HTMLButtonElement>();
+    const newRef = createRef<HTMLDivElement>();
     roadmapItemRefs.current[key] = newRef;
     return newRef;
   };

@@ -11,7 +11,7 @@ export type TPosition = typeof Position[keyof typeof Position];
 
 interface Props {
   id: number;
-  refs: RefObject<HTMLButtonElement> | undefined;
+  refs: RefObject<HTMLDivElement> | undefined;
   onSelect: (id: number, position: TPosition) => void;
 }
 
@@ -21,14 +21,15 @@ const RoadmapConnectorHintItem: FC<{
   onClick: () => void;
 }> = ({ x, y, onClick }) => {
   return (
-    <button
-      type="button"
+    <div
       className="w-3 h-3 rounded-full z-10 absolute -translate-x-1/2 -translate-y-1/2 bg-black"
       onClick={onClick}
       style={{ top: y, left: x }}
+      role="button"
+      aria-hidden
     >
       {}
-    </button>
+    </div>
   );
 };
 
