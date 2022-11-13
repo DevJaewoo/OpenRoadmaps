@@ -15,6 +15,7 @@ import { MdOutlineMoving } from "react-icons/md";
 import Connector from "@devjaewoo/react-svg-connector";
 import { Recommend, RoadmapItem } from "src/apis/useRoadmap";
 import { getCurrentPositionPixel } from "src/utils/PixelToRem";
+import { ShapeDirection } from "@devjaewoo/react-svg-connector/lib/SvgConnector";
 import RoadmapEditButton from "./_RoadmapEditButton";
 import RoadmapNameItem from "./_RoadmapNameItem";
 import RoadmapEditItem from "./_RoadmapEditItem";
@@ -76,6 +77,25 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   const [connectorHintPosition, setConnectorHintPosition] = useState<
     { x: number; y: number } | undefined
   >(undefined);
+
+  const updateEditMode = (mode: TEditMode) => {
+    switch (mode) {
+      case EditMode.Cursor:
+        setEditMode(EditMode.Cursor);
+        break;
+      case EditMode.Add:
+        setEditMode(EditMode.Add);
+        break;
+      case EditMode.Connect:
+        setConnectorHintId(undefined);
+        setConnectorStatus(undefined);
+        setEditMode(EditMode.Connect);
+        break;
+      case EditMode.Delete:
+        setEditMode(EditMode.Delete);
+        break;
+    }
+  };
 
   const addRef = (key: number) => {
     if (roadmapItemRefs.current[key] !== undefined) {
@@ -161,18 +181,46 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     y: number,
     position: TPosition
   ) => {
-    const itemPosition = getCurrentPositionPixel(roadmapItemRefs.current[id]);
-    setConnectorHintId(undefined);
-    setConnectorStatus({
-      id,
-      x: itemPosition.x + x,
-      y: itemPosition.y + y,
-      position,
-    });
+    if (connectorStatus === undefined) {
+      const itemPosition = getCurrentPositionPixel(roadmapItemRefs.current[id]);
+      setConnectorHintId(undefined);
+      setConnectorStatus({
+        id,
+        x: itemPosition.x + x,
+        y: itemPosition.y + y,
+        position,
+      });
+    } else {
+      const child = roadmapItemList.find((r) => r.id === id);
+      if (child === undefined || child.parentId !== null) return;
+
+      child.parentId = connectorStatus.id;
+      child.connectionType = getHintConnectorDirection(
+        connectorStatus.position,
+        position
+      );
+
+      setConnectorHintId(undefined);
+      setConnectorStatus(undefined);
+    }
   };
 
-  const getHintConnectorDirection = () => {
-    switch (connectorStatus?.position) {
+  const getHintConnectorDirection = (
+    from: TPosition | undefined,
+    to: TPosition | undefined
+  ) => {
+    if (to !== undefined) {
+      if (
+        ((from === Position.top || from === Position.bottom) &&
+          (to === Position.top || to === Position.bottom)) ||
+        ((from === Position.left || from === Position.right) &&
+          (to === Position.left || to === Position.right))
+      ) {
+        return `${from}2${to}` as ShapeDirection;
+      }
+    }
+
+    switch (from) {
       case Position.top:
         return "t2b";
       case Position.bottom:
@@ -181,9 +229,9 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
         return "l2r";
       case Position.right:
         return "r2l";
-      default:
-        return "t2b";
     }
+
+    return "t2b";
   };
 
   useEffect(() => {
@@ -214,22 +262,22 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
           <div className="flex flex-row justify-center items-center rounded-b-lg px-1 py-2 text-2xl absolute z-30 text-white bg-blue-600">
             <RoadmapEditButton
               icon={<BsCursor />}
-              onClick={() => setEditMode(EditMode.Cursor)}
+              onClick={() => updateEditMode(EditMode.Cursor)}
               highlight={editMode === EditMode.Cursor}
             />
             <RoadmapEditButton
               icon={<AiOutlinePlusSquare />}
-              onClick={() => setEditMode(EditMode.Add)}
+              onClick={() => updateEditMode(EditMode.Add)}
               highlight={editMode === EditMode.Add}
             />
             <RoadmapEditButton
               icon={<MdOutlineMoving />}
-              onClick={() => setEditMode(EditMode.Connect)}
+              onClick={() => updateEditMode(EditMode.Connect)}
               highlight={editMode === EditMode.Connect}
             />
             <RoadmapEditButton
               icon={<AiFillDelete />}
-              onClick={() => setEditMode(EditMode.Delete)}
+              onClick={() => updateEditMode(EditMode.Delete)}
               highlight={editMode === EditMode.Delete}
               lastElement
             />
@@ -261,7 +309,9 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   onEnter={onRoadmapItemEnter}
                   onLeave={onRoadmapItemLeave}
                   onDrag={onRoadmapItemDrag}
-                  disabled={editMode !== EditMode.Cursor}
+                  disabled={
+                    editMode !== EditMode.Cursor && editMode !== EditMode.Delete
+                  }
                 >
                   {editMode === EditMode.Connect &&
                     roadmapItem.id === connectorHintId && (
@@ -273,6 +323,35 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                     )}
                 </RoadmapEditItem>
               ))}
+              {roadmapItemList
+                .filter((r) => r.parentId)
+                .map((r) => {
+                  if (r.parentId === null) return null;
+
+                  const to = roadmapItemRefs.current[r.id].current;
+                  const from = roadmapItemRefs.current[r.parentId]?.current;
+
+                  if (!from || !to) return null;
+
+                  return (
+                    <Connector
+                      key={r.id}
+                      el1={from}
+                      el2={to}
+                      shape="narrow-s"
+                      direction={r.connectionType as ShapeDirection}
+                      roundCorner
+                      endArrow
+                      className="bg-opacity-100 z-0"
+                      onClick={() => {
+                        if (editMode === EditMode.Delete) {
+                          r.connectionType = null;
+                          r.parentId = null;
+                        }
+                      }}
+                    />
+                  );
+                })}
               {editMode === EditMode.Add && (
                 <RoadmapEditItemHint onSelect={onRoadmapAddHintSelect} />
               )}
@@ -303,7 +382,10 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                       el1={connectorFromRef.current}
                       el2={connectorToRef.current}
                       shape="narrow-s"
-                      direction={getHintConnectorDirection()}
+                      direction={getHintConnectorDirection(
+                        connectorStatus?.position,
+                        undefined
+                      )}
                       roundCorner
                       endArrow
                       className="bg-opacity-100 z-0"
