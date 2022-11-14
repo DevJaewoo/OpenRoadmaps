@@ -75,13 +75,10 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   const connectorFromRef = useRef<HTMLDivElement>(null);
   const connectorToRef = useRef<HTMLDivElement>(null);
   const [connectorHintPosition, setConnectorHintPosition] = useState<
-    | {
-        id?: number;
-        x: number;
-        y: number;
-        position?: TPosition;
-      }
-    | undefined
+    { x: number; y: number } | undefined
+  >(undefined);
+  const [connectorFixedHintPosition, setConnectorFixedHintPosition] = useState<
+    ConnectorInfo | undefined
   >(undefined);
 
   const updateEditMode = (mode: TEditMode) => {
@@ -198,6 +195,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
         roadmapItemRefs.current[id].current
       );
       setConnectorHintId(undefined);
+      setConnectorFixedHintPosition(undefined);
       setConnectorStatus({
         id,
         x: itemPosition.x + x,
@@ -215,6 +213,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
       );
 
       setConnectorHintId(undefined);
+      setConnectorFixedHintPosition(undefined);
       setConnectorStatus(undefined);
     }
   };
@@ -225,12 +224,21 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     y: number,
     position: TPosition
   ) => {
-    setConnectorHintPosition({ id, x, y, position });
+    const itemPosition = getCurrentPositionPixel(
+      roadmapItemRefs.current[id].current
+    );
+
+    setConnectorFixedHintPosition({
+      id,
+      x: itemPosition.x + x,
+      y: itemPosition.y + y,
+      position,
+    });
   };
 
   const onConnectorHintLeave = (id: number) => {
-    if (connectorHintPosition?.id === id) {
-      setConnectorHintPosition(undefined);
+    if (connectorFixedHintPosition?.id === id) {
+      setConnectorFixedHintPosition(undefined);
     }
   };
 
@@ -315,14 +323,14 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
             className="h-full w-full bg-gray-50"
             scrollHideDelay={0}
             onMouseMove={(event) => {
-              if (connectorHintPosition?.id) return;
-
               const target = event.target as HTMLDivElement;
               const { x, y } = getCurrentPositionPixel(target);
 
-              setConnectorHintPosition({
-                x: event.nativeEvent.offsetX + x,
-                y: event.nativeEvent.offsetY + y,
+              setConnectorHintPosition(() => {
+                return {
+                  x: event.nativeEvent.offsetX + x,
+                  y: event.nativeEvent.offsetY + y,
+                };
               });
             }}
           >
@@ -348,7 +356,8 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   }
                 >
                   {editMode === EditMode.Connect &&
-                    roadmapItem.id === connectorHintId && (
+                    roadmapItem.id === connectorHintId &&
+                    !roadmapItem.parentId && (
                       <RoadmapConnectorHint
                         id={connectorHintId}
                         refs={roadmapItemRefs.current[connectorHintId]}
@@ -396,7 +405,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   {connectorStatus && (
                     <div
                       ref={connectorFromRef}
-                      className="absolute"
+                      className="absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2"
                       style={{
                         top: connectorStatus.y,
                         left: connectorStatus.x,
@@ -406,10 +415,14 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   {connectorHintPosition && (
                     <div
                       ref={connectorToRef}
-                      className="absolute"
+                      className="absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2"
                       style={{
-                        top: connectorHintPosition.y,
-                        left: connectorHintPosition.x,
+                        top: connectorFixedHintPosition
+                          ? connectorFixedHintPosition.y
+                          : connectorHintPosition.y,
+                        left: connectorFixedHintPosition
+                          ? connectorFixedHintPosition.x
+                          : connectorHintPosition.x,
                       }}
                     />
                   )}
@@ -420,7 +433,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                       shape="narrow-s"
                       direction={getHintConnectorDirection(
                         connectorStatus?.position,
-                        connectorHintPosition?.position
+                        connectorFixedHintPosition?.position
                       )}
                       roundCorner
                       endArrow
