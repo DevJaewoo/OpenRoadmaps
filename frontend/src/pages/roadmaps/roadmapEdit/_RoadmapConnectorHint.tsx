@@ -16,6 +16,7 @@ interface Props {
   onSelect: (id: number, x: number, y: number, position: TPosition) => void;
   onHintEnter: (id: number, x: number, y: number, position: TPosition) => void;
   onHintLeave: (id: number) => void;
+  position?: TPosition;
 }
 
 const RoadmapConnectorHintItem: FC<{
@@ -69,39 +70,52 @@ const RoadmapConnectorHint: FC<Props> = ({
   onSelect,
   onHintEnter,
   onHintLeave,
+  position,
 }) => {
   if (!refs || !refs.current) return null;
 
   return (
     <>
-      <RoadmapConnectorHintItem
-        x="50%"
-        y="0%"
-        onClick={(x, y) => onSelect(id, x, y, Position.top)}
-        onEnter={(x, y) => onHintEnter(id, x, y, Position.top)}
-        onLeave={() => onHintLeave(id)}
-      />
-      <RoadmapConnectorHintItem
-        x="50%"
-        y="100%"
-        onClick={(x, y) => onSelect(id, x, y, Position.bottom)}
-        onEnter={(x, y) => onHintEnter(id, x, y, Position.bottom)}
-        onLeave={() => onHintLeave(id)}
-      />
-      <RoadmapConnectorHintItem
-        x="0%"
-        y="50%"
-        onClick={(x, y) => onSelect(id, x, y, Position.left)}
-        onEnter={(x, y) => onHintEnter(id, x, y, Position.left)}
-        onLeave={() => onHintLeave(id)}
-      />
-      <RoadmapConnectorHintItem
-        x="100%"
-        y="50%"
-        onClick={(x, y) => onSelect(id, x, y, Position.right)}
-        onEnter={(x, y) => onHintEnter(id, x, y, Position.right)}
-        onLeave={() => onHintLeave(id)}
-      />
+      {(!position ||
+        position === Position.top ||
+        position === Position.bottom) && (
+        <>
+          <RoadmapConnectorHintItem
+            x="50%"
+            y="0%"
+            onClick={(x, y) => onSelect(id, x, y, Position.top)}
+            onEnter={(x, y) => onHintEnter(id, x, y, Position.top)}
+            onLeave={() => onHintLeave(id)}
+          />
+          <RoadmapConnectorHintItem
+            x="50%"
+            y="100%"
+            onClick={(x, y) => onSelect(id, x, y, Position.bottom)}
+            onEnter={(x, y) => onHintEnter(id, x, y, Position.bottom)}
+            onLeave={() => onHintLeave(id)}
+          />
+        </>
+      )}
+      {(!position ||
+        position === Position.left ||
+        position === Position.right) && (
+        <>
+          <RoadmapConnectorHintItem
+            x="0%"
+            y="50%"
+            onClick={(x, y) => onSelect(id, x, y, Position.left)}
+            onEnter={(x, y) => onHintEnter(id, x, y, Position.left)}
+            onLeave={() => onHintLeave(id)}
+          />
+          <RoadmapConnectorHintItem
+            x="100%"
+            y="50%"
+            onClick={(x, y) => onSelect(id, x, y, Position.right)}
+            onEnter={(x, y) => onHintEnter(id, x, y, Position.right)}
+            onLeave={() => onHintLeave(id)}
+          />
+        </>
+      )}
     </>
   );
 };

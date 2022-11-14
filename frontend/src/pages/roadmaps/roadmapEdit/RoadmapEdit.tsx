@@ -357,13 +357,17 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                 >
                   {editMode === EditMode.Connect &&
                     roadmapItem.id === connectorHintId &&
-                    !roadmapItem.parentId && (
+                    !(
+                      connectorStatus !== undefined &&
+                      roadmapItem.parentId !== null
+                    ) && (
                       <RoadmapConnectorHint
                         id={connectorHintId}
                         refs={roadmapItemRefs.current[connectorHintId]}
                         onSelect={onConnectorHintSelect}
                         onHintEnter={onConnectorHintEnter}
                         onHintLeave={onConnectorHintLeave}
+                        position={connectorStatus?.position}
                       />
                     )}
                 </RoadmapEditItem>
@@ -387,6 +391,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                       direction={r.connectionType as ShapeDirection}
                       roundCorner
                       endArrow
+                      stem={5}
                       className="bg-opacity-100 z-0"
                       onClick={() => {
                         if (editMode === EditMode.Delete) {
@@ -405,7 +410,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   {connectorStatus && (
                     <div
                       ref={connectorFromRef}
-                      className="absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2"
+                      className="absolute"
                       style={{
                         top: connectorStatus.y,
                         left: connectorStatus.x,
@@ -437,6 +442,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                       )}
                       roundCorner
                       endArrow
+                      stem={5}
                       className="bg-opacity-100 z-0"
                     />
                   )}
