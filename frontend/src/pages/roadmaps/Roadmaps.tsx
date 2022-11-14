@@ -1,11 +1,21 @@
 import { useState, useRef, KeyboardEvent } from "react";
+import { Route, Routes } from "react-router-dom";
 import { Input, Select, Pagination } from "@mantine/core";
-import { FaSearch } from "react-icons/fa";
-import { RoadmapList, RoadmapSearch } from "src/apis/useRoadmap";
+import { FaSearch, FaArrowRight } from "react-icons/fa";
+import {
+  RoadmapList,
+  RoadmapOrder,
+  RoadmapSearch,
+  TRoadmapOrder,
+} from "src/apis/useRoadmap";
+import { OutlinedButton } from "src/components/button/VariantButtons";
 import Header from "src/components/Header";
+import NotFound from "src/pages/error/NotFound";
+import withAuth from "src/hoc/withAuth";
 import RoadmapListComponent from "./roadmapList/RoadmapList";
+import RoadmapCreate from "./RoadmapCreate";
 
-const Roadmaps: React.FC<{}> = () => {
+const RoadmapMain: React.FC<{}> = () => {
   const titleRef = useRef<HTMLInputElement>(null);
 
   const [search, setSearch] = useState<RoadmapSearch>({
@@ -21,9 +31,9 @@ const Roadmaps: React.FC<{}> = () => {
     setTotalPage(data.totalPages);
   };
 
-  const onOrderChange = (order: string) => {
-    let currentOrder: "LATEST" | "LIKES" | undefined;
-    if (order !== "LATEST" && order !== "LIKES") {
+  const onOrderChange = (order: TRoadmapOrder) => {
+    let currentOrder: TRoadmapOrder | undefined;
+    if (!Object.values(RoadmapOrder).includes(order)) {
       currentOrder = undefined;
     } else {
       currentOrder = order;
@@ -50,12 +60,25 @@ const Roadmaps: React.FC<{}> = () => {
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-col items-center w-full max-w-7xl">
-        <Header
-          title="Roadmaps"
-          text={
-            "개발 공부는 하고 싶은데 어떻게 시작해야 할지 막막하신가요?\n로드맵을 따라 기초부터 차근차근 공부해보세요!"
-          }
-        />
+        <div className="flex flex-col items-center w-full">
+          <Header
+            title="Roadmaps"
+            text={
+              "개발 공부는 하고 싶은데 어떻게 시작해야 할지 막막하신가요?\n로드맵을 따라 기초부터 차근차근 공부해보세요!"
+            }
+          />
+          <OutlinedButton
+            className="flex flex-row justify-center items-center mt-5"
+            type="link"
+            to="/roadmaps/create"
+            text={
+              <>
+                로드맵 만들기
+                <FaArrowRight className="ml-1" />
+              </>
+            }
+          />
+        </div>
         <div className="flex flex-col items-center w-full mt-5 p-3 bg-gray-300 rounded-lg">
           <div className="flex flex-row w-full justify-between px-2">
             <Input ref={titleRef} icon={<FaSearch />} onKeyDown={onKeyDown} />
@@ -64,8 +87,8 @@ const Roadmaps: React.FC<{}> = () => {
               <Select
                 value={search.order}
                 data={[
-                  { value: "LATEST", label: "최신 순" },
-                  { value: "LIKES", label: "좋아요 순" },
+                  { value: RoadmapOrder.LATEST, label: "최신 순" },
+                  { value: RoadmapOrder.LIKES, label: "좋아요 순" },
                 ]}
                 onChange={onOrderChange}
               />
@@ -85,6 +108,17 @@ const Roadmaps: React.FC<{}> = () => {
         />
       </div>
     </div>
+  );
+};
+
+const Roadmaps = () => {
+  const AuthRoadmapCreate = withAuth(RoadmapCreate, true);
+  return (
+    <Routes>
+      <Route path="/" element={<RoadmapMain />} />
+      <Route path="/create" element={<AuthRoadmapCreate />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 };
 
