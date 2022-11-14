@@ -126,8 +126,14 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
         break;
 
       case EditMode.Delete:
-        removeRef(id);
         setRoadmapItemList(roadmapItemList.filter((r) => r.id !== id));
+        roadmapItemList
+          .filter((r) => r.parentId === id)
+          .forEach((r) => {
+            r.connectionType = null;
+            r.parentId = null;
+          });
+        removeRef(id);
         updateScrollHeight();
         break;
     }
