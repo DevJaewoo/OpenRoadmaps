@@ -51,7 +51,7 @@ const RoadmapConnectorHintItem: FC<{
   return (
     <div
       ref={hintRef}
-      className="w-3 h-3 rounded-full z-10 absolute -translate-x-1/2 -translate-y-1/2 bg-black"
+      className="w-3 h-3 rounded-full z-10 absolute -translate-x-1/2 -translate-y-1/2 bg-white border-2 border-gray-400"
       onMouseEnter={handleEnter}
       onMouseLeave={onLeave}
       onClick={handleClick}
@@ -82,14 +82,14 @@ const RoadmapConnectorHint: FC<Props> = ({
         <>
           <RoadmapConnectorHintItem
             x="50%"
-            y="0%"
+            y="-2px"
             onClick={(x, y) => onSelect(id, x, y, Position.top)}
             onEnter={(x, y) => onHintEnter(id, x, y, Position.top)}
             onLeave={() => onHintLeave(id)}
           />
           <RoadmapConnectorHintItem
             x="50%"
-            y="100%"
+            y="calc(100% + 2px)"
             onClick={(x, y) => onSelect(id, x, y, Position.bottom)}
             onEnter={(x, y) => onHintEnter(id, x, y, Position.bottom)}
             onLeave={() => onHintLeave(id)}
@@ -101,14 +101,14 @@ const RoadmapConnectorHint: FC<Props> = ({
         position === Position.right) && (
         <>
           <RoadmapConnectorHintItem
-            x="0%"
+            x="-2px"
             y="50%"
             onClick={(x, y) => onSelect(id, x, y, Position.left)}
             onEnter={(x, y) => onHintEnter(id, x, y, Position.left)}
             onLeave={() => onHintLeave(id)}
           />
           <RoadmapConnectorHintItem
-            x="100%"
+            x="calc(100% + 2px)"
             y="50%"
             onClick={(x, y) => onSelect(id, x, y, Position.right)}
             onEnter={(x, y) => onHintEnter(id, x, y, Position.right)}
