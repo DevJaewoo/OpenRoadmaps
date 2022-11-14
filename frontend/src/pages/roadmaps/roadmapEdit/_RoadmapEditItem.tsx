@@ -33,7 +33,7 @@ const RoadmapEditItem: FC<Props> = ({
   >(undefined);
 
   const handleClick: MouseEventHandler<HTMLDivElement> = () => {
-    const { x, y } = getCurrentPositionRem(refs);
+    const { x, y } = getCurrentPositionRem(refs.current);
 
     if (position === undefined || (position.x === x && position.y === y)) {
       onClick(roadmapItem.id);
@@ -47,12 +47,12 @@ const RoadmapEditItem: FC<Props> = ({
   };
 
   const handleDrag: DraggableEventHandler = () => {
-    const { x, y } = getCurrentPositionRem(refs);
+    const { x, y } = getCurrentPositionRem(refs.current);
 
     roadmapItem.x = x;
     roadmapItem.y = y;
 
-    setPosition(getCurrentPositionRem(refs));
+    setPosition(getCurrentPositionRem(refs.current));
     onDrag(roadmapItem.id, x, y);
   };
 
