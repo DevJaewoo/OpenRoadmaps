@@ -20,19 +20,8 @@ import RoadmapEditButton from "./_RoadmapEditButton";
 import RoadmapNameItem from "./_RoadmapNameItem";
 import RoadmapEditItem from "./_RoadmapEditItem";
 import RoadmapEditItemHint from "./_RoadmapEditItemHint";
-import RoadmapConnectorHint, {
-  Position,
-  TPosition,
-} from "./_RoadmapConnectorHint";
-
-const EditMode = {
-  Cursor: 0,
-  Add: 1,
-  Connect: 2,
-  Delete: 3,
-} as const;
-
-type TEditMode = typeof EditMode[keyof typeof EditMode];
+import RoadmapConnectorHint from "./_RoadmapConnectorHint";
+import { EditMode, TEditMode, Position, TPosition } from "./types";
 
 interface Props {
   defaultValue?: RoadmapItem[];
@@ -125,7 +114,6 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   const onRoadmapItemClick = (id: number) => {
     switch (editMode) {
       case EditMode.Cursor:
-        // Drawer 열기
         break;
 
       case EditMode.Delete:
@@ -351,9 +339,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   onEnter={onRoadmapItemEnter}
                   onLeave={onRoadmapItemLeave}
                   onDrag={onRoadmapItemDrag}
-                  disabled={
-                    editMode !== EditMode.Cursor && editMode !== EditMode.Delete
-                  }
+                  editMode={editMode}
                 >
                   {editMode === EditMode.Connect &&
                     roadmapItem.id === connectorHintId &&

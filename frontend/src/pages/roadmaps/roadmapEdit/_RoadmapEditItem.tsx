@@ -3,6 +3,7 @@ import Draggable, { DraggableEventHandler } from "react-draggable";
 import { RoadmapItem } from "src/apis/useRoadmap";
 import { getCurrentPositionRem } from "src/utils/PixelToRem";
 import { RoadmapColor } from "src/utils/constants";
+import { EditMode, TEditMode } from "./types";
 
 interface Props {
   refs: RefObject<HTMLDivElement>;
@@ -12,7 +13,7 @@ interface Props {
   onEnter: (id: number) => void;
   onLeave: (id: number) => void;
   onDrag: (id: number, x: number, y: number) => void;
-  disabled?: boolean;
+  editMode: TEditMode;
   children?: ReactNode;
 }
 
@@ -24,7 +25,7 @@ const RoadmapEditItem: FC<Props> = ({
   onEnter,
   onLeave,
   onDrag,
-  disabled = true,
+  editMode,
   children,
 }) => {
   const [defaultCoord] = useState({ x: roadmapItem.x, y: roadmapItem.y });
@@ -32,17 +33,28 @@ const RoadmapEditItem: FC<Props> = ({
     { x: number; y: number } | undefined
   >(undefined);
 
+  let singleClicked = false;
+
   const handleClick: MouseEventHandler<HTMLDivElement> = () => {
     const { x, y } = getCurrentPositionRem(refs.current);
 
-    if (position === undefined || (position.x === x && position.y === y)) {
-      onClick(roadmapItem.id);
-    }
+    singleClicked = true;
+    setTimeout(() => {
+      if (!singleClicked) return;
+      singleClicked = false;
 
-    setPosition(undefined);
+      if (position === undefined || (position.x === x && position.y === y)) {
+        onClick(roadmapItem.id);
+      }
+
+      setPosition(undefined);
+    }, 300);
   };
 
   const handleDoubleClick = () => {
+    if (!singleClicked) return;
+    singleClicked = false;
+
     onDoubleClick(roadmapItem.id);
   };
 
@@ -57,12 +69,16 @@ const RoadmapEditItem: FC<Props> = ({
   };
 
   return (
-    <Draggable onDrag={handleDrag} disabled={disabled}>
+    <Draggable onDrag={handleDrag} disabled={editMode !== EditMode.Cursor}>
       <div
         ref={refs}
         className={`flex justify-center items-center absolute max-w-xs px-5 py-2 z-10 bg-white border-4 rounded-xl border-${
           RoadmapColor[roadmapItem.recommend]
-        } ${disabled ? "cursor-default" : "cursor-pointer"}`}
+        } ${
+          editMode === EditMode.Cursor || editMode === EditMode.Delete
+            ? "cursor-pointer"
+            : "cursor-default"
+        }`}
         style={{ top: `${defaultCoord.y}rem`, left: `${defaultCoord.x}rem` }}
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}

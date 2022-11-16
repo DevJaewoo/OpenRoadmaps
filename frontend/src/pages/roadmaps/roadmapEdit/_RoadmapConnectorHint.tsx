@@ -1,14 +1,6 @@
 import { FC, useRef, RefObject } from "react";
 import { getCurrentPositionPixel } from "src/utils/PixelToRem";
-
-export const Position = {
-  top: "t",
-  bottom: "b",
-  left: "l",
-  right: "r",
-} as const;
-
-export type TPosition = typeof Position[keyof typeof Position];
+import { Position, TPosition } from "./types";
 
 interface Props {
   id: number;
