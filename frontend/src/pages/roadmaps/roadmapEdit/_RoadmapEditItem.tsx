@@ -83,9 +83,11 @@ const RoadmapEditItem: FC<Props> = ({
   };
 
   const handleClick: MouseEventHandler<HTMLDivElement> = () => {
+    if (singleClicked) return;
+    singleClicked = true;
+
     const { x, y } = getCurrentPositionRem(refs.current);
 
-    singleClicked = true;
     setTimeout(() => {
       if (!singleClicked) return;
       singleClicked = false;
@@ -102,7 +104,9 @@ const RoadmapEditItem: FC<Props> = ({
     if (!singleClicked) return;
     singleClicked = false;
 
-    setEditing(true);
+    if (editMode === EditMode.Cursor) {
+      setEditing(true);
+    }
   };
 
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,7 +162,7 @@ const RoadmapEditItem: FC<Props> = ({
             style={{ width: `${inputWidth}px` }}
           />
         ) : (
-          <p className="max-w-sm">{inputText}</p>
+          <p className="max-w-sm select-none">{inputText}</p>
         )}
         {children}
       </div>
