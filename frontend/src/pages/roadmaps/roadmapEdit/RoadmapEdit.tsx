@@ -143,10 +143,6 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     }
   };
 
-  const onRoadmapItemDoubleClick = (_id: number) => {
-    // 텍스트 수정
-  };
-
   const onRoadmapItemDrag = (_id: number, _x: number, _y: number) => {
     // ID의 x, y 좌표 업데이트
     updateScrollHeight();
@@ -335,7 +331,6 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   key={roadmapItem.id}
                   roadmapItem={roadmapItem}
                   onClick={onRoadmapItemClick}
-                  onDoubleClick={onRoadmapItemDoubleClick}
                   onEnter={onRoadmapItemEnter}
                   onLeave={onRoadmapItemLeave}
                   onDrag={onRoadmapItemDrag}
