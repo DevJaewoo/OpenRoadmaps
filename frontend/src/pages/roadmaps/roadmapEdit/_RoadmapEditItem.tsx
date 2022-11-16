@@ -5,7 +5,6 @@ import {
   useState,
   ReactNode,
   useRef,
-  ChangeEvent,
   useEffect,
 } from "react";
 import Draggable, { DraggableEventHandler } from "react-draggable";
@@ -43,12 +42,33 @@ const RoadmapEditItem: FC<Props> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputText, setInputText] = useState<string>(roadmapItem.name);
+  const [inputWidth, setInputWidth] = useState<number>(0);
 
   useEffect(() => {
     if (editing && inputRef) {
       inputRef.current?.select();
     }
   }, [inputRef, editing]);
+
+  useEffect(() => {
+    const tmp = document.createElement("span");
+    tmp.className = "input-element tmp-element";
+    tmp.style.whiteSpace = "pre";
+    tmp.innerHTML = inputText
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    document.body.appendChild(tmp);
+
+    const width = tmp.getBoundingClientRect().width;
+    document.body.removeChild(tmp);
+
+    if (inputRef.current) {
+      inputRef.current.style.width = `${width}px`;
+    }
+
+    setInputWidth(width);
+  }, [inputRef, inputText]);
 
   let singleClicked = false;
 
@@ -85,9 +105,15 @@ const RoadmapEditItem: FC<Props> = ({
     setEditing(true);
   };
 
-  const handleTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     roadmapItem.name = event.target.value;
     setInputText(event.target.value);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      inputRef.current?.blur();
+    }
   };
 
   const handleBlur = () => {
@@ -122,14 +148,17 @@ const RoadmapEditItem: FC<Props> = ({
       >
         {editing ? (
           <input
+            className="max-w-sm"
             ref={inputRef}
             type="text"
             value={inputText}
             onChange={handleTextChange}
+            onKeyDown={handleKeyDown}
             onBlur={handleBlur}
+            style={{ width: `${inputWidth}px` }}
           />
         ) : (
-          <p>{inputText}</p>
+          <p className="max-w-sm">{inputText}</p>
         )}
         {children}
       </div>
