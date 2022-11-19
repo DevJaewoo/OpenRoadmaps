@@ -116,6 +116,10 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     setScrollHeight(Math.max(...roadmapItemList.map((r) => r.y)) + height / 2);
   }, [height, roadmapItemList]);
 
+  const onRoadmapNameItemClick = (id: number) => {
+    setDrawerItem(roadmapItemList.find((r) => r.id === id));
+  };
+
   const onRoadmapItemClick = (id: number) => {
     switch (editMode) {
       case EditMode.Cursor:
@@ -283,7 +287,11 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
         <ScrollArea className="w-72 h-full border-r" scrollHideDelay={0}>
           <div className="p-2" style={{ height: `${height}rem` }}>
             {roadmapItemList.map((roadmapItem) => (
-              <RoadmapNameItem key={roadmapItem.id} roadmapItem={roadmapItem} />
+              <RoadmapNameItem
+                key={roadmapItem.id}
+                roadmapItem={roadmapItem}
+                onClick={onRoadmapNameItemClick}
+              />
             ))}
           </div>
         </ScrollArea>
