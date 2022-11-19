@@ -22,6 +22,7 @@ import RoadmapEditItem from "./_RoadmapEditItem";
 import RoadmapEditItemHint from "./_RoadmapEditItemHint";
 import RoadmapConnectorHint from "./_RoadmapConnectorHint";
 import { EditMode, TEditMode, Position, TPosition } from "./types";
+import RoadmapEditDrawer from "./_RoadmapEditDrawer";
 
 interface Props {
   defaultValue?: RoadmapItem[];
@@ -70,6 +71,10 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     ConnectorInfo | undefined
   >(undefined);
 
+  const [drawerItem, setDrawerItem] = useState<RoadmapItem | undefined>(
+    undefined
+  );
+
   const updateEditMode = (mode: TEditMode) => {
     switch (mode) {
       case EditMode.Cursor:
@@ -114,6 +119,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   const onRoadmapItemClick = (id: number) => {
     switch (editMode) {
       case EditMode.Cursor:
+        setDrawerItem(roadmapItemList.find((r) => r.id === id));
         break;
 
       case EditMode.Delete:
@@ -156,10 +162,12 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
           name: "Example",
           x,
           y,
+          content: "",
           recommend: Recommend.RECOMMEND,
           isCleared: false,
           connectionType: null,
           parentId: null,
+          referenceList: [],
         };
         setNextId((id) => id + 1);
         setRoadmapItemList([...roadmapItemList, newRoadmapItem]);
@@ -433,6 +441,11 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
           </ScrollArea>
         </div>
       </div>
+
+      <RoadmapEditDrawer
+        roadmapItem={drawerItem}
+        onClose={() => setDrawerItem(undefined)}
+      />
     </div>
   );
 };

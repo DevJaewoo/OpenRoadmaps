@@ -1,8 +1,8 @@
 export const RoadmapColor = {
-  RECOMMEND: "blue-600",
-  ALTERNATIVE: "yellow-400",
-  NOT_RECOMMEND: "red-400",
-  NONE: "gray-200",
+  RECOMMEND: "rgb(37 99 235)",
+  ALTERNATIVE: "rgb(250 204 21)",
+  NOT_RECOMMEND: "rgb(248 113 113)",
+  NONE: "rgb(229 231 235)",
 } as const;
 
 export type TRoadmapColor = typeof RoadmapColor[keyof typeof RoadmapColor];

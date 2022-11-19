@@ -135,14 +135,16 @@ const RoadmapEditItem: FC<Props> = ({
     >
       <div
         ref={refs}
-        className={`flex justify-center items-center absolute max-w-xs px-5 py-2 z-10 bg-white border-4 rounded-xl border-${
-          RoadmapColor[roadmapItem.recommend]
-        } ${
+        className={`flex justify-center items-center absolute max-w-xs px-5 py-2 z-10 bg-white border-4 rounded-xl ${
           editMode === EditMode.Cursor || editMode === EditMode.Delete
             ? "cursor-pointer"
             : "cursor-default"
         }`}
-        style={{ top: `${defaultCoord.y}rem`, left: `${defaultCoord.x}rem` }}
+        style={{
+          top: `${defaultCoord.y}rem`,
+          left: `${defaultCoord.x}rem`,
+          borderColor: RoadmapColor[roadmapItem.recommend],
+        }}
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
         onMouseEnter={() => onEnter(roadmapItem.id)}

@@ -52,10 +52,12 @@ export interface RoadmapItem {
   name: string;
   x: number;
   y: number;
+  content: string;
   recommend: TRecommend;
   isCleared: boolean;
   connectionType: string | null;
   parentId: number | null;
+  referenceList: string[];
 }
 
 export interface Roadmap {
