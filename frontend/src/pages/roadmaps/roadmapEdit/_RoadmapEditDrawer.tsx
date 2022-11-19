@@ -1,5 +1,5 @@
 import { Drawer, Select, Textarea } from "@mantine/core";
-import { FC, forwardRef, useState } from "react";
+import { FC, forwardRef, useState, useEffect } from "react";
 import { RoadmapItem, Recommend, TRecommend } from "src/apis/useRoadmap";
 import RoadmapRecommendIcon from "./_RoadmapRecommendIcon";
 
@@ -44,15 +44,31 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
 );
 
 const RoadmapEditDrawer: FC<Props> = ({ roadmapItem, onClose }) => {
-  const [content, setContent] = useState<string>(roadmapItem?.content ?? "");
-  const [selectedValue, setSelectedValue] = useState<TRecommend>(
-    roadmapItem?.recommend ?? Recommend.NONE
+  const [content, setContent] = useState<string | undefined>(
+    roadmapItem?.content
+  );
+  const [recommend, setRecommend] = useState<TRecommend | undefined>(
+    roadmapItem?.recommend
   );
 
-  const onChange = (item: TRecommend) => {
+  useEffect(() => {
+    setContent(roadmapItem?.content ?? "");
+    setRecommend(roadmapItem?.recommend ?? Recommend.NONE);
+  }, [roadmapItem]);
+
+  const onChangeRecommend = (item: TRecommend) => {
     if (roadmapItem) {
       roadmapItem.recommend = Recommend[item];
-      setSelectedValue(item);
+      setRecommend(item);
+    }
+  };
+
+  const onChangeContent: React.ChangeEventHandler<HTMLTextAreaElement> = (
+    event
+  ) => {
+    if (roadmapItem) {
+      roadmapItem.content = event.target.value;
+      setContent(event.target.value);
     }
   };
 
@@ -69,14 +85,14 @@ const RoadmapEditDrawer: FC<Props> = ({ roadmapItem, onClose }) => {
         <div className="flex flex-row items-center">
           <RoadmapRecommendIcon
             size={2}
-            recommend={selectedValue}
+            recommend={recommend}
             className="mr-2"
           />
           <Select
             itemComponent={SelectItem}
             data={data}
-            onChange={onChange}
-            value={selectedValue}
+            onChange={onChangeRecommend}
+            value={recommend}
           />
         </div>
       </div>
@@ -84,7 +100,7 @@ const RoadmapEditDrawer: FC<Props> = ({ roadmapItem, onClose }) => {
         <div>
           <Textarea
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={onChangeContent}
             minRows={7}
             maxRows={7}
           />
