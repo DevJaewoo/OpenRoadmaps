@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import axiosInstance from "src/apis/axiosInstance";
 
 export interface RoadmapSearch {
@@ -90,4 +90,13 @@ const useRoadmapList = (
   });
 };
 
-export { useRoadmapList };
+const fetchRoadmapCreate = async (roadmap: Roadmap) => {
+  const response = await axiosInstance.post("/api/v1/roadmaps", roadmap);
+  return response.data;
+};
+
+const useRoadmapCreate = () => {
+  return useMutation(fetchRoadmapCreate, {});
+};
+
+export { useRoadmapList, useRoadmapCreate };

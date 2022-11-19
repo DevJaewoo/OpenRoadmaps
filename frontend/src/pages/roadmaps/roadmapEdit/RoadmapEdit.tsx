@@ -8,12 +8,18 @@ import {
   useEffect,
   useCallback,
 } from "react";
+import { AxiosError } from "axios";
 import { Button, ScrollArea } from "@mantine/core";
 import { BsCursor } from "react-icons/bs";
 import { AiOutlinePlusSquare, AiFillDelete } from "react-icons/ai";
 import { MdOutlineMoving } from "react-icons/md";
 import Connector from "@devjaewoo/react-svg-connector";
-import { Recommend, RoadmapItem } from "src/apis/useRoadmap";
+import {
+  Accessibility,
+  Recommend,
+  RoadmapItem,
+  useRoadmapCreate,
+} from "src/apis/useRoadmap";
 import { getCurrentPositionPixel } from "src/utils/PixelToRem";
 import { ShapeDirection } from "@devjaewoo/react-svg-connector/lib/SvgConnector";
 import RoadmapEditButton from "./_RoadmapEditButton";
@@ -74,6 +80,9 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   const [drawerItem, setDrawerItem] = useState<RoadmapItem | undefined>(
     undefined
   );
+
+  const titleRef = useRef<HTMLInputElement>(null);
+  const roadmapCreate = useRoadmapCreate();
 
   const updateEditMode = (mode: TEditMode) => {
     switch (mode) {
@@ -271,14 +280,47 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     updateScrollHeight();
   }, [updateScrollHeight]);
 
+  const onFinish = () => {
+    console.log(roadmapItemList);
+
+    const title = titleRef.current?.value ?? "";
+    if (title === "") {
+      alert("제목을 입력해주세요.");
+      return;
+    }
+
+    roadmapCreate.mutate(
+      {
+        id: 0,
+        image: "",
+        likes: 0,
+        accessibility: Accessibility.PUBLIC,
+        createdDate: "",
+        title,
+        roadmapItemList,
+      },
+      {
+        onSuccess: (data) => {
+          console.log(`Success! ${data}`);
+        },
+        onError: (error) => {
+          console.log(error as AxiosError);
+        },
+      }
+    );
+  };
+
   return (
     <div className="flex-1 flex flex-col w-full">
       <div className="flex flex-row justify-start items-center w-full h-20 mt-3 py-2 border-y">
         <input
+          ref={titleRef}
           className="flex-1 px-2 text-2xl focus-visible:outline-none"
           placeholder="로드맵 제목을 입력하세요"
         />
-        <Button className="w-24 h-14 bg-blue-600">완료</Button>
+        <Button className="w-24 h-14 bg-blue-600" onClick={onFinish}>
+          완료
+        </Button>
       </div>
       <div
         className="flex flex-row w-full border-b"
