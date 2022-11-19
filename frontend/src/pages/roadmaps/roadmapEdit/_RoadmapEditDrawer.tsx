@@ -36,7 +36,7 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
   ({ value, label, ...others }, ref) => (
     <div ref={ref} {...others}>
       <div className="flex flex-row items-center">
-        <RoadmapRecommendIcon size={2} recommend={value} className="mr-2" />
+        <RoadmapRecommendIcon recommend={value} className="mr-2" />
         <p>{label}</p>
       </div>
     </div>
@@ -83,11 +83,7 @@ const RoadmapEditDrawer: FC<Props> = ({ roadmapItem, onClose }) => {
       <div className="flex flex-row mb-4 justify-between items-center">
         <h2 className="text-2xl font-semibold">{roadmapItem?.name}</h2>
         <div className="flex flex-row items-center">
-          <RoadmapRecommendIcon
-            size={2}
-            recommend={recommend}
-            className="mr-2"
-          />
+          <RoadmapRecommendIcon recommend={recommend} className="mr-2" />
           <Select
             itemComponent={SelectItem}
             data={data}
