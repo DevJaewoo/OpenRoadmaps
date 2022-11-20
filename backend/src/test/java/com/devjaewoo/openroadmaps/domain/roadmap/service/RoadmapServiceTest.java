@@ -154,10 +154,10 @@ class RoadmapServiceTest {
         public void success() {
             //given
             RoadmapItemDto.CreateRequest node1 = new RoadmapItemDto.CreateRequest(1L, "node1", "content", 0, 0, null, null, null, null);
-            RoadmapItemDto.CreateRequest node2 = new RoadmapItemDto.CreateRequest(2L, "node1", "content", 0, 0, null, ConnectionType.B2T, null, 1L);
-            RoadmapItemDto.CreateRequest node3 = new RoadmapItemDto.CreateRequest(3L, "node1", "content", 0, 0, null, ConnectionType.B2T, null, 1L);
-            RoadmapItemDto.CreateRequest node4 = new RoadmapItemDto.CreateRequest(4L, "node1", "content", 0, 0, null, ConnectionType.B2T, null, 2L);
-            RoadmapItemDto.CreateRequest node5 = new RoadmapItemDto.CreateRequest(5L, "node1", "content", 0, 0, null, ConnectionType.B2T, null, 3L);
+            RoadmapItemDto.CreateRequest node2 = new RoadmapItemDto.CreateRequest(2L, "node1", "content", 0, 0, null, ConnectionType.b2t, null, 1L);
+            RoadmapItemDto.CreateRequest node3 = new RoadmapItemDto.CreateRequest(3L, "node1", "content", 0, 0, null, ConnectionType.b2t, null, 1L);
+            RoadmapItemDto.CreateRequest node4 = new RoadmapItemDto.CreateRequest(4L, "node1", "content", 0, 0, null, ConnectionType.b2t, null, 2L);
+            RoadmapItemDto.CreateRequest node5 = new RoadmapItemDto.CreateRequest(5L, "node1", "content", 0, 0, null, ConnectionType.b2t, null, 3L);
 
             RoadmapDto.CreateRequest createRequest = new RoadmapDto.CreateRequest("title", "image", Accessibility.PUBLIC, List.of(node1, node2, node3, node4, node5));
 
@@ -196,7 +196,7 @@ class RoadmapServiceTest {
         public void invalidParent() {
             //given
             RoadmapItemDto.CreateRequest node1 = new RoadmapItemDto.CreateRequest(1L, "node1", "content", 0, 0, null, null, null, null);
-            RoadmapItemDto.CreateRequest node2 = new RoadmapItemDto.CreateRequest(2L, "node1", "content", 0, 0, null, ConnectionType.B2T, null, 6L);
+            RoadmapItemDto.CreateRequest node2 = new RoadmapItemDto.CreateRequest(2L, "node1", "content", 0, 0, null, ConnectionType.b2t, null, 6L);
 
             RoadmapDto.CreateRequest createRequest = new RoadmapDto.CreateRequest("title", "image", Accessibility.PUBLIC, List.of(node1, node2));
 

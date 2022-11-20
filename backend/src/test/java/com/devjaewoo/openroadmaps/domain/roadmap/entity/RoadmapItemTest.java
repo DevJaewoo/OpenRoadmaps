@@ -17,7 +17,7 @@ class RoadmapItemTest {
         String name = "name";
         String content = "content";
         Recommend recommend = Recommend.RECOMMEND;
-        ConnectionType connectionType = ConnectionType.B2B;
+        ConnectionType connectionType = ConnectionType.b2b;
 
         //when
         RoadmapItem roadmapItem = RoadmapItem.create(name, content, 1, 2, recommend, connectionType, null, null);
@@ -39,8 +39,8 @@ class RoadmapItemTest {
         Roadmap roadmap = Roadmap.create("title", "image", Accessibility.PUBLIC, null);
 
         //when
-        RoadmapItem roadmapItem1 = RoadmapItem.create("name", "content", 0, 0, Recommend.RECOMMEND, ConnectionType.B2B, null, null);
-        RoadmapItem roadmapItem2 = RoadmapItem.create("name", "content", 0, 0, Recommend.RECOMMEND, ConnectionType.B2B, null, roadmap);
+        RoadmapItem roadmapItem1 = RoadmapItem.create("name", "content", 0, 0, Recommend.RECOMMEND, ConnectionType.b2b, null, null);
+        RoadmapItem roadmapItem2 = RoadmapItem.create("name", "content", 0, 0, Recommend.RECOMMEND, ConnectionType.b2b, null, roadmap);
         roadmapItem1.updateRoadmap(roadmap);
 
         //then
@@ -53,11 +53,11 @@ class RoadmapItemTest {
     @DisplayName("updateParent")
     public void updateParent() {
         //given
-        RoadmapItem parent = RoadmapItem.create("parentName", "parentContent", 0, 0, Recommend.NOT_RECOMMEND, ConnectionType.T2B, null, null);
+        RoadmapItem parent = RoadmapItem.create("parentName", "parentContent", 0, 0, Recommend.NOT_RECOMMEND, ConnectionType.t2b, null, null);
 
         //when
-        RoadmapItem roadmapItem1 = RoadmapItem.create("name", "content", 0, 0, Recommend.RECOMMEND, ConnectionType.B2B, null, null);
-        RoadmapItem roadmapItem2 = RoadmapItem.create("name", "content", 0, 0, Recommend.RECOMMEND, ConnectionType.B2B, parent, null);
+        RoadmapItem roadmapItem1 = RoadmapItem.create("name", "content", 0, 0, Recommend.RECOMMEND, ConnectionType.b2b, null, null);
+        RoadmapItem roadmapItem2 = RoadmapItem.create("name", "content", 0, 0, Recommend.RECOMMEND, ConnectionType.b2b, parent, null);
         roadmapItem1.updateParent(parent);
 
         //then
@@ -70,8 +70,8 @@ class RoadmapItemTest {
     @DisplayName("addRoadmapItem")
     public void addRoadmapItem() {
         //given
-        RoadmapItem parent = RoadmapItem.create("parentName", "parentContent", 0, 0, Recommend.NOT_RECOMMEND, ConnectionType.T2B, null, null);
-        RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 0, 0, Recommend.RECOMMEND, ConnectionType.B2B, null, null);
+        RoadmapItem parent = RoadmapItem.create("parentName", "parentContent", 0, 0, Recommend.NOT_RECOMMEND, ConnectionType.t2b, null, null);
+        RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 0, 0, Recommend.RECOMMEND, ConnectionType.b2b, null, null);
 
         //when
         parent.addRoadmapItem(roadmapItem);
@@ -85,7 +85,7 @@ class RoadmapItemTest {
     @DisplayName("addReference")
     public void addReference() {
         //given
-        RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 0, 0, Recommend.RECOMMEND, ConnectionType.B2B, null, null);
+        RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 0, 0, Recommend.RECOMMEND, ConnectionType.b2b, null, null);
         RoadmapItemReference reference = RoadmapItemReference.create(null, "URL");
 
         //when

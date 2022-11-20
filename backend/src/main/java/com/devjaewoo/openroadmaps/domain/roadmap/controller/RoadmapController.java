@@ -39,7 +39,7 @@ public class RoadmapController {
     @PostMapping("")
     public ResponseEntity<?> create(@Valid @RequestBody RoadmapDto.CreateRequest request) {
         SessionClient sessionClient = SessionUtil.getCurrentClient();
-        roadmapService.create(request, sessionClient.getId());
-        return ResponseEntity.ok("");
+        Long roadmapId = roadmapService.create(request, sessionClient.getId());
+        return ResponseEntity.ok(new RoadmapDto.CreateResponse(roadmapId));
     }
 }
