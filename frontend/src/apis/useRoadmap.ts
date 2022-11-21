@@ -70,6 +70,13 @@ export interface Roadmap {
   roadmapItemList: RoadmapItem[];
 }
 
+export interface UploadRoadmap {
+  title: string;
+  image?: string;
+  accessibility: TAccessibility;
+  roadmapItemList: RoadmapItem[];
+}
+
 const fetchRoadmapList = async (query: RoadmapSearch): Promise<RoadmapList> => {
   const searchParams = new URLSearchParams();
 
@@ -90,7 +97,9 @@ const useRoadmapList = (
   });
 };
 
-const fetchRoadmapCreate = async (roadmap: Roadmap) => {
+const fetchRoadmapCreate = async (
+  roadmap: UploadRoadmap
+): Promise<{ roadmapId: number }> => {
   const response = await axiosInstance.post("/api/v1/roadmaps", roadmap);
   return response.data;
 };

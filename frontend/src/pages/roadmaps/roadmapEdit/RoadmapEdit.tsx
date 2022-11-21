@@ -8,7 +8,7 @@ import {
   useEffect,
   useCallback,
 } from "react";
-import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
 import { Button, ScrollArea } from "@mantine/core";
 import { BsCursor } from "react-icons/bs";
 import { AiOutlinePlusSquare, AiFillDelete } from "react-icons/ai";
@@ -18,6 +18,7 @@ import {
   Accessibility,
   Recommend,
   RoadmapItem,
+  UploadRoadmap,
   useRoadmapCreate,
 } from "src/apis/useRoadmap";
 import { getCurrentPositionPixel } from "src/utils/PixelToRem";
@@ -29,6 +30,7 @@ import RoadmapEditItemHint from "./_RoadmapEditItemHint";
 import RoadmapConnectorHint from "./_RoadmapConnectorHint";
 import { EditMode, TEditMode, Position, TPosition } from "./types";
 import RoadmapEditDrawer from "./_RoadmapEditDrawer";
+import RoadmapEditCompleteDrawer from "./_RoadmapEditCompleteDrawer";
 
 interface Props {
   defaultValue?: RoadmapItem[];
@@ -43,6 +45,7 @@ interface ConnectorInfo {
 }
 
 const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
+  const navigate = useNavigate();
   const [nextId, setNextId] = useState(
     defaultValue.length === 0
       ? 1
@@ -77,9 +80,17 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     ConnectorInfo | undefined
   >(undefined);
 
-  const [drawerItem, setDrawerItem] = useState<RoadmapItem | undefined>(
+  const [editDrawerItem, setEditDrawerItem] = useState<RoadmapItem | undefined>(
     undefined
   );
+
+  const [completeDrawerOpen, setCompleteDrawerOpen] = useState<boolean>(false);
+  const [roadmap, setRoadmap] = useState<UploadRoadmap>({
+    title: "",
+    image: undefined,
+    accessibility: Accessibility.PUBLIC,
+    roadmapItemList,
+  });
 
   const titleRef = useRef<HTMLInputElement>(null);
   const roadmapCreate = useRoadmapCreate();
@@ -126,13 +137,13 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   }, [height, roadmapItemList]);
 
   const onRoadmapNameItemClick = (id: number) => {
-    setDrawerItem(roadmapItemList.find((r) => r.id === id));
+    setEditDrawerItem(roadmapItemList.find((r) => r.id === id));
   };
 
   const onRoadmapItemClick = (id: number) => {
     switch (editMode) {
       case EditMode.Cursor:
-        setDrawerItem(roadmapItemList.find((r) => r.id === id));
+        setEditDrawerItem(roadmapItemList.find((r) => r.id === id));
         break;
 
       case EditMode.Delete:
@@ -280,34 +291,24 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     updateScrollHeight();
   }, [updateScrollHeight]);
 
-  const onFinish = () => {
-    console.log(roadmapItemList);
-
+  const onUpload = () => {
     const title = titleRef.current?.value ?? "";
     if (title === "") {
       alert("제목을 입력해주세요.");
       return;
     }
 
-    roadmapCreate.mutate(
-      {
-        id: 0,
-        image: "",
-        likes: 0,
-        accessibility: Accessibility.PUBLIC,
-        createdDate: "",
-        title,
-        roadmapItemList,
+    roadmap.title = title;
+    setCompleteDrawerOpen(true);
+  };
+
+  const onFinish = () => {
+    roadmapCreate.mutate(roadmap, {
+      onSuccess: (data) => {
+        navigate(`/roadmaps/${data.roadmapId}`);
       },
-      {
-        onSuccess: (data) => {
-          console.log(`Success! ${data}`);
-        },
-        onError: (error) => {
-          console.log(error as AxiosError);
-        },
-      }
-    );
+      onError: (_error) => {},
+    });
   };
 
   return (
@@ -318,7 +319,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
           className="flex-1 px-2 text-2xl focus-visible:outline-none"
           placeholder="로드맵 제목을 입력하세요"
         />
-        <Button className="w-24 h-14 bg-blue-600" onClick={onFinish}>
+        <Button className="w-24 h-14 bg-blue-600" onClick={onUpload}>
           완료
         </Button>
       </div>
@@ -493,8 +494,14 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
       </div>
 
       <RoadmapEditDrawer
-        roadmapItem={drawerItem}
-        onClose={() => setDrawerItem(undefined)}
+        roadmapItem={editDrawerItem}
+        onClose={() => setEditDrawerItem(undefined)}
+      />
+      <RoadmapEditCompleteDrawer
+        opened={completeDrawerOpen}
+        roadmap={roadmap}
+        onClose={() => setCompleteDrawerOpen(false)}
+        onFinish={onFinish}
       />
     </div>
   );
