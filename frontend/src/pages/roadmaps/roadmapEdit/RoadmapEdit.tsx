@@ -85,7 +85,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   );
 
   const [completeDrawerOpen, setCompleteDrawerOpen] = useState<boolean>(false);
-  const [roadmap, setRoadmap] = useState<UploadRoadmap>({
+  const [roadmap] = useState<UploadRoadmap>({
     title: "",
     image: undefined,
     accessibility: Accessibility.PUBLIC,
@@ -93,6 +93,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   });
 
   const titleRef = useRef<HTMLInputElement>(null);
+  const [titleWarning, setTitleWarning] = useState<boolean>(false);
   const roadmapCreate = useRoadmapCreate();
 
   const updateEditMode = (mode: TEditMode) => {
@@ -294,7 +295,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   const onUpload = () => {
     const title = titleRef.current?.value ?? "";
     if (title === "") {
-      alert("제목을 입력해주세요.");
+      setTitleWarning(true);
       return;
     }
 
@@ -316,8 +317,12 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
       <div className="flex flex-row justify-start items-center w-full h-20 mt-3 py-2 border-y">
         <input
           ref={titleRef}
-          className="flex-1 px-2 text-2xl focus-visible:outline-none"
+          className={`flex-1 px-2 text-2xl focus-visible:outline-none ${
+            titleWarning && "placeholder:text-red-400"
+          }`}
+          style={{ color: titleWarning ? "red" : "black" }}
           placeholder="로드맵 제목을 입력하세요"
+          onChange={() => setTitleWarning(false)}
         />
         <Button className="w-24 h-14 bg-blue-600" onClick={onUpload}>
           완료
