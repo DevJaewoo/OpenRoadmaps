@@ -6,10 +6,10 @@ import org.springframework.core.convert.converter.Converter;
 import java.util.Arrays;
 
 public enum ConnectionType {
-    L2L, L2R,
-    R2L, R2R,
-    T2T, T2B,
-    B2T, B2B;
+    l2l, l2r,
+    r2l, r2r,
+    t2t, t2b,
+    b2t, b2b;
 
     public static class ConnectionTypeConverter implements Converter<String, ConnectionType> {
 

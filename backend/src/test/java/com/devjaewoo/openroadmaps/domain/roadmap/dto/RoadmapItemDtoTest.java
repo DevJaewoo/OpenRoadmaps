@@ -23,7 +23,7 @@ class RoadmapItemDtoTest {
             Roadmap roadmap = Roadmap.create("title", "image", Accessibility.PRIVATE, null);
             roadmap.setId(1L);
 
-            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 1, 2, Recommend.RECOMMEND, ConnectionType.B2B, null, roadmap);
+            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 1, 2, Recommend.RECOMMEND, ConnectionType.b2b, null, roadmap);
             roadmapItem.setId(1L);
 
             RoadmapItemReference reference1 = RoadmapItemReference.create(roadmapItem, "url1");
@@ -45,7 +45,7 @@ class RoadmapItemDtoTest {
         @DisplayName("Response")
         public void response() {
             // given
-            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 1, 2, Recommend.RECOMMEND, ConnectionType.B2B, null, null);
+            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 1, 2, Recommend.RECOMMEND, ConnectionType.b2b, null, null);
             roadmapItem.setId(1L);
 
             RoadmapItemReference reference1 = RoadmapItemReference.create(roadmapItem, "url1");
@@ -79,7 +79,7 @@ class RoadmapItemDtoTest {
             RoadmapItem parent = RoadmapItem.create("parent", "parentContent", 1, 2, null, null, null, roadmap);
             parent.setId(1L);
 
-            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 3, 4, Recommend.RECOMMEND, ConnectionType.B2B, parent, roadmap);
+            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 3, 4, Recommend.RECOMMEND, ConnectionType.b2b, parent, roadmap);
             roadmapItem.setId(2L);
 
             // when
@@ -104,7 +104,7 @@ class RoadmapItemDtoTest {
             RoadmapItem parent = RoadmapItem.create("parent", "parentContent", 1, 2, null, null, null, null);
             parent.setId(1L);
 
-            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 3, 4, Recommend.RECOMMEND, ConnectionType.B2B, parent, null);
+            RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 3, 4, Recommend.RECOMMEND, ConnectionType.b2b, parent, null);
             roadmapItem.setId(2L);
 
             RoadmapItemDto.ListItem listItem = RoadmapItemDto.ListItem.of(roadmapItem);

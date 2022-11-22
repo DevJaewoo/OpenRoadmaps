@@ -145,4 +145,8 @@ public record RoadmapDto(
             String image,
             Accessibility accessibility,
             @NotNull List<RoadmapItemDto.CreateRequest> roadmapItemList) { }
+
+    public record CreateResponse (
+            Long roadmapId
+    ) { }
 }

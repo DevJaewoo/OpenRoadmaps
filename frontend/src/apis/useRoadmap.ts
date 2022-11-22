@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import axiosInstance from "src/apis/axiosInstance";
 
 export interface RoadmapSearch {
@@ -52,10 +52,12 @@ export interface RoadmapItem {
   name: string;
   x: number;
   y: number;
+  content: string;
   recommend: TRecommend;
   isCleared: boolean;
   connectionType: string | null;
   parentId: number | null;
+  referenceList: string[];
 }
 
 export interface Roadmap {
@@ -65,6 +67,13 @@ export interface Roadmap {
   accessibility: TAccessibility;
   likes: number;
   createdDate: string;
+  roadmapItemList: RoadmapItem[];
+}
+
+export interface UploadRoadmap {
+  title: string;
+  image?: string;
+  accessibility: TAccessibility;
   roadmapItemList: RoadmapItem[];
 }
 
@@ -88,4 +97,15 @@ const useRoadmapList = (
   });
 };
 
-export { useRoadmapList };
+const fetchRoadmapCreate = async (
+  roadmap: UploadRoadmap
+): Promise<{ roadmapId: number }> => {
+  const response = await axiosInstance.post("/api/v1/roadmaps", roadmap);
+  return response.data;
+};
+
+const useRoadmapCreate = () => {
+  return useMutation(fetchRoadmapCreate, {});
+};
+
+export { useRoadmapList, useRoadmapCreate };

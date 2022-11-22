@@ -8,31 +8,29 @@ import {
   useEffect,
   useCallback,
 } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, ScrollArea } from "@mantine/core";
 import { BsCursor } from "react-icons/bs";
 import { AiOutlinePlusSquare, AiFillDelete } from "react-icons/ai";
 import { MdOutlineMoving } from "react-icons/md";
 import Connector from "@devjaewoo/react-svg-connector";
-import { Recommend, RoadmapItem } from "src/apis/useRoadmap";
+import {
+  Accessibility,
+  Recommend,
+  RoadmapItem,
+  UploadRoadmap,
+  useRoadmapCreate,
+} from "src/apis/useRoadmap";
 import { getCurrentPositionPixel } from "src/utils/PixelToRem";
 import { ShapeDirection } from "@devjaewoo/react-svg-connector/lib/SvgConnector";
 import RoadmapEditButton from "./_RoadmapEditButton";
 import RoadmapNameItem from "./_RoadmapNameItem";
 import RoadmapEditItem from "./_RoadmapEditItem";
 import RoadmapEditItemHint from "./_RoadmapEditItemHint";
-import RoadmapConnectorHint, {
-  Position,
-  TPosition,
-} from "./_RoadmapConnectorHint";
-
-const EditMode = {
-  Cursor: 0,
-  Add: 1,
-  Connect: 2,
-  Delete: 3,
-} as const;
-
-type TEditMode = typeof EditMode[keyof typeof EditMode];
+import RoadmapConnectorHint from "./_RoadmapConnectorHint";
+import { EditMode, TEditMode, Position, TPosition } from "./types";
+import RoadmapEditDrawer from "./_RoadmapEditDrawer";
+import RoadmapEditCompleteDrawer from "./_RoadmapEditCompleteDrawer";
 
 interface Props {
   defaultValue?: RoadmapItem[];
@@ -47,6 +45,7 @@ interface ConnectorInfo {
 }
 
 const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
+  const navigate = useNavigate();
   const [nextId, setNextId] = useState(
     defaultValue.length === 0
       ? 1
@@ -77,6 +76,25 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   const [connectorHintPosition, setConnectorHintPosition] = useState<
     { x: number; y: number } | undefined
   >(undefined);
+  const [connectorFixedHintPosition, setConnectorFixedHintPosition] = useState<
+    ConnectorInfo | undefined
+  >(undefined);
+
+  const [editDrawerItem, setEditDrawerItem] = useState<RoadmapItem | undefined>(
+    undefined
+  );
+
+  const [completeDrawerOpen, setCompleteDrawerOpen] = useState<boolean>(false);
+  const [roadmap] = useState<UploadRoadmap>({
+    title: "",
+    image: undefined,
+    accessibility: Accessibility.PUBLIC,
+    roadmapItemList,
+  });
+
+  const titleRef = useRef<HTMLInputElement>(null);
+  const [titleWarning, setTitleWarning] = useState<boolean>(false);
+  const roadmapCreate = useRoadmapCreate();
 
   const updateEditMode = (mode: TEditMode) => {
     switch (mode) {
@@ -119,15 +137,25 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     setScrollHeight(Math.max(...roadmapItemList.map((r) => r.y)) + height / 2);
   }, [height, roadmapItemList]);
 
+  const onRoadmapNameItemClick = (id: number) => {
+    setEditDrawerItem(roadmapItemList.find((r) => r.id === id));
+  };
+
   const onRoadmapItemClick = (id: number) => {
     switch (editMode) {
       case EditMode.Cursor:
-        // Drawer 열기
+        setEditDrawerItem(roadmapItemList.find((r) => r.id === id));
         break;
 
       case EditMode.Delete:
-        removeRef(id);
         setRoadmapItemList(roadmapItemList.filter((r) => r.id !== id));
+        roadmapItemList
+          .filter((r) => r.parentId === id)
+          .forEach((r) => {
+            r.connectionType = null;
+            r.parentId = null;
+          });
+        removeRef(id);
         updateScrollHeight();
         break;
     }
@@ -146,10 +174,6 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     }
   };
 
-  const onRoadmapItemDoubleClick = (_id: number) => {
-    // 텍스트 수정
-  };
-
   const onRoadmapItemDrag = (_id: number, _x: number, _y: number) => {
     // ID의 x, y 좌표 업데이트
     updateScrollHeight();
@@ -163,10 +187,12 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
           name: "Example",
           x,
           y,
+          content: "",
           recommend: Recommend.RECOMMEND,
           isCleared: false,
           connectionType: null,
           parentId: null,
+          referenceList: [],
         };
         setNextId((id) => id + 1);
         setRoadmapItemList([...roadmapItemList, newRoadmapItem]);
@@ -182,8 +208,11 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     position: TPosition
   ) => {
     if (connectorStatus === undefined) {
-      const itemPosition = getCurrentPositionPixel(roadmapItemRefs.current[id]);
+      const itemPosition = getCurrentPositionPixel(
+        roadmapItemRefs.current[id].current
+      );
       setConnectorHintId(undefined);
+      setConnectorFixedHintPosition(undefined);
       setConnectorStatus({
         id,
         x: itemPosition.x + x,
@@ -201,7 +230,32 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
       );
 
       setConnectorHintId(undefined);
+      setConnectorFixedHintPosition(undefined);
       setConnectorStatus(undefined);
+    }
+  };
+
+  const onConnectorHintEnter = (
+    id: number,
+    x: number,
+    y: number,
+    position: TPosition
+  ) => {
+    const itemPosition = getCurrentPositionPixel(
+      roadmapItemRefs.current[id].current
+    );
+
+    setConnectorFixedHintPosition({
+      id,
+      x: itemPosition.x + x,
+      y: itemPosition.y + y,
+      position,
+    });
+  };
+
+  const onConnectorHintLeave = (id: number) => {
+    if (connectorFixedHintPosition?.id === id) {
+      setConnectorFixedHintPosition(undefined);
     }
   };
 
@@ -238,14 +292,41 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
     updateScrollHeight();
   }, [updateScrollHeight]);
 
+  const onUpload = () => {
+    const title = titleRef.current?.value ?? "";
+    if (title === "") {
+      setTitleWarning(true);
+      return;
+    }
+
+    roadmap.title = title;
+    setCompleteDrawerOpen(true);
+  };
+
+  const onFinish = () => {
+    roadmapCreate.mutate(roadmap, {
+      onSuccess: (data) => {
+        navigate(`/roadmaps/${data.roadmapId}`);
+      },
+      onError: (_error) => {},
+    });
+  };
+
   return (
     <div className="flex-1 flex flex-col w-full">
       <div className="flex flex-row justify-start items-center w-full h-20 mt-3 py-2 border-y">
         <input
-          className="flex-1 px-2 text-2xl focus-visible:outline-none"
+          ref={titleRef}
+          className={`flex-1 px-2 text-2xl focus-visible:outline-none ${
+            titleWarning && "placeholder:text-red-400"
+          }`}
+          style={{ color: titleWarning ? "red" : "black" }}
           placeholder="로드맵 제목을 입력하세요"
+          onChange={() => setTitleWarning(false)}
         />
-        <Button className="w-24 h-14 bg-blue-600">완료</Button>
+        <Button className="w-24 h-14 bg-blue-600" onClick={onUpload}>
+          완료
+        </Button>
       </div>
       <div
         className="flex flex-row w-full border-b"
@@ -254,7 +335,11 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
         <ScrollArea className="w-72 h-full border-r" scrollHideDelay={0}>
           <div className="p-2" style={{ height: `${height}rem` }}>
             {roadmapItemList.map((roadmapItem) => (
-              <RoadmapNameItem key={roadmapItem.id} roadmapItem={roadmapItem} />
+              <RoadmapNameItem
+                key={roadmapItem.id}
+                roadmapItem={roadmapItem}
+                onClick={onRoadmapNameItemClick}
+              />
             ))}
           </div>
         </ScrollArea>
@@ -286,9 +371,14 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
             className="h-full w-full bg-gray-50"
             scrollHideDelay={0}
             onMouseMove={(event) => {
-              setConnectorHintPosition({
-                x: event.nativeEvent.offsetX,
-                y: event.nativeEvent.offsetY,
+              const target = event.target as HTMLDivElement;
+              const { x, y } = getCurrentPositionPixel(target);
+
+              setConnectorHintPosition(() => {
+                return {
+                  x: event.nativeEvent.offsetX + x,
+                  y: event.nativeEvent.offsetY + y,
+                };
               });
             }}
           >
@@ -305,20 +395,24 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   key={roadmapItem.id}
                   roadmapItem={roadmapItem}
                   onClick={onRoadmapItemClick}
-                  onDoubleClick={onRoadmapItemDoubleClick}
                   onEnter={onRoadmapItemEnter}
                   onLeave={onRoadmapItemLeave}
                   onDrag={onRoadmapItemDrag}
-                  disabled={
-                    editMode !== EditMode.Cursor && editMode !== EditMode.Delete
-                  }
+                  editMode={editMode}
                 >
                   {editMode === EditMode.Connect &&
-                    roadmapItem.id === connectorHintId && (
+                    roadmapItem.id === connectorHintId &&
+                    !(
+                      connectorStatus !== undefined &&
+                      roadmapItem.parentId !== null
+                    ) && (
                       <RoadmapConnectorHint
                         id={connectorHintId}
                         refs={roadmapItemRefs.current[connectorHintId]}
                         onSelect={onConnectorHintSelect}
+                        onHintEnter={onConnectorHintEnter}
+                        onHintLeave={onConnectorHintLeave}
+                        position={connectorStatus?.position}
                       />
                     )}
                 </RoadmapEditItem>
@@ -342,6 +436,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                       direction={r.connectionType as ShapeDirection}
                       roundCorner
                       endArrow
+                      stem={5}
                       className="bg-opacity-100 z-0"
                       onClick={() => {
                         if (editMode === EditMode.Delete) {
@@ -360,7 +455,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   {connectorStatus && (
                     <div
                       ref={connectorFromRef}
-                      className="w-3 h-3 rounded-full absolute bg-yellow-400"
+                      className="absolute"
                       style={{
                         top: connectorStatus.y,
                         left: connectorStatus.x,
@@ -370,10 +465,14 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                   {connectorHintPosition && (
                     <div
                       ref={connectorToRef}
-                      className="w-3 h-3 rounded-full absolute bg-yellow-400"
+                      className="absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2"
                       style={{
-                        top: connectorHintPosition.y,
-                        left: connectorHintPosition.x,
+                        top: connectorFixedHintPosition
+                          ? connectorFixedHintPosition.y
+                          : connectorHintPosition.y,
+                        left: connectorFixedHintPosition
+                          ? connectorFixedHintPosition.x
+                          : connectorHintPosition.x,
                       }}
                     />
                   )}
@@ -384,10 +483,11 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
                       shape="narrow-s"
                       direction={getHintConnectorDirection(
                         connectorStatus?.position,
-                        undefined
+                        connectorFixedHintPosition?.position
                       )}
                       roundCorner
                       endArrow
+                      stem={5}
                       className="bg-opacity-100 z-0"
                     />
                   )}
@@ -397,6 +497,17 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
           </ScrollArea>
         </div>
       </div>
+
+      <RoadmapEditDrawer
+        roadmapItem={editDrawerItem}
+        onClose={() => setEditDrawerItem(undefined)}
+      />
+      <RoadmapEditCompleteDrawer
+        opened={completeDrawerOpen}
+        roadmap={roadmap}
+        onClose={() => setCompleteDrawerOpen(false)}
+        onFinish={onFinish}
+      />
     </div>
   );
 };
