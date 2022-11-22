@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import { Drawer, Image, Radio } from "@mantine/core";
-import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
+import { Dropzone, FileWithPath, MIME_TYPES } from "@mantine/dropzone";
 import {
   Accessibility,
   TAccessibility,
@@ -10,6 +10,8 @@ import {
   OutlinedButton,
   PrimaryButton,
 } from "src/components/button/VariantButtons";
+import { useImageUpload } from "src/apis/useImage";
+import { AiFillCloseSquare } from "react-icons/ai";
 
 interface Props {
   opened: boolean;
@@ -28,6 +30,7 @@ const RoadmapEditCompleteDrawer: FC<Props> = ({
   const [accessibility, setAccessibility] = useState<TAccessibility>(
     roadmap?.accessibility ?? Accessibility.PUBLIC
   );
+  const imageUpload = useImageUpload();
 
   useEffect(() => {
     if (roadmap) {
@@ -41,6 +44,14 @@ const RoadmapEditCompleteDrawer: FC<Props> = ({
       roadmap.accessibility = value;
       setAccessibility(value);
     }
+  };
+
+  const handleImageDrop = (files: FileWithPath[]) => {
+    imageUpload.mutate(files[0], {
+      onSuccess: (data) => {
+        setImage(`http://localhost:8080/api/v1/images/${data.url}`);
+      },
+    });
   };
 
   return (
@@ -68,13 +79,27 @@ const RoadmapEditCompleteDrawer: FC<Props> = ({
               {image === undefined ? (
                 <Dropzone
                   className="w-full h-full"
+                  loading={imageUpload.isLoading}
                   accept={[MIME_TYPES.png, MIME_TYPES.jpeg, MIME_TYPES.gif]}
-                  onDrop={() => {}}
+                  onDrop={handleImageDrop}
                 >
                   <div>{}</div>
                 </Dropzone>
               ) : (
-                <Image src={image} alt="대표이미지" />
+                <div className="w-full h-full relative">
+                  <Image
+                    className="w-full h-full absolute"
+                    src={image}
+                    alt="대표이미지"
+                  />
+                  <button
+                    type="button"
+                    className="absolute top-0 right-0 text-xl bg-black text-white"
+                    onClick={() => setImage(undefined)}
+                  >
+                    <AiFillCloseSquare />
+                  </button>
+                </div>
               )}
             </div>
           </div>
