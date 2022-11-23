@@ -63,12 +63,14 @@ public record RoadmapItemDto(
     public record ListItem(
             Long id,
             String name,
+            String content,
             double x,
             double y,
             Recommend recommend,
             ConnectionType connectionType,
             boolean isCleared,
             Long parentId,
+            List<String> referenceList,
             Long roadmapId) {
 
         public static ListItem of(RoadmapItem roadmapItem, boolean isCleared) {
@@ -86,12 +88,16 @@ public record RoadmapItemDto(
             return new ListItem(
                     roadmapItem.getId(),
                     roadmapItem.getName(),
+                    roadmapItem.getContent(),
                     roadmapItem.getX(),
                     roadmapItem.getY(),
                     roadmapItem.getRecommend(),
                     roadmapItem.getConnectionType(),
                     isCleared,
                     parentId,
+                    roadmapItem.getReferenceList().stream()
+                            .map(RoadmapItemReference::getUrl)
+                            .toList(),
                     roadmapId);
         }
 
@@ -107,7 +113,8 @@ public record RoadmapItemDto(
                 String recommend,
                 String connectionType,
                 boolean isCleared,
-                Long parentId) {
+                Long parentId,
+                List<String> referenceList) {
 
             public static Response of(ListItem listItem) {
 
@@ -129,7 +136,8 @@ public record RoadmapItemDto(
                         recommend,
                         connectionType,
                         listItem.isCleared,
-                        listItem.parentId);
+                        listItem.parentId,
+                        listItem.referenceList);
             }
         }
     }

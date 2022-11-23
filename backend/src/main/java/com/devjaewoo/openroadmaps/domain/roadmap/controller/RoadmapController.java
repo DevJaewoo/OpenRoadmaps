@@ -24,7 +24,8 @@ public class RoadmapController {
 
     @GetMapping("/{roadmapId}")
     public ResponseEntity<?> find(@PathVariable Long roadmapId) {
-        RoadmapDto result = roadmapService.findById(roadmapId);
+        Long clientId = SessionUtil.getOptionalCurrentClient().map(SessionClient::getId).orElse(null);
+        RoadmapDto result = roadmapService.findById(roadmapId, clientId);
         return ResponseEntity.ok(RoadmapDto.Response.of(result));
     }
 

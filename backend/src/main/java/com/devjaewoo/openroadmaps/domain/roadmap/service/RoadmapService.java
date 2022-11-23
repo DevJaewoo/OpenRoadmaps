@@ -1,7 +1,6 @@
 package com.devjaewoo.openroadmaps.domain.roadmap.service;
 
 import com.devjaewoo.openroadmaps.domain.client.dto.ClientErrorCode;
-import com.devjaewoo.openroadmaps.domain.client.dto.SessionClient;
 import com.devjaewoo.openroadmaps.domain.client.entity.Client;
 import com.devjaewoo.openroadmaps.domain.client.repository.ClientRepository;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapDto;
@@ -9,11 +8,12 @@ import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapErrorCode;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapSearch;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.Roadmap;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItem;
+import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItemClear;
+import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapItemClearRepository;
 import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapRepository;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 import com.devjaewoo.openroadmaps.global.exception.CommonErrorCode;
 import com.devjaewoo.openroadmaps.global.exception.RestApiException;
-import com.devjaewoo.openroadmaps.global.utils.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -33,23 +34,35 @@ public class RoadmapService {
 
     private final ClientRepository clientRepository;
     private final RoadmapRepository roadmapRepository;
+    private final RoadmapItemClearRepository roadmapItemClearRepository;
 
-    public RoadmapDto findById(Long id) {
+    public RoadmapDto findById(Long id, Long clientId) {
 
         Roadmap roadmap = roadmapRepository.findById(id)
                 .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
 
         // Public Roadmap이 아닐 경우 권한 체크
         if(roadmap.getAccessibility() != Accessibility.PUBLIC) {
-            SessionClient sessionClient = SessionUtil.getOptionalCurrentClient()
-                    .orElseThrow(() -> new RestApiException(CommonErrorCode.UNAUTHORIZED));
+            if(clientId == null) {
+                throw new RestApiException(CommonErrorCode.UNAUTHORIZED);
+            }
 
-            if(!roadmap.getClient().getId().equals(sessionClient.getId())) {
+            if(!roadmap.getClient().getId().equals(clientId)) {
                 throw new RestApiException(CommonErrorCode.FORBIDDEN);
             }
         }
 
-        return RoadmapDto.of(roadmap);
+        if(clientId != null) {
+            List<Long> roadmapItemClearList = roadmapItemClearRepository.findAllByRoadmapIdAndClientId(roadmap.getId(), clientId).stream()
+                    .map(RoadmapItemClear::getRoadmapItem)
+                    .map(RoadmapItem::getId)
+                    .toList();
+
+            return RoadmapDto.of(roadmap, roadmapItemClearList);
+        }
+        else {
+            return RoadmapDto.of(roadmap);
+        }
     }
 
     public Page<RoadmapDto.ListItem> search(RoadmapSearch roadmapSearch) {
