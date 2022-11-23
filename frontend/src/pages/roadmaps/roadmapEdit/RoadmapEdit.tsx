@@ -85,7 +85,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   );
 
   const [completeDrawerOpen, setCompleteDrawerOpen] = useState<boolean>(false);
-  const [roadmap] = useState<UploadRoadmap>({
+  const [roadmap, setRoadmap] = useState<UploadRoadmap>({
     title: "",
     image: undefined,
     accessibility: Accessibility.PUBLIC,
@@ -95,6 +95,10 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const [titleWarning, setTitleWarning] = useState<boolean>(false);
   const roadmapCreate = useRoadmapCreate();
+
+  useEffect(() => {
+    setRoadmap((r) => ({ ...r, roadmapItemList }));
+  }, [roadmapItemList]);
 
   const updateEditMode = (mode: TEditMode) => {
     switch (mode) {
