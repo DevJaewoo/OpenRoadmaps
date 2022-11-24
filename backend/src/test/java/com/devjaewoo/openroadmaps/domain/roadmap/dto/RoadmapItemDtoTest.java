@@ -18,7 +18,7 @@ class RoadmapItemDtoTest {
 
         @Test
         @DisplayName("create")
-        public void of() {
+        public void from() {
             // given
             Roadmap roadmap = Roadmap.create("title", "image", Accessibility.PRIVATE, null);
             roadmap.setId(1L);
@@ -30,7 +30,7 @@ class RoadmapItemDtoTest {
             RoadmapItemReference reference2 = RoadmapItemReference.create(roadmapItem, "url1");
 
             // when
-            RoadmapItemDto roadmapItemDto = RoadmapItemDto.of(roadmapItem);
+            RoadmapItemDto roadmapItemDto = RoadmapItemDto.from(roadmapItem);
 
             // then
             assertThat(roadmapItemDto.id()).isEqualTo(roadmapItem.getId());
@@ -51,10 +51,10 @@ class RoadmapItemDtoTest {
             RoadmapItemReference reference1 = RoadmapItemReference.create(roadmapItem, "url1");
             RoadmapItemReference reference2 = RoadmapItemReference.create(roadmapItem, "url1");
 
-            RoadmapItemDto roadmapItemDto = RoadmapItemDto.of(roadmapItem);
+            RoadmapItemDto roadmapItemDto = RoadmapItemDto.from(roadmapItem);
 
             // when
-            RoadmapItemDto.Response response = RoadmapItemDto.Response.of(roadmapItemDto);
+            RoadmapItemDto.Response response = RoadmapItemDto.Response.from(roadmapItemDto);
 
             // then
             assertThat(response.id()).isEqualTo(roadmapItem.getId());
@@ -71,7 +71,7 @@ class RoadmapItemDtoTest {
 
         @Test
         @DisplayName("create")
-        public void of() {
+        public void from() {
             // given
             Roadmap roadmap = Roadmap.create("title", "image", Accessibility.PRIVATE, null);
             roadmap.setId(1L);
@@ -83,7 +83,7 @@ class RoadmapItemDtoTest {
             roadmapItem.setId(2L);
 
             // when
-            RoadmapItemDto.ListItem listItem = RoadmapItemDto.ListItem.of(roadmapItem);
+            RoadmapItemDto.ListItem listItem = RoadmapItemDto.ListItem.from(roadmapItem);
 
             // then
             assertThat(listItem.id()).isEqualTo(roadmapItem.getId());
@@ -107,10 +107,10 @@ class RoadmapItemDtoTest {
             RoadmapItem roadmapItem = RoadmapItem.create("name", "content", 3, 4, Recommend.RECOMMEND, ConnectionType.b2b, parent, null);
             roadmapItem.setId(2L);
 
-            RoadmapItemDto.ListItem listItem = RoadmapItemDto.ListItem.of(roadmapItem);
+            RoadmapItemDto.ListItem listItem = RoadmapItemDto.ListItem.from(roadmapItem);
 
             // when
-            RoadmapItemDto.ListItem.Response response = RoadmapItemDto.ListItem.Response.of(listItem);
+            RoadmapItemDto.ListItem.Response response = RoadmapItemDto.ListItem.Response.from(listItem);
 
             // then
             assertThat(response.id()).isEqualTo(roadmapItem.getId());

@@ -28,13 +28,13 @@ public class RoadmapController {
     public ResponseEntity<?> find(@PathVariable Long roadmapId) {
         Long clientId = SessionUtil.getOptionalCurrentClient().map(SessionClient::getId).orElse(null);
         RoadmapDto result = roadmapService.findById(roadmapId, clientId);
-        return ResponseEntity.ok(RoadmapDto.Response.of(result));
+        return ResponseEntity.ok(RoadmapDto.Response.from(result));
     }
 
     @GetMapping("")
     public ResponseEntity<?> search(@Valid RoadmapSearch roadmapSearch) {
         Page<RoadmapDto.ListItem.Response> responseList = roadmapService.search(roadmapSearch)
-                .map(RoadmapDto.ListItem.Response::of);
+                .map(RoadmapDto.ListItem.Response::from);
 
         return ResponseEntity.ok(new PageResponseDto<>(responseList));
     }
@@ -50,13 +50,13 @@ public class RoadmapController {
     public ResponseEntity<?> clearRoadmapItem(@PathVariable Long roadmapId, @PathVariable Long roadmapItemId, @Valid @RequestBody RoadmapItemClearDto.ClearRequest request) {
         SessionClient sessionClient = SessionUtil.getCurrentClient();
         RoadmapItemClearDto result = roadmapService.clearRoadmapItem(roadmapId, roadmapItemId, request.isCleared(), sessionClient.getId());
-        return ResponseEntity.ok(RoadmapItemClearDto.ClearResponse.of(result));
+        return ResponseEntity.ok(RoadmapItemClearDto.ClearResponse.from(result));
     }
 
     @PutMapping("/{roadmapId}/like")
     public ResponseEntity<?> likeRoadmap(@PathVariable Long roadmapId, @Valid @RequestBody RoadmapLikeDto.LikeRequest request) {
         SessionClient sessionClient = SessionUtil.getCurrentClient();
         RoadmapLikeDto result = roadmapService.likeRoadmap(roadmapId, request.like(), sessionClient.getId());
-        return ResponseEntity.ok(RoadmapLikeDto.LikeResponse.of(result));
+        return ResponseEntity.ok(RoadmapLikeDto.LikeResponse.from(result));
     }
 }

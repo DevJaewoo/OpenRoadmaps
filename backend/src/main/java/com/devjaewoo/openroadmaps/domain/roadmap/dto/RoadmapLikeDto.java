@@ -4,7 +4,7 @@ import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapLike;
 
 public record RoadmapLikeDto(Long id, Long roadmapId, Long clientId, boolean like) {
 
-    public static RoadmapLikeDto of(RoadmapLike roadmapLike) {
+    public static RoadmapLikeDto from(RoadmapLike roadmapLike) {
         return new RoadmapLikeDto(
                 roadmapLike.getId(),
                 roadmapLike.getRoadmap().getId(),
@@ -17,7 +17,7 @@ public record RoadmapLikeDto(Long id, Long roadmapId, Long clientId, boolean lik
 
     public record LikeResponse(Long roadmapId, boolean like) {
 
-        public static LikeResponse of(RoadmapLikeDto roadmapLikeDto) {
+        public static LikeResponse from(RoadmapLikeDto roadmapLikeDto) {
             return new LikeResponse(roadmapLikeDto.roadmapId, roadmapLikeDto.like);
         }
     }

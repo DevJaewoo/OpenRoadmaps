@@ -61,17 +61,17 @@ public class RoadmapService {
                     .map(RoadmapItem::getId)
                     .toList();
 
-            return RoadmapDto.of(roadmap, roadmapItemClearList);
+            return RoadmapDto.from(roadmap, roadmapItemClearList);
         }
         else {
-            return RoadmapDto.of(roadmap);
+            return RoadmapDto.from(roadmap);
         }
     }
 
     public Page<RoadmapDto.ListItem> search(RoadmapSearch roadmapSearch) {
         Pageable pageable = PageRequest.of(roadmapSearch.page(), DEFAULT_PAGE_SIZE);
         return roadmapRepository.search(roadmapSearch, pageable)
-                .map(RoadmapDto.ListItem::of);
+                .map(RoadmapDto.ListItem::from);
     }
 
     @Transactional
@@ -125,7 +125,7 @@ public class RoadmapService {
 
         roadmapItemClear.setCleared(isCleared);
 
-        return RoadmapItemClearDto.of(roadmapItemClear);
+        return RoadmapItemClearDto.from(roadmapItemClear);
     }
 
     @Transactional
@@ -149,6 +149,6 @@ public class RoadmapService {
             roadmapLike.setLike(like);
         }
 
-        return RoadmapLikeDto.of(roadmapLike);
+        return RoadmapLikeDto.from(roadmapLike);
     }
 }

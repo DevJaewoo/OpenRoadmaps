@@ -16,7 +16,7 @@ public record RoadmapItemDto(
         Long roadmapId
 ) {
 
-    public static RoadmapItemDto of(RoadmapItem roadmapItem) {
+    public static RoadmapItemDto from(RoadmapItem roadmapItem) {
 
         List<String> referenceList = roadmapItem.getReferenceList().stream()
                 .map(RoadmapItemReference::getUrl)
@@ -44,7 +44,7 @@ public record RoadmapItemDto(
             List<String> referenceList
     ) {
 
-        public static Response of(RoadmapItemDto roadmapItemDto) {
+        public static Response from(RoadmapItemDto roadmapItemDto) {
 
             String recommend = null;
             if(roadmapItemDto.recommend != null) {
@@ -73,7 +73,7 @@ public record RoadmapItemDto(
             List<String> referenceList,
             Long roadmapId) {
 
-        public static ListItem of(RoadmapItem roadmapItem, boolean isCleared) {
+        public static ListItem from(RoadmapItem roadmapItem, boolean isCleared) {
 
             Long parentId = null;
             if(roadmapItem.getParent() != null) {
@@ -101,8 +101,8 @@ public record RoadmapItemDto(
                     roadmapId);
         }
 
-        public static ListItem of(RoadmapItem roadmapItem) {
-            return of(roadmapItem, false);
+        public static ListItem from(RoadmapItem roadmapItem) {
+            return from(roadmapItem, false);
         }
 
         public record Response(
@@ -116,7 +116,7 @@ public record RoadmapItemDto(
                 Long parentId,
                 List<String> referenceList) {
 
-            public static Response of(ListItem listItem) {
+            public static Response from(ListItem listItem) {
 
                 String recommend = null;
                 if(listItem.recommend != null) {

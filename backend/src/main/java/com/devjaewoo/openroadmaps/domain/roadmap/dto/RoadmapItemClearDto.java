@@ -4,7 +4,7 @@ import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItemClear;
 
 public record RoadmapItemClearDto(Long id, Long roadmapItemId, Long clientId, boolean isCleared) {
 
-    public static RoadmapItemClearDto of(RoadmapItemClear roadmapItemClear) {
+    public static RoadmapItemClearDto from(RoadmapItemClear roadmapItemClear) {
         return new RoadmapItemClearDto(
                 roadmapItemClear.getId(),
                 roadmapItemClear.getRoadmapItem().getId(),
@@ -16,7 +16,7 @@ public record RoadmapItemClearDto(Long id, Long roadmapItemId, Long clientId, bo
     public record ClearRequest(boolean isCleared) { }
 
     public record ClearResponse(Long id, boolean isCleared) {
-        public static ClearResponse of(RoadmapItemClearDto roadmapItemClearDto) {
+        public static ClearResponse from(RoadmapItemClearDto roadmapItemClearDto) {
             return new ClearResponse(roadmapItemClearDto.id, roadmapItemClearDto.isCleared);
         }
     }
