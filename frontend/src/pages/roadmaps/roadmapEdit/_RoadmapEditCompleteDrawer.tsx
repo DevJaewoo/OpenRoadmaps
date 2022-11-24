@@ -49,7 +49,10 @@ const RoadmapEditCompleteDrawer: FC<Props> = ({
   const handleImageDrop = (files: FileWithPath[]) => {
     imageUpload.mutate(files[0], {
       onSuccess: (data) => {
-        setImage(`http://localhost:8080/api/v1/images/${data.url}`);
+        if (roadmap) {
+          roadmap.image = data.url;
+          setImage(`http://localhost:8080/api/v1/images/${data.url}`);
+        }
       },
     });
   };
