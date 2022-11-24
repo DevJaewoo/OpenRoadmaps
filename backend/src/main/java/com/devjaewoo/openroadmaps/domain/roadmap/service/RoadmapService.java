@@ -5,11 +5,13 @@ import com.devjaewoo.openroadmaps.domain.client.entity.Client;
 import com.devjaewoo.openroadmaps.domain.client.repository.ClientRepository;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapDto;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapErrorCode;
+import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapItemClearDto;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapSearch;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.Roadmap;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItem;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItemClear;
 import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapItemClearRepository;
+import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapItemRepository;
 import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapRepository;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 import com.devjaewoo.openroadmaps.global.exception.CommonErrorCode;
@@ -34,6 +36,7 @@ public class RoadmapService {
 
     private final ClientRepository clientRepository;
     private final RoadmapRepository roadmapRepository;
+    private final RoadmapItemRepository roadmapItemRepository;
     private final RoadmapItemClearRepository roadmapItemClearRepository;
 
     public RoadmapDto findById(Long id, Long clientId) {
@@ -100,5 +103,28 @@ public class RoadmapService {
         Roadmap result = roadmapRepository.save(roadmap);
 
         return result.getId();
+    }
+
+    @Transactional
+    public RoadmapItemClearDto clearRoadmapItem(Long roadmapId, Long roadmapItemId, boolean isCleared, Long clientId) {
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND));
+
+        RoadmapItem roadmapItem = roadmapItemRepository.findById(roadmapItemId)
+                .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
+
+        if(!roadmapItem.getRoadmap().getId().equals(roadmapId)) {
+            throw new RestApiException(RoadmapErrorCode.INVALID_CLEAR_ROADMAP);
+        }
+
+        RoadmapItemClear roadmapItemClear = roadmapItemClearRepository.findByRoadmapItemIdAndClientId(roadmapItemId, clientId)
+                .orElseGet(() -> {
+                    RoadmapItemClear itemClear = RoadmapItemClear.create(roadmapItem, client);
+                    return roadmapItemClearRepository.save(itemClear);
+                });
+
+        roadmapItemClear.setCleared(isCleared);
+
+        return RoadmapItemClearDto.of(roadmapItemClear);
     }
 }

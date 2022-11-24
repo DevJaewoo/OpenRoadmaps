@@ -2,6 +2,7 @@ package com.devjaewoo.openroadmaps.domain.roadmap.controller;
 
 import com.devjaewoo.openroadmaps.domain.client.dto.SessionClient;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapDto;
+import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapItemClearDto;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapSearch;
 import com.devjaewoo.openroadmaps.domain.roadmap.service.RoadmapService;
 import com.devjaewoo.openroadmaps.global.dto.PageResponseDto;
@@ -42,5 +43,12 @@ public class RoadmapController {
         SessionClient sessionClient = SessionUtil.getCurrentClient();
         Long roadmapId = roadmapService.create(request, sessionClient.getId());
         return ResponseEntity.ok(new RoadmapDto.CreateResponse(roadmapId));
+    }
+
+    @PutMapping("/{roadmapId}/items/{roadmapItemId}/clear")
+    public ResponseEntity<?> clearRoadmapItem(@PathVariable Long roadmapId, @PathVariable Long roadmapItemId, @Valid @RequestBody RoadmapItemClearDto.ClearRequest request) {
+        SessionClient sessionClient = SessionUtil.getCurrentClient();
+        RoadmapItemClearDto result = roadmapService.clearRoadmapItem(roadmapId, roadmapItemId, request.isCleared(), sessionClient.getId());
+        return ResponseEntity.ok(RoadmapItemClearDto.ClearResponse.of(result));
     }
 }

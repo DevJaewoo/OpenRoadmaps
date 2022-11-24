@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum RoadmapErrorCode implements ErrorCode {
     INVALID_PARENT(HttpStatus.BAD_REQUEST, "존재하지 않는 부모 노드를 참조하고 있습니다."),
-    INVALID_CONNECTION(HttpStatus.BAD_REQUEST, "부모 노드와 연결되어있어야 합니다.");
+    INVALID_CONNECTION(HttpStatus.BAD_REQUEST, "부모 노드와 연결되어있어야 합니다."),
+    INVALID_CLEAR_ROADMAP(HttpStatus.BAD_REQUEST, "잘못된 로드맵 ID입니다."),
+    ;
 
     public final HttpStatus httpStatus;
     public final String message;
