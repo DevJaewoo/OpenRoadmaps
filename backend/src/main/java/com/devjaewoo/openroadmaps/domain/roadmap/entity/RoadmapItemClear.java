@@ -8,7 +8,6 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RoadmapItemClear extends BaseCreateTimeEntity {
@@ -25,6 +24,7 @@ public class RoadmapItemClear extends BaseCreateTimeEntity {
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @Setter
     private boolean isCleared;
 
     public static RoadmapItemClear create(RoadmapItem roadmapItem, Client client) {

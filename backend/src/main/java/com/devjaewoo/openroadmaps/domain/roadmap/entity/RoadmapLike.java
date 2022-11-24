@@ -2,10 +2,7 @@ package com.devjaewoo.openroadmaps.domain.roadmap.entity;
 
 import com.devjaewoo.openroadmaps.domain.client.entity.Client;
 import com.devjaewoo.openroadmaps.global.domain.BaseCreateTimeEntity;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -27,7 +24,11 @@ public class RoadmapLike extends BaseCreateTimeEntity {
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @Setter
+    @Column(name = "is_like")
+    private boolean like;
+
     public static RoadmapLike create(Roadmap roadmap, Client client) {
-        return new RoadmapLike(null, roadmap, client);
+        return new RoadmapLike(null, roadmap, client, false);
     }
 }

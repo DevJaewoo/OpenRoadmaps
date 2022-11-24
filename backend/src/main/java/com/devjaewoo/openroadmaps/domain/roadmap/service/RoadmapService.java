@@ -3,15 +3,14 @@ package com.devjaewoo.openroadmaps.domain.roadmap.service;
 import com.devjaewoo.openroadmaps.domain.client.dto.ClientErrorCode;
 import com.devjaewoo.openroadmaps.domain.client.entity.Client;
 import com.devjaewoo.openroadmaps.domain.client.repository.ClientRepository;
-import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapDto;
-import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapErrorCode;
-import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapItemClearDto;
-import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapSearch;
+import com.devjaewoo.openroadmaps.domain.roadmap.dto.*;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.Roadmap;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItem;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItemClear;
+import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapLike;
 import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapItemClearRepository;
 import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapItemRepository;
+import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapLikeRepository;
 import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapRepository;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 import com.devjaewoo.openroadmaps.global.exception.CommonErrorCode;
@@ -38,6 +37,7 @@ public class RoadmapService {
     private final RoadmapRepository roadmapRepository;
     private final RoadmapItemRepository roadmapItemRepository;
     private final RoadmapItemClearRepository roadmapItemClearRepository;
+    private final RoadmapLikeRepository roadmapLikeRepository;
 
     public RoadmapDto findById(Long id, Long clientId) {
 
@@ -119,12 +119,36 @@ public class RoadmapService {
 
         RoadmapItemClear roadmapItemClear = roadmapItemClearRepository.findByRoadmapItemIdAndClientId(roadmapItemId, clientId)
                 .orElseGet(() -> {
-                    RoadmapItemClear itemClear = RoadmapItemClear.create(roadmapItem, client);
-                    return roadmapItemClearRepository.save(itemClear);
+                    RoadmapItemClear item = RoadmapItemClear.create(roadmapItem, client);
+                    return roadmapItemClearRepository.save(item);
                 });
 
         roadmapItemClear.setCleared(isCleared);
 
         return RoadmapItemClearDto.of(roadmapItemClear);
+    }
+
+    @Transactional
+    public RoadmapLikeDto likeRoadmap(Long roadmapId, boolean like, Long clientId) {
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND));
+
+        Roadmap roadmap = roadmapRepository.findById(roadmapId)
+                .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
+
+        RoadmapLike roadmapLike = roadmapLikeRepository.findByRoadmapIdAndClientId(roadmapId, clientId)
+                .orElseGet(() -> {
+                    RoadmapLike item = RoadmapLike.create(roadmap, client);
+                    return roadmapLikeRepository.save(item);
+                });
+
+        if(roadmapLike.isLike() != like) {
+            // 동시성 문제 발생 가능, 주기적으로 동기화
+            int updatedLikes = Math.max(0, roadmap.getLikes() + (like ? 1 : -1));
+            roadmap.setLikes(updatedLikes);
+            roadmapLike.setLike(like);
+        }
+
+        return RoadmapLikeDto.of(roadmapLike);
     }
 }

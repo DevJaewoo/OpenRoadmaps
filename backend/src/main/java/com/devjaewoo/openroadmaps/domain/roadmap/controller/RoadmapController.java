@@ -3,6 +3,7 @@ package com.devjaewoo.openroadmaps.domain.roadmap.controller;
 import com.devjaewoo.openroadmaps.domain.client.dto.SessionClient;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapDto;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapItemClearDto;
+import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapLikeDto;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapSearch;
 import com.devjaewoo.openroadmaps.domain.roadmap.service.RoadmapService;
 import com.devjaewoo.openroadmaps.global.dto.PageResponseDto;
@@ -50,5 +51,12 @@ public class RoadmapController {
         SessionClient sessionClient = SessionUtil.getCurrentClient();
         RoadmapItemClearDto result = roadmapService.clearRoadmapItem(roadmapId, roadmapItemId, request.isCleared(), sessionClient.getId());
         return ResponseEntity.ok(RoadmapItemClearDto.ClearResponse.of(result));
+    }
+
+    @PutMapping("/{roadmapId}/like")
+    public ResponseEntity<?> likeRoadmap(@PathVariable Long roadmapId, @Valid @RequestBody RoadmapLikeDto.LikeRequest request) {
+        SessionClient sessionClient = SessionUtil.getCurrentClient();
+        RoadmapLikeDto result = roadmapService.likeRoadmap(roadmapId, request.like(), sessionClient.getId());
+        return ResponseEntity.ok(RoadmapLikeDto.LikeResponse.of(result));
     }
 }
