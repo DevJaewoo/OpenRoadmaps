@@ -21,13 +21,17 @@ public record RoadmapDto(
 ) {
 
     public static RoadmapDto from(Roadmap roadmap) {
-        return from(roadmap, List.of());
+        List<Long> empty = List.of();
+        return from(roadmap, empty);
     }
 
     public static RoadmapDto from(Roadmap roadmap, List<Long> roadmapItemClearList) {
 
         List<RoadmapItemDto.ListItem> roadmapItemDtoList = roadmap.getRoadmapItemList().stream()
-                .map(r -> RoadmapItemDto.ListItem.from(r, roadmapItemClearList.contains(r.getId())))
+                .map(r -> {
+                    boolean isCleared = r.getId() != null && roadmapItemClearList.contains(r.getId());
+                    return RoadmapItemDto.ListItem.from(r, isCleared);
+                })
                 .toList();
 
         Long clientId = null;
