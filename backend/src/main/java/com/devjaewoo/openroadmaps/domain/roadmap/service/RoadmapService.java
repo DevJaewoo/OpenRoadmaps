@@ -56,7 +56,7 @@ public class RoadmapService {
         }
 
         if(clientId != null) {
-            List<Long> roadmapItemClearList = roadmapItemClearRepository.findAllByRoadmapIdAndClientId(roadmap.getId(), clientId).stream()
+            List<Long> roadmapItemClearList = roadmapItemClearRepository.findAllByRoadmapItemInAndClientId(roadmap.getRoadmapItemList(), clientId).stream()
                     .map(RoadmapItemClear::getRoadmapItem)
                     .map(RoadmapItem::getId)
                     .toList();
