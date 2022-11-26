@@ -93,7 +93,7 @@ public class RoadmapService {
             Long parentId = roadmapItemDto.parentId();
             if(parentId != null) {
                 RoadmapItem parent = map.get(parentId);
-                if(parent == null) throw new RestApiException(RoadmapErrorCode.INVALID_PARENT);
+                if(parentId.equals(roadmapItemDto.id()) || parent == null) throw new RestApiException(RoadmapErrorCode.INVALID_PARENT);
                 if(roadmapItemDto.connectionType() == null) throw new RestApiException(RoadmapErrorCode.INVALID_CONNECTION);
                 map.get(roadmapItemDto.id()).updateParent(parent);
             }
