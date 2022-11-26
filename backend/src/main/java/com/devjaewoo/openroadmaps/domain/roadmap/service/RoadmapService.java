@@ -113,6 +113,7 @@ public class RoadmapService {
         RoadmapItem roadmapItem = roadmapItemRepository.findById(roadmapItemId)
                 .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
 
+        // RoadmapItem의 ID와 Roadmap의 ID가 일치하지 않는 경우
         if(!roadmapItem.getRoadmap().getId().equals(roadmapId)) {
             throw new RestApiException(RoadmapErrorCode.INVALID_CLEAR_ROADMAP);
         }
@@ -120,7 +121,8 @@ public class RoadmapService {
         RoadmapItemClear roadmapItemClear = roadmapItemClearRepository.findByRoadmapItemIdAndClientId(roadmapItemId, clientId)
                 .orElseGet(() -> {
                     RoadmapItemClear item = RoadmapItemClear.create(roadmapItem, client);
-                    return roadmapItemClearRepository.save(item);
+                    roadmapItemClearRepository.save(item);
+                    return item;
                 });
 
         roadmapItemClear.setCleared(isCleared);
@@ -139,7 +141,8 @@ public class RoadmapService {
         RoadmapLike roadmapLike = roadmapLikeRepository.findByRoadmapIdAndClientId(roadmapId, clientId)
                 .orElseGet(() -> {
                     RoadmapLike item = RoadmapLike.create(roadmap, client);
-                    return roadmapLikeRepository.save(item);
+                    roadmapLikeRepository.save(item);
+                    return item;
                 });
 
         if(roadmapLike.isLike() != like) {

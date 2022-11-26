@@ -3,12 +3,14 @@ package com.devjaewoo.openroadmaps.domain.roadmap.service;
 import com.devjaewoo.openroadmaps.domain.client.dto.ClientErrorCode;
 import com.devjaewoo.openroadmaps.domain.client.entity.Client;
 import com.devjaewoo.openroadmaps.domain.client.repository.ClientRepository;
-import com.devjaewoo.openroadmaps.domain.roadmap.dto.ConnectionType;
-import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapDto;
-import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapErrorCode;
-import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapItemDto;
+import com.devjaewoo.openroadmaps.domain.roadmap.dto.*;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.Roadmap;
+import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItem;
+import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItemClear;
+import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapLike;
 import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapItemClearRepository;
+import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapItemRepository;
+import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapLikeRepository;
 import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapRepository;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 import com.devjaewoo.openroadmaps.global.exception.CommonErrorCode;
@@ -36,6 +38,8 @@ class RoadmapServiceTest {
 
     @Mock ClientRepository clientRepository;
     @Mock RoadmapRepository roadmapRepository;
+    @Mock RoadmapItemRepository roadmapItemRepository;
+    @Mock RoadmapLikeRepository roadmapLikeRepository;
     @Mock RoadmapItemClearRepository roadmapItemClearRepository;
 
     @InjectMocks
@@ -215,6 +219,209 @@ class RoadmapServiceTest {
 
             //then
             assertThrows(RestApiException.class, executable, RoadmapErrorCode.INVALID_CONNECTION.message);
+        }
+    }
+
+    @Nested
+    @DisplayName("로드맵 항목 완료")
+    class ItemClear {
+
+        @Test
+        @DisplayName("성공")
+        public void success() {
+            //given
+            Client client = Client.create("name", "email", "password");
+            client.setId(1L);
+            given(clientRepository.findById(client.getId())).willReturn(Optional.of(client));
+
+            Roadmap roadmap = Roadmap.create("title", "image", null, client);
+            roadmap.setId(2L);
+
+            RoadmapItem roadmapItem = RoadmapItem.create("item", "content", 1, 1, null, null, null, roadmap);
+            roadmapItem.setId(3L);
+            given(roadmapItemRepository.findById(roadmapItem.getId())).willReturn(Optional.of(roadmapItem));
+
+            given(roadmapItemClearRepository.findByRoadmapItemIdAndClientId(any(), any())).willReturn(Optional.empty());
+
+            boolean cleared = true;
+
+            //when
+            RoadmapItemClearDto roadmapItemClearDto = roadmapService.clearRoadmapItem(roadmap.getId(), roadmapItem.getId(), cleared, client.getId());
+
+            //then
+            assertThat(roadmapItemClearDto.roadmapItemId()).isEqualTo(roadmapItem.getId());
+            assertThat(roadmapItemClearDto.clientId()).isEqualTo(client.getId());
+            assertThat(roadmapItemClearDto.isCleared()).isEqualTo(cleared);
+        }
+
+        @Test
+        @DisplayName("이미 존재하는 경우 Update")
+        public void update() {
+            //given
+            Client client = Client.create("name", "email", "password");
+            client.setId(1L);
+            given(clientRepository.findById(client.getId())).willReturn(Optional.of(client));
+
+            Roadmap roadmap = Roadmap.create("title", "image", null, client);
+            roadmap.setId(2L);
+
+            RoadmapItem roadmapItem = RoadmapItem.create("item", "content", 1, 1, null, null, null, roadmap);
+            roadmapItem.setId(3L);
+            given(roadmapItemRepository.findById(roadmapItem.getId())).willReturn(Optional.of(roadmapItem));
+
+            RoadmapItemClear roadmapItemClear = RoadmapItemClear.create(roadmapItem, client);
+            given(roadmapItemClearRepository.findByRoadmapItemIdAndClientId(roadmapItem.getId(), client.getId()))
+                    .willReturn(Optional.of(roadmapItemClear));
+
+            boolean cleared = false;
+
+            //when
+            RoadmapItemClearDto roadmapItemClearDto = roadmapService.clearRoadmapItem(roadmap.getId(), roadmapItem.getId(), cleared, client.getId());
+
+            //then
+            assertThat(roadmapItemClearDto.roadmapItemId()).isEqualTo(roadmapItem.getId());
+            assertThat(roadmapItemClearDto.clientId()).isEqualTo(client.getId());
+            assertThat(roadmapItemClearDto.isCleared()).isEqualTo(cleared);
+        }
+
+        @Test
+        @DisplayName("Client가 없는 경우")
+        public void clientNotFound() {
+            //given
+            given(clientRepository.findById(any())).willReturn(Optional.empty());
+
+            //when
+            Executable executable = () -> roadmapService.clearRoadmapItem(1L, 1L, true, 1L);
+
+            //then
+            assertThrows(RestApiException.class, executable, ClientErrorCode.CLIENT_NOT_FOUND.message);
+        }
+
+        @Test
+        @DisplayName("RoadmapItem이 없는 경우")
+        public void roadmapItemNotFound() {
+            //given
+            Client client = Client.create("name", "email", "password");
+            client.setId(1L);
+            given(clientRepository.findById(client.getId())).willReturn(Optional.of(client));
+
+            given(roadmapItemRepository.findById(any())).willReturn(Optional.empty());
+
+            //when
+            Executable executable = () -> roadmapService.clearRoadmapItem(1L, 1L, true, client.getId());
+
+            //then
+            assertThrows(RestApiException.class, executable, CommonErrorCode.RESOURCE_NOT_FOUND.message);
+        }
+
+        @Test
+        @DisplayName("Roadmap에 포함되지 않는 RoadmapItem일 경우")
+        public void invalidRoadmapItem() {
+            //given
+            Client client = Client.create("name", "email", "password");
+            client.setId(1L);
+            given(clientRepository.findById(client.getId())).willReturn(Optional.of(client));
+
+            Roadmap roadmap = Roadmap.create("title", "image", null, client);
+            roadmap.setId(2L);
+
+            RoadmapItem roadmapItem = RoadmapItem.create("item", "content", 1, 1, null, null, null, roadmap);
+            roadmapItem.setId(3L);
+            given(roadmapItemRepository.findById(roadmapItem.getId())).willReturn(Optional.of(roadmapItem));
+
+            //when
+            Executable executable = () -> roadmapService.clearRoadmapItem(999L, roadmapItem.getId(), true, client.getId());
+
+            //then
+            assertThrows(RestApiException.class, executable, RoadmapErrorCode.INVALID_CLEAR_ROADMAP.message);
+        }
+    }
+
+    @Nested
+    @DisplayName("좋아요")
+    class Like {
+
+        @Test
+        @DisplayName("성공")
+        public void success() {
+            //given
+            Client client = Client.create("name", "email", "password");
+            client.setId(1L);
+            given(clientRepository.findById(client.getId())).willReturn(Optional.of(client));
+
+            Roadmap roadmap = Roadmap.create("title", "image", null, client);
+            roadmap.setId(2L);
+            given(roadmapRepository.findById(roadmap.getId())).willReturn(Optional.of(roadmap));
+
+            given(roadmapLikeRepository.findByRoadmapIdAndClientId(any(), any())).willReturn(Optional.empty());
+
+            boolean like = true;
+
+            //when
+            RoadmapLikeDto roadmapLikeDto = roadmapService.likeRoadmap(roadmap.getId(), like, client.getId());
+
+            //then
+            assertThat(roadmapLikeDto.roadmapId()).isEqualTo(roadmap.getId());
+            assertThat(roadmapLikeDto.clientId()).isEqualTo(client.getId());
+            assertThat(roadmapLikeDto.like()).isEqualTo(like);
+            assertThat(roadmap.getLikes()).isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("이미 존재하는 경우 Update")
+        public void update() {
+            //given
+            Client client = Client.create("name", "email", "password");
+            client.setId(1L);
+            given(clientRepository.findById(client.getId())).willReturn(Optional.of(client));
+
+            Roadmap roadmap = Roadmap.create("title", "image", null, client);
+            roadmap.setId(2L);
+            given(roadmapRepository.findById(roadmap.getId())).willReturn(Optional.of(roadmap));
+
+            RoadmapLike roadmapLike = RoadmapLike.create(roadmap, client);
+            given(roadmapLikeRepository.findByRoadmapIdAndClientId(roadmap.getId(), client.getId()))
+                    .willReturn(Optional.of(roadmapLike));
+
+            boolean like = true;
+
+            //when
+            RoadmapLikeDto roadmapLikeDto = roadmapService.likeRoadmap(roadmap.getId(), like, client.getId());
+
+            //then
+            assertThat(roadmapLikeDto.roadmapId()).isEqualTo(roadmap.getId());
+            assertThat(roadmapLikeDto.clientId()).isEqualTo(client.getId());
+            assertThat(roadmapLikeDto.like()).isEqualTo(like);
+        }
+
+        @Test
+        @DisplayName("Client가 없는 경우")
+        public void clientNotFound() {
+            //given
+            given(clientRepository.findById(any())).willReturn(Optional.empty());
+
+            //when
+            Executable executable = () -> roadmapService.likeRoadmap(1L, true, 1L);
+
+            //then
+            assertThrows(RestApiException.class, executable, ClientErrorCode.CLIENT_NOT_FOUND.message);
+        }
+
+        @Test
+        @DisplayName("Roadmap이 없는 경우")
+        public void roadmapNotFound() {
+            //given
+            Client client = Client.create("name", "email", "password");
+            client.setId(1L);
+            given(clientRepository.findById(client.getId())).willReturn(Optional.of(client));
+
+            given(roadmapRepository.findById(any())).willReturn(Optional.empty());
+
+            //when
+            Executable executable = () -> roadmapService.likeRoadmap(1L, true, 1L);
+
+            //then
+            assertThrows(RestApiException.class, executable, CommonErrorCode.RESOURCE_NOT_FOUND.message);
         }
     }
 }
