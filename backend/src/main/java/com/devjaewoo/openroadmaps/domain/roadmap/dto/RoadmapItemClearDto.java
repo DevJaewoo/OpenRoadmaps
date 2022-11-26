@@ -15,9 +15,9 @@ public record RoadmapItemClearDto(Long id, Long roadmapItemId, Long clientId, bo
 
     public record ClearRequest(boolean isCleared) { }
 
-    public record ClearResponse(Long id, boolean isCleared) {
+    public record ClearResponse(Long roadmapItemId, boolean isCleared) {
         public static ClearResponse from(RoadmapItemClearDto roadmapItemClearDto) {
-            return new ClearResponse(roadmapItemClearDto.id, roadmapItemClearDto.isCleared);
+            return new ClearResponse(roadmapItemClearDto.roadmapItemId, roadmapItemClearDto.isCleared);
         }
     }
 }

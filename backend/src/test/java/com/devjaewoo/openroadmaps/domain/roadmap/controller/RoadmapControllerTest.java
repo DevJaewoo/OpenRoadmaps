@@ -3,7 +3,9 @@ package com.devjaewoo.openroadmaps.domain.roadmap.controller;
 import com.devjaewoo.openroadmaps.AcceptanceTest;
 import com.devjaewoo.openroadmaps.domain.client.dto.ClientDto;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.*;
-import com.devjaewoo.openroadmaps.domain.roadmap.service.RoadmapService;
+import com.devjaewoo.openroadmaps.domain.roadmap.entity.Roadmap;
+import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItem;
+import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapRepository;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 import com.devjaewoo.openroadmaps.global.exception.CommonErrorCode;
 import com.devjaewoo.openroadmaps.global.exception.ErrorResponse;
@@ -29,7 +31,7 @@ class RoadmapControllerTest {
     @LocalServerPort
     private int port;
 
-    @Autowired RoadmapService roadmapService;
+    @Autowired RoadmapRepository roadmapRepository;
 
     public CookieFilter register(boolean success) {
         return register(success, "email@example.com");
@@ -312,6 +314,127 @@ class RoadmapControllerTest {
 
             ErrorResponse errorResponse2 = response2.body().jsonPath().getObject(".", ErrorResponse.class);
             assertThat(errorResponse2.code()).isEqualTo(CommonErrorCode.FORBIDDEN.name());
+        }
+    }
+
+    @Nested
+    @DisplayName("로드맵 항목 완료")
+    class ItemClear {
+
+        @Test
+        @DisplayName("성공")
+        public void success() {
+            //given
+            CookieFilter cookieFilter = register(true);
+            Roadmap roadmap = Roadmap.create("title1", "image", Accessibility.PUBLIC, null);
+            RoadmapItem roadmapItem = RoadmapItem.create("item", "content", 1, 1, null, null, null, roadmap);
+
+            roadmapRepository.save(roadmap);
+            roadmapRepository.flush();
+
+            boolean cleared = true;
+            RoadmapItemClearDto.ClearRequest clearRequest = new RoadmapItemClearDto.ClearRequest(cleared);
+
+            //when
+            ExtractableResponse<Response> response = given()
+                    .log().all()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .filter(cookieFilter)
+                    .body(clearRequest)
+                    .when()
+                    .put("/api/v1/roadmaps/" + roadmap.getId() + "/items/" + roadmapItem.getId() + "/clear")
+                    .then()
+                    .statusCode(HttpStatus.SC_OK)
+                    .extract();
+
+            //then
+            RoadmapItemClearDto.ClearResponse clearResponse = response.body().jsonPath().getObject(".", RoadmapItemClearDto.ClearResponse.class);
+            assertThat(clearResponse.roadmapItemId()).isEqualTo(roadmapItem.getId());
+            assertThat(clearResponse.isCleared()).isEqualTo(cleared);
+        }
+
+        @Test
+        @DisplayName("로그인 되지 않은 상태로 시도")
+        public void withoutLogin() {
+            RoadmapItemClearDto.ClearRequest clearRequest = new RoadmapItemClearDto.ClearRequest(true);
+
+            // when
+            ExtractableResponse<Response> response = given()
+                    .log().all()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .body(clearRequest)
+                    .when()
+                    .patch("/api/v1/roadmaps/1/items/1")
+                    .then()
+                    .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                    .extract();
+
+            // then
+            ErrorResponse errorResponse = response.body().jsonPath().getObject(".", ErrorResponse.class);
+            assertThat(errorResponse.code()).isEqualTo(CommonErrorCode.UNAUTHORIZED.name());
+        }
+    }
+
+    @Nested
+    @DisplayName("로드맵 좋아요")
+    class Like {
+
+        @Test
+        @DisplayName("성공")
+        public void success() {
+            //given
+            CookieFilter cookieFilter = register(true);
+            Roadmap roadmap = Roadmap.create("title1", "image", Accessibility.PUBLIC, null);
+            roadmapRepository.save(roadmap);
+
+            boolean like = true;
+            RoadmapLikeDto.LikeRequest likeRequest = new RoadmapLikeDto.LikeRequest(like);
+
+            //when
+            ExtractableResponse<Response> response = given()
+                    .log().all()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .filter(cookieFilter)
+                    .body(likeRequest)
+                    .when()
+                    .put("/api/v1/roadmaps/" + roadmap.getId() + "/like")
+                    .then()
+                    .statusCode(HttpStatus.SC_OK)
+                    .extract();
+
+            //then
+            RoadmapLikeDto.LikeResponse likeResponse = response.body().jsonPath().getObject(".", RoadmapLikeDto.LikeResponse.class);
+            assertThat(likeResponse.roadmapId()).isEqualTo(roadmap.getId());
+            assertThat(likeResponse.like()).isEqualTo(like);
+        }
+
+        @Test
+        @DisplayName("로그인 되지 않은 상태로 시도")
+        public void withoutLogin() {
+            RoadmapLikeDto.LikeRequest likeRequest = new RoadmapLikeDto.LikeRequest(true);
+
+            // when
+            ExtractableResponse<Response> response = given()
+                    .log().all()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .body(likeRequest)
+                    .when()
+                    .patch("/api/v1/roadmaps/1/like")
+                    .then()
+                    .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                    .extract();
+
+            // then
+            ErrorResponse errorResponse = response.body().jsonPath().getObject(".", ErrorResponse.class);
+            assertThat(errorResponse.code()).isEqualTo(CommonErrorCode.UNAUTHORIZED.name());
         }
     }
 }
