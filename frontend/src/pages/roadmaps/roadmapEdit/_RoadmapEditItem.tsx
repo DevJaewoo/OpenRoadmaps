@@ -83,21 +83,27 @@ const RoadmapEditItem: FC<Props> = ({
   };
 
   const handleClick: MouseEventHandler<HTMLDivElement> = () => {
-    if (singleClicked) return;
-    singleClicked = true;
-
     const { x, y } = getCurrentPositionRem(refs.current);
-
-    setTimeout(() => {
-      if (!singleClicked) return;
-      singleClicked = false;
-
+    const click = () => {
       if (position === undefined || (position.x === x && position.y === y)) {
         onClick(roadmapItem.id);
       }
-
       setPosition(undefined);
-    }, 300);
+    };
+
+    if (editMode === EditMode.Cursor) {
+      if (singleClicked) return;
+      singleClicked = true;
+
+      setTimeout(() => {
+        if (!singleClicked) return;
+        singleClicked = false;
+
+        click();
+      }, 300);
+    } else {
+      click();
+    }
   };
 
   const handleDoubleClick = () => {

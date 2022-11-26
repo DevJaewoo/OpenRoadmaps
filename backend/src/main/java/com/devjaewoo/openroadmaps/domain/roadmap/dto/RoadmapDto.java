@@ -20,10 +20,18 @@ public record RoadmapDto(
         Long clientId
 ) {
 
-    public static RoadmapDto of(Roadmap roadmap) {
+    public static RoadmapDto from(Roadmap roadmap) {
+        List<Long> empty = List.of();
+        return from(roadmap, empty);
+    }
+
+    public static RoadmapDto from(Roadmap roadmap, List<Long> roadmapItemClearList) {
 
         List<RoadmapItemDto.ListItem> roadmapItemDtoList = roadmap.getRoadmapItemList().stream()
-                .map(RoadmapItemDto.ListItem::of)
+                .map(r -> {
+                    boolean isCleared = r.getId() != null && roadmapItemClearList.contains(r.getId());
+                    return RoadmapItemDto.ListItem.from(r, isCleared);
+                })
                 .toList();
 
         Long clientId = null;
@@ -52,11 +60,11 @@ public record RoadmapDto(
             String createdDate,
             List<RoadmapItemDto.ListItem.Response> roadmapItemList) {
 
-        public static Response of(RoadmapDto roadmapDto) {
+        public static Response from(RoadmapDto roadmapDto) {
 
             // RoadmapItem ListItem을 ListItem.Response로 변환
             List<RoadmapItemDto.ListItem.Response> roadmapItemList = roadmapDto.roadmapItemList.stream()
-                    .map(RoadmapItemDto.ListItem.Response::of)
+                    .map(RoadmapItemDto.ListItem.Response::from)
                     .toList();
 
             String createdDate = LocalDateTime.MIN.toString();
@@ -85,7 +93,7 @@ public record RoadmapDto(
             LocalDateTime createdDate,
             Long clientId) {
 
-        public static ListItem of(Roadmap roadmap) {
+        public static ListItem from(Roadmap roadmap) {
 
             Long clientId = null;
             if(roadmap.getClient() != null) {
@@ -113,7 +121,7 @@ public record RoadmapDto(
                 String createdDate,
                 Long clientId) {
 
-            public static Response of(ListItem listItem) {
+            public static Response from(ListItem listItem) {
 
                 String accessibility = null;
                 if(listItem.accessibility != null) {

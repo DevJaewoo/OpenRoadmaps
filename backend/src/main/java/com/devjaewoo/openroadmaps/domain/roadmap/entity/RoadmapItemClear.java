@@ -2,10 +2,7 @@ package com.devjaewoo.openroadmaps.domain.roadmap.entity;
 
 import com.devjaewoo.openroadmaps.domain.client.entity.Client;
 import com.devjaewoo.openroadmaps.global.domain.BaseCreateTimeEntity;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -27,7 +24,10 @@ public class RoadmapItemClear extends BaseCreateTimeEntity {
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @Setter
+    private boolean isCleared;
+
     public static RoadmapItemClear create(RoadmapItem roadmapItem, Client client) {
-        return new RoadmapItemClear(null, roadmapItem, client);
+        return new RoadmapItemClear(null, roadmapItem, client, true);
     }
 }
