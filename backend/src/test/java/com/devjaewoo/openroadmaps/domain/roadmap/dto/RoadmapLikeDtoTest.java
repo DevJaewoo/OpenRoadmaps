@@ -19,12 +19,12 @@ class RoadmapLikeDtoTest {
         RoadmapLike roadmapLike = RoadmapLike.create(roadmap, client);
 
         // when
-        RoadmapLikeDto roadmapLikeDto = RoadmapLikeDto.from(roadmapLike);
+        RoadmapLikeDto roadmapLikeDto = RoadmapLikeDto.from(roadmapLike, roadmap.getLikes());
 
         // then
         assertThat(roadmapLikeDto.roadmapId()).isEqualTo(roadmap.getId());
         assertThat(roadmapLikeDto.clientId()).isEqualTo(client.getId());
-        assertThat(roadmapLikeDto.like()).isFalse();
+        assertThat(roadmapLikeDto.liked()).isFalse();
     }
 
     @Test
@@ -34,13 +34,13 @@ class RoadmapLikeDtoTest {
         Client client = Client.create("name", "email", "password");
         Roadmap roadmap = Roadmap.create("title", "image", null, null);
         RoadmapLike roadmapLike = RoadmapLike.create(roadmap, client);
-        RoadmapLikeDto roadmapLikeDto = RoadmapLikeDto.from(roadmapLike);
+        RoadmapLikeDto roadmapLikeDto = RoadmapLikeDto.from(roadmapLike, roadmap.getLikes());
 
         // when
         RoadmapLikeDto.LikeResponse response = RoadmapLikeDto.LikeResponse.from(roadmapLikeDto);
 
         // then
         assertThat(response.roadmapId()).isEqualTo(roadmap.getId());
-        assertThat(response.like()).isFalse();
+        assertThat(response.liked()).isFalse();
     }
 }

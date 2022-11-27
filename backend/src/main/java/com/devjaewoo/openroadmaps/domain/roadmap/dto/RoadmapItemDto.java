@@ -108,6 +108,7 @@ public record RoadmapItemDto(
         public record Response(
                 Long id,
                 String name,
+                String content,
                 double x,
                 double y,
                 String recommend,
@@ -131,6 +132,7 @@ public record RoadmapItemDto(
                 return new Response(
                         listItem.id,
                         listItem.name,
+                        listItem.content,
                         listItem.x,
                         listItem.y,
                         recommend,

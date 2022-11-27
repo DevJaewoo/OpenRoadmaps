@@ -56,7 +56,7 @@ public class RoadmapController {
     @PutMapping("/{roadmapId}/like")
     public ResponseEntity<?> likeRoadmap(@PathVariable Long roadmapId, @Valid @RequestBody RoadmapLikeDto.LikeRequest request) {
         SessionClient sessionClient = SessionUtil.getCurrentClient();
-        RoadmapLikeDto result = roadmapService.likeRoadmap(roadmapId, request.like(), sessionClient.getId());
+        RoadmapLikeDto result = roadmapService.likeRoadmap(roadmapId, request.liked(), sessionClient.getId());
         return ResponseEntity.ok(RoadmapLikeDto.LikeResponse.from(result));
     }
 }
