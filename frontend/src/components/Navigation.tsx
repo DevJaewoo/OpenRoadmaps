@@ -20,7 +20,7 @@ const NavItem: React.FC<NavItemProps> = ({ text, path }) => {
   return (
     <div
       className={`flex flex-col justify-center h-full px-5 ${
-        location.pathname === path ? "font-semibold" : null
+        location.pathname.startsWith(path) ? "font-semibold" : null
       }`}
     >
       <Link to={path}>{text}</Link>
