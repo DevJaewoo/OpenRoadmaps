@@ -1,7 +1,7 @@
 import Connector from "@devjaewoo/react-svg-connector";
 import { ShapeDirection } from "@devjaewoo/react-svg-connector/lib/SvgConnector";
 import { Image, ScrollArea } from "@mantine/core";
-import { FC, createRef, RefObject, useRef, useState } from "react";
+import { FC, createRef, RefObject, useRef, useState, useMemo } from "react";
 import { AiFillHeart } from "react-icons/ai";
 import { Link, useParams } from "react-router-dom";
 import { RoadmapItem, useRoadmap, useRoadmapLike } from "src/apis/useRoadmap";
@@ -25,8 +25,23 @@ const RoadmapView: FC<Props> = () => {
     [key: number]: RefObject<HTMLDivElement>;
   }>({});
 
-  const scrollHeight =
-    Math.max(...(roadmap?.roadmapItemList.map((r) => r.y) ?? [0])) + 24;
+  const globalTop = useMemo(
+    () => Math.min(...(roadmap?.roadmapItemList.map((r) => r.y) ?? [0])) - 6,
+    [roadmap]
+  );
+
+  const globalLeft = useMemo(
+    () => Math.min(...(roadmap?.roadmapItemList.map((r) => r.x) ?? [0])) - 6,
+    [roadmap]
+  );
+
+  const scrollHeight = useMemo(
+    () =>
+      Math.max(...(roadmap?.roadmapItemList.map((r) => r.y) ?? [0])) -
+      globalTop +
+      24,
+    [roadmap, globalTop]
+  );
 
   const addRef = (key: number) => {
     if (roadmapItemRefs.current[key] !== undefined) {
@@ -114,6 +129,8 @@ const RoadmapView: FC<Props> = () => {
                     refs={addRef(roadmapItem.id)}
                     key={roadmapItem.id}
                     roadmapItem={roadmapItem}
+                    offsetTop={-globalTop}
+                    offsetLeft={-globalLeft}
                     onClick={onRoadmapItemClick}
                   />
                 ))}
