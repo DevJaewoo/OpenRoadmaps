@@ -47,6 +47,13 @@ export const Recommend = {
 } as const;
 export type TRecommend = typeof Recommend[keyof typeof Recommend];
 
+export const RecommendText = {
+  RECOMMEND: "Recommended",
+  ALTERNATIVE: "Alternative",
+  NOT_RECOMMEND: "Not Recommend",
+  NONE: "None",
+};
+
 export interface RoadmapItem {
   id: number;
   name: string;

@@ -1,11 +1,12 @@
 import Connector from "@devjaewoo/react-svg-connector";
 import { ShapeDirection } from "@devjaewoo/react-svg-connector/lib/SvgConnector";
 import { Image, ScrollArea } from "@mantine/core";
-import { FC, createRef, RefObject, useRef } from "react";
+import { FC, createRef, RefObject, useRef, useState } from "react";
 import { AiFillHeart } from "react-icons/ai";
 import { Link, useParams } from "react-router-dom";
-import { useRoadmap, useRoadmapLike } from "src/apis/useRoadmap";
+import { RoadmapItem, useRoadmap, useRoadmapLike } from "src/apis/useRoadmap";
 import { remToPixel } from "src/utils/positionUtil";
+import RoadmapViewDrawer from "./_RoadmapViewDrawer";
 import RoadmapViewItem from "./_RoadmapViewItem";
 
 interface Props {}
@@ -13,6 +14,10 @@ interface Props {}
 const RoadmapView: FC<Props> = () => {
   const { roadmapId } = useParams();
   const { data: roadmap } = useRoadmap(Number(roadmapId));
+
+  const [drawerItem, setDrawerItem] = useState<RoadmapItem | undefined>(
+    undefined
+  );
 
   const roadmapLike = useRoadmapLike();
 
@@ -45,7 +50,9 @@ const RoadmapView: FC<Props> = () => {
     );
   };
 
-  const onRoadmapItemClick = () => {};
+  const onRoadmapItemClick = (id: number) => {
+    setDrawerItem(roadmap?.roadmapItemList.find((r) => r.id === id));
+  };
 
   return (
     <div className="flex flex-col w-full items-center">
@@ -81,9 +88,9 @@ const RoadmapView: FC<Props> = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-center w-full max-w-7xl bg-blue-200">
+      <div className="flex flex-col items-center w-full max-w-7xl">
         <div
-          className="flex flex-row w-full border-b"
+          className="flex flex-row w-full my-4"
           style={{
             height: `${scrollHeight + 1}rem`,
             minHeight: "24rem",
@@ -92,7 +99,7 @@ const RoadmapView: FC<Props> = () => {
         >
           <div className="flex flex-col items-center flex-1 h-full">
             <ScrollArea
-              className="h-full w-full bg-gray-50"
+              className="h-full w-full bg-gray-50 rounded-2xl"
               scrollHideDelay={0}
             >
               <div
@@ -139,6 +146,10 @@ const RoadmapView: FC<Props> = () => {
           </div>
         </div>
       </div>
+      <RoadmapViewDrawer
+        roadmapItem={drawerItem}
+        onClose={() => setDrawerItem(undefined)}
+      />
     </div>
   );
 };

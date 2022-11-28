@@ -1,7 +1,12 @@
 import { Drawer, ScrollArea, Select, Textarea } from "@mantine/core";
 import { FC, forwardRef, useState, useEffect, useRef } from "react";
 import { AiOutlinePlus, AiOutlineMinusCircle } from "react-icons/ai";
-import { RoadmapItem, Recommend, TRecommend } from "src/apis/useRoadmap";
+import {
+  RoadmapItem,
+  Recommend,
+  TRecommend,
+  RecommendText,
+} from "src/apis/useRoadmap";
 import RoadmapRecommendIcon from "./_RoadmapRecommendIcon";
 
 interface Props {
@@ -16,19 +21,19 @@ interface ItemProps {
 
 const data: ItemProps[] = [
   {
-    label: "Recommend",
+    label: RecommendText[Recommend.RECOMMEND],
     value: Recommend.RECOMMEND,
   },
   {
-    label: "Alternative",
+    label: RecommendText[Recommend.ALTERNATIVE],
     value: Recommend.ALTERNATIVE,
   },
   {
-    label: "Not Recommend",
+    label: RecommendText[Recommend.NOT_RECOMMEND],
     value: Recommend.NOT_RECOMMEND,
   },
   {
-    label: "None",
+    label: RecommendText[Recommend.NONE],
     value: Recommend.NONE,
   },
 ];
@@ -158,9 +163,14 @@ const RoadmapEditDrawer: FC<Props> = ({ roadmapItem, onClose }) => {
             key={r.id}
             className="flex flex-row justify-between items-center w-full mb-2 pr-2"
           >
-            <p className="w-full mr-2 p-2 border border-gray-100 rounded-lg">
+            <a
+              href={r.reference}
+              rel="noreferrer"
+              target="_blank"
+              className="w-full mr-2 p-2 border border-gray-100 rounded-lg text-blue-600"
+            >
               {r.reference}
-            </p>
+            </a>
             <AiOutlineMinusCircle
               className="text-xl rounded-full cursor-pointer text-red-400 bg-white hover:text-white hover:bg-red-400 transition-colors"
               onClick={() => handleReferenceRemove(r.id)}
