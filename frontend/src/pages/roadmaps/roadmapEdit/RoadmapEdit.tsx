@@ -21,7 +21,7 @@ import {
   UploadRoadmap,
   useRoadmapCreate,
 } from "src/apis/useRoadmap";
-import { getCurrentPositionPixel } from "src/utils/PixelToRem";
+import { getCurrentPositionPixel } from "src/utils/positionUtil";
 import { ShapeDirection } from "@devjaewoo/react-svg-connector/lib/SvgConnector";
 import RoadmapEditButton from "./_RoadmapEditButton";
 import RoadmapNameItem from "./_RoadmapNameItem";

@@ -5,7 +5,7 @@ import { FC, createRef, RefObject, useRef } from "react";
 import { AiFillHeart } from "react-icons/ai";
 import { Link, useParams } from "react-router-dom";
 import { useRoadmap, useRoadmapLike } from "src/apis/useRoadmap";
-import { remToPixel } from "src/utils/PixelToRem";
+import { remToPixel } from "src/utils/positionUtil";
 import RoadmapViewItem from "./_RoadmapViewItem";
 
 interface Props {}

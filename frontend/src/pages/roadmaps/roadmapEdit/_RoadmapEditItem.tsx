@@ -9,7 +9,7 @@ import {
 } from "react";
 import Draggable, { DraggableEventHandler } from "react-draggable";
 import { RoadmapItem } from "src/apis/useRoadmap";
-import { getCurrentPositionRem } from "src/utils/PixelToRem";
+import { getCurrentPositionRem } from "src/utils/positionUtil";
 import { RoadmapColor } from "src/utils/constants";
 import { EditMode, TEditMode } from "./types";
 

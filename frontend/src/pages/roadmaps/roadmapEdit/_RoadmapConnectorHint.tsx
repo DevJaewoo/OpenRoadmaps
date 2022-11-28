@@ -1,5 +1,5 @@
 import { FC, useRef, RefObject } from "react";
-import { getCurrentPositionPixel } from "src/utils/PixelToRem";
+import { getCurrentPositionPixel } from "src/utils/positionUtil";
 import { Position, TPosition } from "./types";
 
 interface Props {
