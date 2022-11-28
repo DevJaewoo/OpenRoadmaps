@@ -63,11 +63,14 @@ export interface RoadmapItem {
 export interface Roadmap {
   id: number;
   title: string;
+  content: string;
   image: string;
   accessibility: TAccessibility;
   likes: number;
+  liked: boolean;
   createdDate: string;
   roadmapItemList: RoadmapItem[];
+  clientId: number;
 }
 
 export interface UploadRoadmap {
@@ -108,4 +111,74 @@ const useRoadmapCreate = () => {
   return useMutation(fetchRoadmapCreate, {});
 };
 
-export { useRoadmapList, useRoadmapCreate };
+const fetchRoadmap = async (roadmapId: number): Promise<Roadmap> => {
+  const response = await axiosInstance.get(`/api/v1/roadmaps/${roadmapId}`, {});
+  return response.data;
+};
+
+const useRoadmap = (roadmapId: number) => {
+  return useQuery(["roadmap", roadmapId], () => fetchRoadmap(roadmapId), {
+    staleTime: Infinity,
+  });
+};
+
+interface RoadmapLikeRequest {
+  roadmapId: number;
+  liked: boolean;
+}
+
+interface RoadmapLikeResponse {
+  roadmapId: number;
+  liked: boolean;
+  likes: number;
+}
+
+const fetchRoadmapLike = async ({
+  roadmapId,
+  liked,
+}: RoadmapLikeRequest): Promise<RoadmapLikeResponse> => {
+  const response = await axiosInstance.put(
+    `/api/v1/roadmaps/${roadmapId}/like`,
+    { liked }
+  );
+  return response.data;
+};
+
+const useRoadmapLike = () => {
+  return useMutation(fetchRoadmapLike, {});
+};
+
+interface RoadmapItemClearRequest {
+  roadmapId: number;
+  roadmapItemId: number;
+  isCleared: boolean;
+}
+
+interface RoadmapItemClearResponse {
+  roadmapItemId: number;
+  isCleared: boolean;
+}
+
+const fetchRoadmapClear = async ({
+  roadmapId,
+  roadmapItemId,
+  isCleared,
+}: RoadmapItemClearRequest): Promise<RoadmapItemClearResponse> => {
+  const response = await axiosInstance.put(
+    `/api/v1/roadmap/${roadmapId}/items/${roadmapItemId}/clear`,
+    { isCleared }
+  );
+  return response.data;
+};
+
+const useRoadmapItemClear = async () => {
+  return useMutation(fetchRoadmapClear, {});
+};
+
+export {
+  useRoadmapList,
+  useRoadmapCreate,
+  useRoadmap,
+  useRoadmapLike,
+  useRoadmapItemClear,
+};

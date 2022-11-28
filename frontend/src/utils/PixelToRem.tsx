@@ -2,6 +2,10 @@ const pixelToRem = (px: number): number => {
   return px / parseFloat(getComputedStyle(document.documentElement).fontSize);
 };
 
+const remToPixel = (rem: number): number => {
+  return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+};
+
 const getCurrentPositionPixel = (refs: HTMLElement | null | undefined) => {
   let x = 0;
   let y = 0;
@@ -24,4 +28,9 @@ const getCurrentPositionRem = (refs: HTMLElement | null | undefined) => {
   return { x: pixelToRem(x), y: pixelToRem(y) };
 };
 
-export { pixelToRem, getCurrentPositionPixel, getCurrentPositionRem };
+export {
+  pixelToRem,
+  remToPixel,
+  getCurrentPositionPixel,
+  getCurrentPositionRem,
+};

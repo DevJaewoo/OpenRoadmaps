@@ -14,6 +14,7 @@ import NotFound from "src/pages/error/NotFound";
 import withAuth from "src/hoc/withAuth";
 import RoadmapListComponent from "./roadmapList/RoadmapList";
 import RoadmapCreate from "./RoadmapCreate";
+import RoadmapView from "./roadmapView/RoadmapView";
 
 const RoadmapMain: React.FC<{}> = () => {
   const titleRef = useRef<HTMLInputElement>(null);
@@ -117,6 +118,7 @@ const Roadmaps = () => {
     <Routes>
       <Route path="/" element={<RoadmapMain />} />
       <Route path="/create" element={<AuthRoadmapCreate />} />
+      <Route path="/:roadmapId" element={<RoadmapView />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
