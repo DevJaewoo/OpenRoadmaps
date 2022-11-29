@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 import { useMutation, useQuery } from "react-query";
 import axiosInstance from "src/apis/axiosInstance";
 
@@ -152,7 +154,14 @@ const fetchRoadmapLike = async ({
 };
 
 const useRoadmapLike = () => {
-  return useMutation(fetchRoadmapLike, {});
+  const navigate = useNavigate();
+  return useMutation(fetchRoadmapLike, {
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 401) {
+        navigate("/login");
+      }
+    },
+  });
 };
 
 interface RoadmapItemClearRequest {
@@ -172,14 +181,21 @@ const fetchRoadmapClear = async ({
   isCleared,
 }: RoadmapItemClearRequest): Promise<RoadmapItemClearResponse> => {
   const response = await axiosInstance.put(
-    `/api/v1/roadmap/${roadmapId}/items/${roadmapItemId}/clear`,
+    `/api/v1/roadmaps/${roadmapId}/items/${roadmapItemId}/clear`,
     { isCleared }
   );
   return response.data;
 };
 
-const useRoadmapItemClear = async () => {
-  return useMutation(fetchRoadmapClear, {});
+const useRoadmapItemClear = () => {
+  const navigate = useNavigate();
+  return useMutation(fetchRoadmapClear, {
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 401) {
+        navigate("/login");
+      }
+    },
+  });
 };
 
 export {

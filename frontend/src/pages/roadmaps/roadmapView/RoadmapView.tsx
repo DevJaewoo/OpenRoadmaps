@@ -73,7 +73,7 @@ const RoadmapView: FC<Props> = () => {
     <div className="flex flex-col w-full items-center">
       <div className="flex flex-col items-center w-full bg-gray-200">
         <div className="flex flex-col w-full max-w-7xl">
-          <div className="flex flex-row w-full m-10">
+          <div className="flex flex-row w-full p-10">
             <div className="w-80">
               <Image
                 radius="md"
@@ -103,7 +103,7 @@ const RoadmapView: FC<Props> = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-center w-full max-w-7xl">
+      <div className="flex flex-col items-center w-full max-w-7xl m-2">
         <div
           className="flex flex-row w-full my-4"
           style={{
@@ -164,6 +164,7 @@ const RoadmapView: FC<Props> = () => {
         </div>
       </div>
       <RoadmapViewDrawer
+        roadmapId={roadmap?.id ?? 0}
         roadmapItem={drawerItem}
         onClose={() => setDrawerItem(undefined)}
       />
