@@ -1,5 +1,5 @@
 import { Drawer, ScrollArea, Textarea } from "@mantine/core";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   Recommend,
   RecommendText,
@@ -15,10 +15,12 @@ interface Props {
 }
 
 const RoadmapViewDrawer: FC<Props> = ({ roadmapId, roadmapItem, onClose }) => {
-  const [itemCleared, setItemCleared] = useState<boolean>(
-    roadmapItem?.isCleared ?? false
-  );
+  const [itemCleared, setItemCleared] = useState<boolean>(false);
   const roadmapItemClear = useRoadmapItemClear();
+
+  useEffect(() => {
+    setItemCleared(roadmapItem?.isCleared ?? false);
+  }, [roadmapItem, setItemCleared]);
 
   const onRoadmapItemClearClick = (clear: boolean) => {
     roadmapItemClear.mutate(
