@@ -1,5 +1,6 @@
 import { FC } from "react";
 import Header from "src/components/Header";
+import withAuth from "src/hoc/withAuth";
 import RoadmapEdit from "./roadmapEdit/RoadmapEdit";
 
 const RoadmapCreate: FC = () => {
@@ -13,4 +14,4 @@ const RoadmapCreate: FC = () => {
   );
 };
 
-export default RoadmapCreate;
+export default withAuth(RoadmapCreate, true);

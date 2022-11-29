@@ -10,6 +10,7 @@ import { useRef } from "react";
 import axios, { AxiosError } from "axios";
 import useLogin from "src/apis/useLogin";
 import { PrimaryButton } from "src/components/button/VariantButtons";
+import withAuth from "src/hoc/withAuth";
 import PatternError from "./PatternError";
 import ErrorMessage from "./ErrorMessage";
 
@@ -108,4 +109,4 @@ const Login: React.FC<{}> = () => {
   );
 };
 
-export default Login;
+export default withAuth(Login, false);

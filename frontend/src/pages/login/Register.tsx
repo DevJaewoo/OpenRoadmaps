@@ -10,6 +10,7 @@ import { useRef } from "react";
 import axios, { AxiosError } from "axios";
 import useRegister from "src/apis/useRegister";
 import { PrimaryButton } from "src/components/button/VariantButtons";
+import withAuth from "src/hoc/withAuth";
 import ErrorMessage from "./ErrorMessage";
 import PatternError from "./PatternError";
 
@@ -121,4 +122,4 @@ const Register: React.FC<{}> = () => {
   );
 };
 
-export default Register;
+export default withAuth(Register, false);

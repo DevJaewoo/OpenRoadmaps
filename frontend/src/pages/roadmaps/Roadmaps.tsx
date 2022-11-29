@@ -11,7 +11,6 @@ import {
 import { OutlinedButton } from "src/components/button/VariantButtons";
 import Header from "src/components/Header";
 import NotFound from "src/pages/error/NotFound";
-import withAuth from "src/hoc/withAuth";
 import RoadmapListComponent from "./roadmapList/RoadmapList";
 import RoadmapCreate from "./RoadmapCreate";
 import RoadmapView from "./roadmapView/RoadmapView";
@@ -113,11 +112,10 @@ const RoadmapMain: React.FC<{}> = () => {
 };
 
 const Roadmaps = () => {
-  const AuthRoadmapCreate = withAuth(RoadmapCreate, true);
   return (
     <Routes>
       <Route path="/" element={<RoadmapMain />} />
-      <Route path="/create" element={<AuthRoadmapCreate />} />
+      <Route path="/create" element={<RoadmapCreate />} />
       <Route path="/:roadmapId" element={<RoadmapView />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
