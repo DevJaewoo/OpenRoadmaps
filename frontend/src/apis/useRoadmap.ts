@@ -126,9 +126,7 @@ const fetchRoadmap = async (roadmapId: number): Promise<Roadmap> => {
 };
 
 const useRoadmap = (roadmapId: number) => {
-  return useQuery(["roadmap", roadmapId], () => fetchRoadmap(roadmapId), {
-    staleTime: Infinity,
-  });
+  return useQuery(["roadmap", roadmapId], () => fetchRoadmap(roadmapId), {});
 };
 
 interface RoadmapLikeRequest {

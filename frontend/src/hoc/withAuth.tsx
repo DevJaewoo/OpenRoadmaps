@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { FC, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useRecoilState } from "recoil";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useCurrentClient } from "src/apis/useClient";
 import { atomClientInfo, ClientInfo } from "src/atoms/client";
 
@@ -13,6 +13,7 @@ const withAuth = (
 ) => {
   const AuthenticationCheck: FC = () => {
     const [clientInfo, setClientInfo] = useRecoilState(atomClientInfo);
+    const url = useLocation();
     const navigate = useNavigate();
 
     const onSuccess = (data: ClientInfo) => {
@@ -29,7 +30,7 @@ const withAuth = (
       if (clientInfo === undefined || error.response?.status === 401) {
         setClientInfo(undefined);
         if (option === true) {
-          navigate("/login");
+          navigate(`/login?redirect=${url.pathname}`);
         }
       }
     };
