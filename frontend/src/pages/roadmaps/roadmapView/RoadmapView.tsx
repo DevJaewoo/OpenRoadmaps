@@ -1,6 +1,6 @@
 import Connector from "@devjaewoo/react-svg-connector";
 import { ShapeDirection } from "@devjaewoo/react-svg-connector/lib/SvgConnector";
-import { Image, ScrollArea } from "@mantine/core";
+import { ScrollArea } from "@mantine/core";
 import {
   FC,
   createRef,
@@ -13,7 +13,7 @@ import {
 import { AiFillHeart } from "react-icons/ai";
 import { Link, useParams } from "react-router-dom";
 import { RoadmapItem, useRoadmap, useRoadmapLike } from "src/apis/useRoadmap";
-import { remToPixel } from "src/utils/positionUtil";
+import StableImage from "src/components/StableImage";
 import RoadmapViewDrawer from "./_RoadmapViewDrawer";
 import RoadmapViewItem from "./_RoadmapViewItem";
 
@@ -89,14 +89,10 @@ const RoadmapView: FC<Props> = () => {
       <div className="flex flex-col items-center w-full bg-gray-200">
         <div className="flex flex-col w-full max-w-7xl">
           <div className="flex flex-row w-full p-10">
-            <div className="w-80">
-              <Image
-                radius="md"
-                height={remToPixel(60 / 4)}
-                src={`/api/v1/images/${roadmap?.image}`}
-                alt=""
-              />
-            </div>
+            <StableImage
+              className="w-80 h-60 rounded-2xl border-2 border-gray-800 object-fill"
+              src={`/api/v1/images/${roadmap?.image}`}
+            />
             <div className="flex flex-col justify-center ml-8 p-2">
               <h2 className="text-4xl whitespace-pre-line">{roadmap?.title}</h2>
               <div className="flex flex-col mt-2">

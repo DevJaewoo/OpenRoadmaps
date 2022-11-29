@@ -2,6 +2,7 @@ import { FC } from "react";
 import { RoadmapListItem } from "src/apis/useRoadmap";
 import { FaHeart } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import StableImage from "src/components/StableImage";
 
 interface Props {
   data: RoadmapListItem;
@@ -17,10 +18,10 @@ const RoadmapListItemComponent: FC<Props> = ({ data }) => {
       role="button"
       aria-hidden
     >
-      <img
+      <StableImage
         src={`http://localhost:8080/api/v1/images/${data.image}`}
         alt={data.image}
-        className="w-full h-48 bg-indigo-100 rounded-md object-cover"
+        className="w-full h-48 rounded-md object-cover"
       />
       <h4 className="mt-2 text-lg font-semibold">{data.title}</h4>
       <div className="flex flex-row justify-between mt-1">
