@@ -61,6 +61,7 @@ const RoadmapViewDrawer: FC<Props> = ({ roadmapId, roadmapItem, onClose }) => {
       <Textarea
         className="mt-4"
         value={roadmapItem?.content}
+        onChange={() => {}}
         minRows={7}
         maxRows={7}
       />

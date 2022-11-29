@@ -1,7 +1,15 @@
 import Connector from "@devjaewoo/react-svg-connector";
 import { ShapeDirection } from "@devjaewoo/react-svg-connector/lib/SvgConnector";
 import { Image, ScrollArea } from "@mantine/core";
-import { FC, createRef, RefObject, useRef, useState, useMemo } from "react";
+import {
+  FC,
+  createRef,
+  RefObject,
+  useRef,
+  useState,
+  useMemo,
+  useEffect,
+} from "react";
 import { AiFillHeart } from "react-icons/ai";
 import { Link, useParams } from "react-router-dom";
 import { RoadmapItem, useRoadmap, useRoadmapLike } from "src/apis/useRoadmap";
@@ -43,6 +51,8 @@ const RoadmapView: FC<Props> = () => {
     [roadmap, globalTop]
   );
 
+  const [, redraw] = useState<number>(0);
+
   const addRef = (key: number) => {
     if (roadmapItemRefs.current[key] !== undefined) {
       return roadmapItemRefs.current[key];
@@ -51,6 +61,10 @@ const RoadmapView: FC<Props> = () => {
     roadmapItemRefs.current[key] = newRef;
     return newRef;
   };
+
+  useEffect(() => {
+    redraw(Math.random());
+  }, [roadmap, redraw]);
 
   const onLikeClick = () => {
     if (!roadmap) return;
@@ -69,6 +83,7 @@ const RoadmapView: FC<Props> = () => {
     setDrawerItem(roadmap?.roadmapItemList.find((r) => r.id === id));
   };
 
+  if (!roadmap) return null;
   return (
     <div className="flex flex-col w-full items-center">
       <div className="flex flex-col items-center w-full bg-gray-200">
