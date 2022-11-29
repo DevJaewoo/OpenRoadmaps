@@ -1,6 +1,7 @@
+import { useRecoilState } from "recoil";
 import { AxiosError } from "axios";
 import { useQuery } from "react-query";
-import { ClientInfo } from "src/atoms/client";
+import { atomClientInfo, ClientInfo } from "src/atoms/client";
 import axiosInstance from "src/apis/axiosInstance";
 
 const fetchClient = async (id: number): Promise<ClientInfo> => {
@@ -21,9 +22,18 @@ const useCurrentClient = (
   onSuccess?: (data: ClientInfo) => void,
   onError?: (error: AxiosError) => void
 ) => {
+  const [clientInfo, setClientInfo] = useRecoilState(atomClientInfo);
   return useQuery(["currentClient"], fetchCurrentClient, {
-    onSuccess,
-    onError,
+    onSuccess: (data) => {
+      setClientInfo(data);
+      if (onSuccess) onSuccess(data);
+    },
+    onError: (error: AxiosError) => {
+      if (clientInfo === undefined || error.response?.status === 401) {
+        setClientInfo(undefined);
+      }
+      if (onError) onError(error as AxiosError);
+    },
   });
 };
 

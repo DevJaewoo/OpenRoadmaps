@@ -9,13 +9,11 @@ import OAuth from "src/pages/login/OAuth";
 import Register from "src/pages/login/Register";
 import Main from "src/pages/main/Main";
 import RoadmapMain from "src/pages/roadmaps/Roadmaps";
-import withAuth from "src/hoc/withAuth";
-import Profile from "./pages/profile/Profile";
+import Profile from "src/pages/profile/Profile";
+import { useCurrentClient } from "src/apis/useClient";
 
 const App: React.FC<{}> = () => {
-  const AuthRegister = withAuth(Register, false);
-  const AuthLogin = withAuth(Login, false);
-  const AuthOAuth = withAuth(OAuth, false);
+  useCurrentClient();
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -25,9 +23,9 @@ const App: React.FC<{}> = () => {
             <Navigation />
             <Routes>
               <Route path="/" element={<Main />} />
-              <Route path="/register" element={<AuthRegister />} />
-              <Route path="/login" element={<AuthLogin />} />
-              <Route path="/oauth" element={<AuthOAuth />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/oauth" element={<OAuth />} />
               <Route path="/roadmaps/*" element={<RoadmapMain />} />
               <Route path="/clients/:clientId" element={<Profile />} />
               <Route path="*" element={<NotFound />} />

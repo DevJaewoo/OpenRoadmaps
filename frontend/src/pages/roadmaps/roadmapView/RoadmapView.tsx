@@ -1,6 +1,7 @@
 import Connector from "@devjaewoo/react-svg-connector";
 import { ShapeDirection } from "@devjaewoo/react-svg-connector/lib/SvgConnector";
 import { ScrollArea } from "@mantine/core";
+import axios from "axios";
 import {
   FC,
   createRef,
@@ -14,6 +15,7 @@ import { AiFillHeart } from "react-icons/ai";
 import { Link, useParams } from "react-router-dom";
 import { RoadmapItem, useRoadmap, useRoadmapLike } from "src/apis/useRoadmap";
 import StableImage from "src/components/StableImage";
+import NotFound from "src/pages/error/NotFound";
 import RoadmapViewDrawer from "./_RoadmapViewDrawer";
 import RoadmapViewItem from "./_RoadmapViewItem";
 
@@ -21,7 +23,7 @@ interface Props {}
 
 const RoadmapView: FC<Props> = () => {
   const { roadmapId } = useParams();
-  const { data: roadmap } = useRoadmap(Number(roadmapId));
+  const { data: roadmap, error, isError } = useRoadmap(Number(roadmapId));
 
   const [drawerItem, setDrawerItem] = useState<RoadmapItem | undefined>(
     undefined
@@ -82,6 +84,27 @@ const RoadmapView: FC<Props> = () => {
   const onRoadmapItemClick = (id: number) => {
     setDrawerItem(roadmap?.roadmapItemList.find((r) => r.id === id));
   };
+
+  if (isError && axios.isAxiosError(error)) {
+    if (error.response?.status === 404 || error.response?.status === 400) {
+      return (
+        <NotFound
+          error="존재하지 않는 로드맵입니다."
+          action="이전 화면으로 돌아가기"
+          navigate={-1}
+        />
+      );
+    }
+    if (error.response?.status === 403) {
+      return (
+        <NotFound
+          error="로드맵에 접근할 권한이 없습니다."
+          action="이전 화면으로 돌아가기"
+          navigate={-1}
+        />
+      );
+    }
+  }
 
   if (!roadmap) return null;
   return (

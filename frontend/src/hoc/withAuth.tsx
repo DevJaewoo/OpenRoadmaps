@@ -1,10 +1,11 @@
 import { AxiosError } from "axios";
-import { FC, Suspense } from "react";
+import { FC, Suspense, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useRecoilState } from "recoil";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCurrentClient } from "src/apis/useClient";
-import { atomClientInfo, ClientInfo } from "src/atoms/client";
+import { atomClientInfo } from "src/atoms/client";
+import { useQueryClient } from "react-query";
 
 const withAuth = (
   SpecificComponent: FC,
@@ -12,12 +13,12 @@ const withAuth = (
   adminRoute: boolean = false
 ) => {
   const AuthenticationCheck: FC = () => {
-    const [clientInfo, setClientInfo] = useRecoilState(atomClientInfo);
+    const [clientInfo] = useRecoilState(atomClientInfo);
     const url = useLocation();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
-    const onSuccess = (data: ClientInfo) => {
-      setClientInfo(data);
+    const onSuccess = () => {
       if (option === false) {
         navigate("/");
       }
@@ -28,7 +29,6 @@ const withAuth = (
 
     const onError = (error: AxiosError) => {
       if (clientInfo === undefined || error.response?.status === 401) {
-        setClientInfo(undefined);
         if (option === true) {
           navigate(`/login?redirect=${url.pathname}`);
         }
@@ -36,6 +36,10 @@ const withAuth = (
     };
 
     useCurrentClient(onSuccess, onError);
+
+    useEffect(() => {
+      queryClient.invalidateQueries("currentClient");
+    }, [url, queryClient]);
 
     return (
       <Suspense fallback={<div>Loading...</div>}>
