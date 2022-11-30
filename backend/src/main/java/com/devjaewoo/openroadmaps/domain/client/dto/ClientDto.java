@@ -1,11 +1,13 @@
 package com.devjaewoo.openroadmaps.domain.client.dto;
 
 import com.devjaewoo.openroadmaps.domain.client.entity.Client;
+import lombok.Builder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
+@Builder
 public record ClientDto(
         Long id,
         String name,
@@ -15,16 +17,35 @@ public record ClientDto(
         boolean isEnabled,
         Role role) {
 
-    public ClientDto(Client client) {
-        this(client.getId(), client.getName(), client.getEmail(), client.getPicture(), client.getReputation(), client.isEnabled(), client.getRole());
+    public static ClientDto from(Client client) {
+        return ClientDto.builder()
+                .id(client.getId())
+                .name(client.getName())
+                .email(client.getEmail())
+                .picture(client.getPicture())
+                .reputation(client.getReputation())
+                .isEnabled(client.isEnabled())
+                .role(client.getRole())
+                .build();
     }
 
+    @Builder
     public record Response(
             Long id,
             String name,
             String email,
             String picture,
             int reputation) {
+
+        public static Response from(ClientDto client) {
+            return Response.builder()
+                    .id(client.id)
+                    .name(client.name)
+                    .email(client.email)
+                    .picture(client.picture)
+                    .reputation(client.reputation)
+                    .build();
+        }
 
         public Response(ClientDto client) {
             this(client.id, client.name, client.email, client.picture, client.reputation);

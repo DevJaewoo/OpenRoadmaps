@@ -21,13 +21,13 @@ public class ClientController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody ClientDto.Register request) {
         ClientDto client = clientService.register(request);
-        return ResponseEntity.ok(new ClientDto.Response(client));
+        return ResponseEntity.ok(ClientDto.Response.from(client));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody ClientDto.Register request) {
         ClientDto client = clientService.login(request);
-        return ResponseEntity.ok(new ClientDto.Response(client));
+        return ResponseEntity.ok(ClientDto.Response.from(client));
     }
 
     @GetMapping("/logout")
@@ -42,12 +42,12 @@ public class ClientController {
         SessionClient currentClient = SessionUtil.getCurrentClient();
 
         ClientDto clientDto = clientService.findClientById(currentClient.getId());
-        return ResponseEntity.ok(new ClientDto.Response(clientDto));
+        return ResponseEntity.ok(ClientDto.Response.from(clientDto));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getClientInfo(@PathVariable Long id) {
         ClientDto clientDto = clientService.findClientById(id);
-        return ResponseEntity.ok(new ClientDto.Response(clientDto));
+        return ResponseEntity.ok(ClientDto.Response.from(clientDto));
     }
 }

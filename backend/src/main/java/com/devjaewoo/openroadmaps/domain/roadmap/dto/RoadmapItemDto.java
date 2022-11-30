@@ -2,11 +2,13 @@ package com.devjaewoo.openroadmaps.domain.roadmap.dto;
 
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItem;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItemReference;
+import lombok.Builder;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+@Builder
 public record RoadmapItemDto(
         Long id,
         String name,
@@ -27,15 +29,17 @@ public record RoadmapItemDto(
             roadmapId = roadmapItem.getRoadmap().getId();
         }
 
-        return new RoadmapItemDto(
-                roadmapItem.getId(),
-                roadmapItem.getName(),
-                roadmapItem.getContent(),
-                roadmapItem.getRecommend(),
-                referenceList,
-                roadmapId);
+        return RoadmapItemDto.builder()
+                .id(roadmapItem.getId())
+                .name(roadmapItem.getName())
+                .content(roadmapItem.getContent())
+                .recommend(roadmapItem.getRecommend())
+                .referenceList(referenceList)
+                .roadmapId(roadmapId)
+                .build();
     }
 
+    @Builder
     public record Response(
             Long id,
             String name,
@@ -51,15 +55,17 @@ public record RoadmapItemDto(
                 recommend = roadmapItemDto.recommend.name();
             }
 
-            return new Response(
-                    roadmapItemDto.id,
-                    roadmapItemDto.name,
-                    roadmapItemDto.content,
-                    recommend,
-                    roadmapItemDto.referenceList);
+            return Response.builder()
+                    .id(roadmapItemDto.id)
+                    .name(roadmapItemDto.name)
+                    .content(roadmapItemDto.content)
+                    .recommend(recommend)
+                    .referenceList(roadmapItemDto.referenceList)
+                    .build();
         }
     }
 
+    @Builder
     public record ListItem(
             Long id,
             String name,
@@ -85,26 +91,30 @@ public record RoadmapItemDto(
                 roadmapId = roadmapItem.getRoadmap().getId();
             }
 
-            return new ListItem(
-                    roadmapItem.getId(),
-                    roadmapItem.getName(),
-                    roadmapItem.getContent(),
-                    roadmapItem.getX(),
-                    roadmapItem.getY(),
-                    roadmapItem.getRecommend(),
-                    roadmapItem.getConnectionType(),
-                    isCleared,
-                    parentId,
-                    roadmapItem.getReferenceList().stream()
-                            .map(RoadmapItemReference::getUrl)
-                            .toList(),
-                    roadmapId);
+            return ListItem.builder()
+                    .id(roadmapItem.getId())
+                    .name(roadmapItem.getName())
+                    .content(roadmapItem.getContent())
+                    .x(roadmapItem.getX())
+                    .y(roadmapItem.getY())
+                    .recommend(roadmapItem.getRecommend())
+                    .connectionType(roadmapItem.getConnectionType())
+                    .isCleared(isCleared)
+                    .parentId(parentId)
+                    .referenceList(
+                            roadmapItem.getReferenceList().stream()
+                                    .map(RoadmapItemReference::getUrl)
+                                    .toList()
+                    )
+                    .roadmapId(roadmapId)
+                    .build();
         }
 
         public static ListItem from(RoadmapItem roadmapItem) {
             return from(roadmapItem, false);
         }
 
+        @Builder
         public record Response(
                 Long id,
                 String name,
@@ -129,17 +139,18 @@ public record RoadmapItemDto(
                     connectionType = listItem.connectionType.name();
                 }
 
-                return new Response(
-                        listItem.id,
-                        listItem.name,
-                        listItem.content,
-                        listItem.x,
-                        listItem.y,
-                        recommend,
-                        connectionType,
-                        listItem.isCleared,
-                        listItem.parentId,
-                        listItem.referenceList);
+                return Response.builder()
+                        .id(listItem.id)
+                        .name(listItem.name)
+                        .content(listItem.content)
+                        .x(listItem.x)
+                        .y(listItem.y)
+                        .recommend(recommend)
+                        .connectionType(connectionType)
+                        .isCleared(listItem.isCleared)
+                        .parentId(listItem.parentId)
+                        .referenceList(listItem.referenceList)
+                        .build();
             }
         }
     }
