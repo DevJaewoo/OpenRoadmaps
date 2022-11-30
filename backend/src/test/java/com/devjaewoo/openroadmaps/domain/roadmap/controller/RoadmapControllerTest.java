@@ -411,7 +411,7 @@ class RoadmapControllerTest {
             //then
             RoadmapLikeDto.LikeResponse likeResponse = response.body().jsonPath().getObject(".", RoadmapLikeDto.LikeResponse.class);
             assertThat(likeResponse.roadmapId()).isEqualTo(roadmap.getId());
-            assertThat(likeResponse.like()).isEqualTo(like);
+            assertThat(likeResponse.liked()).isEqualTo(like);
         }
 
         @Test

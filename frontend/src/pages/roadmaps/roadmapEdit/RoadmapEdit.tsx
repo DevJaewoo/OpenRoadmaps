@@ -21,7 +21,7 @@ import {
   UploadRoadmap,
   useRoadmapCreate,
 } from "src/apis/useRoadmap";
-import { getCurrentPositionPixel } from "src/utils/PixelToRem";
+import { getCurrentPositionPixel } from "src/utils/positionUtil";
 import { ShapeDirection } from "@devjaewoo/react-svg-connector/lib/SvgConnector";
 import RoadmapEditButton from "./_RoadmapEditButton";
 import RoadmapNameItem from "./_RoadmapNameItem";
@@ -334,7 +334,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
       </div>
       <div
         className="flex flex-row w-full border-b"
-        style={{ height: `${height}rem` }}
+        style={{ height: `calc(${height}rem + 1px)` }}
       >
         <ScrollArea className="w-72 h-full border-r" scrollHideDelay={0}>
           <div className="p-2" style={{ height: `${height}rem` }}>

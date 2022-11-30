@@ -6,7 +6,6 @@ import com.devjaewoo.openroadmaps.domain.client.repository.ClientRepository;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapSearch;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.Roadmap;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
-import org.assertj.core.data.Index;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -122,17 +123,15 @@ class RoadmapRepositoryTest {
             assertThat(resultOfficial1.getContent()).contains(roadmap2, roadmap3);
             assertThat(resultOfficial2.getContent()).contains(roadmap1, roadmap4);
 
-            assertThat(resultOrder1.getContent())
-                    .contains(roadmap4, Index.atIndex(0))
-                    .contains(roadmap3, Index.atIndex(1))
-                    .contains(roadmap2, Index.atIndex(2))
-                    .contains(roadmap1, Index.atIndex(3));
+            List<Roadmap> order1 = resultOrder1.getContent();
+            for(int i = 1; i< order1.size(); i++) {
+                assertThat(order1.get(i-1).getCreatedDate()).isAfterOrEqualTo(order1.get(i).getCreatedDate());
+            }
 
-            assertThat(resultOrder2.getContent())
-                    .contains(roadmap3, Index.atIndex(0))
-                    .contains(roadmap4, Index.atIndex(1))
-                    .contains(roadmap1, Index.atIndex(2))
-                    .contains(roadmap2, Index.atIndex(3));
+            List<Roadmap> order2 = resultOrder2.getContent();
+            for(int i=1; i<order2.size(); i++) {
+                assertThat(order2.get(i-1).getLikes()).isGreaterThanOrEqualTo(order2.get(i).getLikes());
+            }
         }
     }
 }

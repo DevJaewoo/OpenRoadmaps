@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 import { useMutation, useQuery } from "react-query";
 import axiosInstance from "src/apis/axiosInstance";
 
@@ -47,6 +49,13 @@ export const Recommend = {
 } as const;
 export type TRecommend = typeof Recommend[keyof typeof Recommend];
 
+export const RecommendText = {
+  RECOMMEND: "Recommended",
+  ALTERNATIVE: "Alternative",
+  NOT_RECOMMEND: "Not Recommend",
+  NONE: "None",
+};
+
 export interface RoadmapItem {
   id: number;
   name: string;
@@ -63,11 +72,14 @@ export interface RoadmapItem {
 export interface Roadmap {
   id: number;
   title: string;
+  content: string;
   image: string;
   accessibility: TAccessibility;
   likes: number;
+  liked: boolean;
   createdDate: string;
   roadmapItemList: RoadmapItem[];
+  clientId: number;
 }
 
 export interface UploadRoadmap {
@@ -108,4 +120,86 @@ const useRoadmapCreate = () => {
   return useMutation(fetchRoadmapCreate, {});
 };
 
-export { useRoadmapList, useRoadmapCreate };
+const fetchRoadmap = async (roadmapId: number): Promise<Roadmap> => {
+  const response = await axiosInstance.get(`/api/v1/roadmaps/${roadmapId}`, {});
+  return response.data;
+};
+
+const useRoadmap = (roadmapId: number) => {
+  return useQuery(["roadmap", roadmapId], () => fetchRoadmap(roadmapId), {});
+};
+
+interface RoadmapLikeRequest {
+  roadmapId: number;
+  liked: boolean;
+}
+
+interface RoadmapLikeResponse {
+  roadmapId: number;
+  liked: boolean;
+  likes: number;
+}
+
+const fetchRoadmapLike = async ({
+  roadmapId,
+  liked,
+}: RoadmapLikeRequest): Promise<RoadmapLikeResponse> => {
+  const response = await axiosInstance.put(
+    `/api/v1/roadmaps/${roadmapId}/like`,
+    { liked }
+  );
+  return response.data;
+};
+
+const useRoadmapLike = () => {
+  const navigate = useNavigate();
+  return useMutation(fetchRoadmapLike, {
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 401) {
+        navigate("/login");
+      }
+    },
+  });
+};
+
+interface RoadmapItemClearRequest {
+  roadmapId: number;
+  roadmapItemId: number;
+  isCleared: boolean;
+}
+
+interface RoadmapItemClearResponse {
+  roadmapItemId: number;
+  isCleared: boolean;
+}
+
+const fetchRoadmapClear = async ({
+  roadmapId,
+  roadmapItemId,
+  isCleared,
+}: RoadmapItemClearRequest): Promise<RoadmapItemClearResponse> => {
+  const response = await axiosInstance.put(
+    `/api/v1/roadmaps/${roadmapId}/items/${roadmapItemId}/clear`,
+    { isCleared }
+  );
+  return response.data;
+};
+
+const useRoadmapItemClear = () => {
+  const navigate = useNavigate();
+  return useMutation(fetchRoadmapClear, {
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 401) {
+        navigate("/login");
+      }
+    },
+  });
+};
+
+export {
+  useRoadmapList,
+  useRoadmapCreate,
+  useRoadmap,
+  useRoadmapLike,
+  useRoadmapItemClear,
+};

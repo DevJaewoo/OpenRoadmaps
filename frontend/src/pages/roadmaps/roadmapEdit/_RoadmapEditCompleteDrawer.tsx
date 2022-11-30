@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from "react";
-import { Drawer, Image, Radio } from "@mantine/core";
+import { Drawer, Radio } from "@mantine/core";
 import { Dropzone, FileWithPath, MIME_TYPES } from "@mantine/dropzone";
 import {
   Accessibility,
@@ -12,6 +12,7 @@ import {
 } from "src/components/button/VariantButtons";
 import { useImageUpload } from "src/apis/useImage";
 import { AiFillCloseSquare } from "react-icons/ai";
+import StableImage from "src/components/StableImage";
 
 interface Props {
   opened: boolean;
@@ -51,7 +52,7 @@ const RoadmapEditCompleteDrawer: FC<Props> = ({
       onSuccess: (data) => {
         if (roadmap) {
           roadmap.image = data.url;
-          setImage(`http://localhost:8080/api/v1/images/${data.url}`);
+          setImage(`/api/v1/images/${data.url}`);
         }
       },
     });
@@ -90,14 +91,10 @@ const RoadmapEditCompleteDrawer: FC<Props> = ({
                 </Dropzone>
               ) : (
                 <div className="w-full h-full relative">
-                  <Image
-                    className="w-full h-full absolute"
-                    src={image}
-                    alt="대표이미지"
-                  />
+                  <StableImage className="w-full h-full absolute" src={image} />
                   <button
                     type="button"
-                    className="absolute top-0 right-0 text-xl bg-black text-white"
+                    className="absolute top-0 right-0 text-xl bg-black text-white object-fill"
                     onClick={() => setImage(undefined)}
                   >
                     <AiFillCloseSquare />

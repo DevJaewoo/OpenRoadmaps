@@ -30,8 +30,8 @@ public class SecurityConfig {
                     .authenticationEntryPoint(unauthorizedHandler)
                     .accessDeniedHandler(forbiddenHandler).and()
                 .authorizeRequests()
-                    .antMatchers("/login/**").permitAll()
-                    .antMatchers("/oauth/**").permitAll()
+                    .antMatchers("/api/login/**").permitAll()
+                    .antMatchers("/api/oauth/**").permitAll()
                     .antMatchers("/api/*/client/register", "/api/*/client/login").permitAll()
                     .antMatchers("/api/*/client/logout").hasAnyRole(Role.CLIENT.name())
                     .antMatchers("/api/admin/**").hasAnyRole(Role.ADMIN.name())
@@ -39,8 +39,8 @@ public class SecurityConfig {
                     .antMatchers("/api/**").hasAnyRole(Role.CLIENT.name())
                     .anyRequest().authenticated().and()
                 .oauth2Login()
-                    .authorizationEndpoint().baseUri("/oauth/authorization").and()
-                    .redirectionEndpoint().baseUri("/login/oauth2/code/**").and()
+                    .authorizationEndpoint().baseUri("/api/oauth/authorization").and()
+                    .redirectionEndpoint().baseUri("/api/login/oauth2/code/**").and()
                     .userInfoEndpoint().userService(customOAuth2UserService).and()
                     .successHandler(oAuth2SuccessHandler);
 

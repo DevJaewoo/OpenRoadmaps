@@ -363,7 +363,7 @@ class RoadmapServiceTest {
             //then
             assertThat(roadmapLikeDto.roadmapId()).isEqualTo(roadmap.getId());
             assertThat(roadmapLikeDto.clientId()).isEqualTo(client.getId());
-            assertThat(roadmapLikeDto.like()).isEqualTo(like);
+            assertThat(roadmapLikeDto.liked()).isEqualTo(like);
             assertThat(roadmap.getLikes()).isEqualTo(1);
         }
 
@@ -391,7 +391,7 @@ class RoadmapServiceTest {
             //then
             assertThat(roadmapLikeDto.roadmapId()).isEqualTo(roadmap.getId());
             assertThat(roadmapLikeDto.clientId()).isEqualTo(client.getId());
-            assertThat(roadmapLikeDto.like()).isEqualTo(like);
+            assertThat(roadmapLikeDto.liked()).isEqualTo(like);
         }
 
         @Test

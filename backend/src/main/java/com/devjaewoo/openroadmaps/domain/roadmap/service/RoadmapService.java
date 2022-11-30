@@ -61,7 +61,11 @@ public class RoadmapService {
                     .map(RoadmapItem::getId)
                     .toList();
 
-            return RoadmapDto.from(roadmap, roadmapItemClearList);
+            Boolean liked = roadmapLikeRepository.findByRoadmapIdAndClientId(roadmap.getId(), clientId)
+                    .map(RoadmapLike::isLike)
+                    .orElse(false);
+
+            return RoadmapDto.from(roadmap, liked, roadmapItemClearList);
         }
         else {
             return RoadmapDto.from(roadmap);
@@ -152,6 +156,6 @@ public class RoadmapService {
             roadmapLike.setLike(like);
         }
 
-        return RoadmapLikeDto.from(roadmapLike);
+        return RoadmapLikeDto.from(roadmapLike, roadmap.getLikes());
     }
 }

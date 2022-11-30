@@ -1,5 +1,6 @@
 import { FaArrowRight } from "react-icons/fa";
 import { OutlinedButton } from "src/components/button/VariantButtons";
+import StableImage from "src/components/StableImage";
 
 interface SectionProps {
   title: string;
@@ -37,7 +38,7 @@ const Section: React.FC<SectionProps> = ({
       <div className="flex flex-col items-center w-full max-w-screen-xl py-10">
         <h2 className="pb-4 text-4xl">{title}</h2>
         <div className={`w-full mx-auto flex ${flexDirection}`}>
-          <img
+          <StableImage
             src={src}
             alt=""
             className={`w-96 h-96 mx-10 p-10 rounded-[3rem] ${bgImage}`}

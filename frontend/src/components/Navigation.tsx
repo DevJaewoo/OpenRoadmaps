@@ -8,6 +8,7 @@ import {
 import { useRecoilState } from "recoil";
 import { atomClientInfo } from "src/atoms/client";
 import ProfileImage from "./ProfileImage";
+import StableImage from "./StableImage";
 
 interface NavItemProps {
   text: string;
@@ -20,7 +21,7 @@ const NavItem: React.FC<NavItemProps> = ({ text, path }) => {
   return (
     <div
       className={`flex flex-col justify-center h-full px-5 ${
-        location.pathname === path ? "font-semibold" : null
+        location.pathname.startsWith(path) ? "font-semibold" : null
       }`}
     >
       <Link to={path}>{text}</Link>
@@ -57,7 +58,7 @@ const Navigation = () => {
           <div className="flex flex-row items-center h-full">
             <div className="flex flex-col justify-center h-full">
               <Link to="/">
-                <img src={logo} alt="logo" className="w-16 h-auto" />
+                <StableImage src={logo} alt="logo" className="w-16 h-auto" />
               </Link>
             </div>
             {navItems.map((navItem) => (

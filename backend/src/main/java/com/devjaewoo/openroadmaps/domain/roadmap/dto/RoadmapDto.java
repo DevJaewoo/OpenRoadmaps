@@ -16,16 +16,17 @@ public record RoadmapDto(
         boolean isOfficial,
         List<RoadmapItemDto.ListItem> roadmapItemList,
         int likes,
+        boolean liked,
         LocalDateTime createdDate,
         Long clientId
 ) {
 
     public static RoadmapDto from(Roadmap roadmap) {
         List<Long> empty = List.of();
-        return from(roadmap, empty);
+        return from(roadmap, false, empty);
     }
 
-    public static RoadmapDto from(Roadmap roadmap, List<Long> roadmapItemClearList) {
+    public static RoadmapDto from(Roadmap roadmap, boolean liked,  List<Long> roadmapItemClearList) {
 
         List<RoadmapItemDto.ListItem> roadmapItemDtoList = roadmap.getRoadmapItemList().stream()
                 .map(r -> {
@@ -47,6 +48,7 @@ public record RoadmapDto(
                 roadmap.isOfficial(),
                 roadmapItemDtoList,
                 roadmap.getLikes(),
+                liked,
                 roadmap.getCreatedDate(),
                 clientId);
     }
@@ -57,8 +59,10 @@ public record RoadmapDto(
             String image,
             String accessibility,
             int likes,
+            boolean liked,
             String createdDate,
-            List<RoadmapItemDto.ListItem.Response> roadmapItemList) {
+            List<RoadmapItemDto.ListItem.Response> roadmapItemList,
+            Long clientId) {
 
         public static Response from(RoadmapDto roadmapDto) {
 
@@ -78,8 +82,10 @@ public record RoadmapDto(
                     roadmapDto.image,
                     roadmapDto.accessibility.name(),
                     roadmapDto.likes,
+                    roadmapDto.liked,
                     createdDate,
-                    roadmapItemList);
+                    roadmapItemList,
+                    roadmapDto.clientId());
         }
     }
 

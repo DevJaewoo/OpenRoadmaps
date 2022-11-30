@@ -1,4 +1,5 @@
 import { useCurrentClient } from "src/apis/useClient";
+import withAuth from "src/hoc/withAuth";
 
 const Client: React.FC<{}> = () => {
   const { data } = useCurrentClient();
@@ -15,4 +16,4 @@ const OAuth: React.FC<{}> = () => {
   );
 };
 
-export default OAuth;
+export default withAuth(OAuth, false);
