@@ -2,12 +2,14 @@ package com.devjaewoo.openroadmaps.domain.roadmap.dto;
 
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.Roadmap;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
+import lombok.Builder;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Builder
 public record RoadmapDto(
         Long id,
         String title,
@@ -40,19 +42,21 @@ public record RoadmapDto(
             clientId = roadmap.getClient().getId();
         }
 
-        return new RoadmapDto(
-                roadmap.getId(),
-                roadmap.getTitle(),
-                roadmap.getImage(),
-                roadmap.getAccessibility(),
-                roadmap.isOfficial(),
-                roadmapItemDtoList,
-                roadmap.getLikes(),
-                liked,
-                roadmap.getCreatedDate(),
-                clientId);
+        return RoadmapDto.builder()
+                .id(roadmap.getId())
+                .title(roadmap.getTitle())
+                .image(roadmap.getImage())
+                .accessibility(roadmap.getAccessibility())
+                .isOfficial(roadmap.isOfficial())
+                .roadmapItemList(roadmapItemDtoList)
+                .likes(roadmap.getLikes())
+                .liked(liked)
+                .createdDate(roadmap.getCreatedDate())
+                .clientId(clientId)
+                .build();
     }
 
+    @Builder
     public record Response(
             Long id,
             String title,
@@ -76,19 +80,21 @@ public record RoadmapDto(
                 createdDate = roadmapDto.createdDate.toString();
             }
 
-            return new Response(
-                    roadmapDto.id,
-                    roadmapDto.title,
-                    roadmapDto.image,
-                    roadmapDto.accessibility.name(),
-                    roadmapDto.likes,
-                    roadmapDto.liked,
-                    createdDate,
-                    roadmapItemList,
-                    roadmapDto.clientId());
+            return Response.builder()
+                    .id(roadmapDto.id)
+                    .title(roadmapDto.title)
+                    .image(roadmapDto.image)
+                    .accessibility(roadmapDto.accessibility.name())
+                    .likes(roadmapDto.likes)
+                    .liked(roadmapDto.liked)
+                    .createdDate(createdDate)
+                    .roadmapItemList(roadmapItemList)
+                    .clientId(roadmapDto.clientId())
+                    .build();
         }
     }
 
+    @Builder
     public record ListItem(
             Long id,
             String title,
@@ -106,17 +112,19 @@ public record RoadmapDto(
                 clientId = roadmap.getClient().getId();
             }
 
-            return new ListItem(
-                    roadmap.getId(),
-                    roadmap.getTitle(),
-                    roadmap.getImage(),
-                    roadmap.getAccessibility(),
-                    roadmap.isOfficial(),
-                    roadmap.getLikes(),
-                    roadmap.getCreatedDate(),
-                    clientId);
+            return ListItem.builder()
+                    .id(roadmap.getId())
+                    .title(roadmap.getTitle())
+                    .image(roadmap.getImage())
+                    .accessibility(roadmap.getAccessibility())
+                    .isOfficial(roadmap.isOfficial())
+                    .likes(roadmap.getLikes())
+                    .createdDate(roadmap.getCreatedDate())
+                    .clientId(clientId)
+                    .build();
         }
 
+        @Builder
         public record Response(
                 Long id,
                 String title,
@@ -139,15 +147,16 @@ public record RoadmapDto(
                     createdDate = listItem.createdDate.toString();
                 }
 
-                return new Response(
-                        listItem.id,
-                        listItem.title,
-                        listItem.image,
-                        accessibility,
-                        listItem.isOfficial,
-                        listItem.likes,
-                        createdDate,
-                        listItem.clientId);
+                return Response.builder()
+                        .id(listItem.id)
+                        .title(listItem.title)
+                        .image(listItem.image)
+                        .accessibility(accessibility)
+                        .isOfficial(listItem.isOfficial)
+                        .likes(listItem.likes)
+                        .createdDate(createdDate)
+                        .clientId(listItem.clientId)
+                        .build();
             }
         }
     }
