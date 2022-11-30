@@ -52,7 +52,7 @@ const RoadmapEditCompleteDrawer: FC<Props> = ({
       onSuccess: (data) => {
         if (roadmap) {
           roadmap.image = data.url;
-          setImage(`http://localhost:8080/api/v1/images/${data.url}`);
+          setImage(`/api/v1/images/${data.url}`);
         }
       },
     });

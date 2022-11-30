@@ -83,7 +83,7 @@ const Login: React.FC<{}> = () => {
         <PrimaryButton
           type="button"
           text="로그인"
-          to="http://localhost:8080/oauth2/authorization/google"
+          to="/api/oauth2/authorization/google"
           className="w-full mt-4 py-3 justify-center text-xl"
           props={{ disabled: isLoading }}
         />
@@ -91,14 +91,14 @@ const Login: React.FC<{}> = () => {
 
       <div className="flex flex-col w-full max-w-2xl mt-10 p-10 border-gray-100 border rounded-xl shadow-md">
         <a
-          href="http://localhost:8080/oauth/authorization/google"
+          href="/api/oauth/authorization/google"
           className="flex justify-center items-center w-full py-3 text-xl font-semibold rounded-lg bg-gray-50 hover:bg-gray-200 border border-gray-200 transition-colors"
         >
           <FcGoogle className="inline mr-3 text-2xl" />
           Google 로그인
         </a>
         <a
-          href="http://localhost:8080/oauth/authorization/github"
+          href="/api/oauth/authorization/github"
           className="flex justify-center items-center w-full mt-3 py-3 text-xl font-semibold text-center text-white rounded-lg bg-gray-700 hover:bg-gray-500 border border-gray-200 transition-colors"
         >
           <FaGithub className="inline mr-3 text-2xl" />

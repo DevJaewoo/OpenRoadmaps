@@ -19,7 +19,7 @@ const RoadmapListItemComponent: FC<Props> = ({ data }) => {
       aria-hidden
     >
       <StableImage
-        src={`http://localhost:8080/api/v1/images/${data.image}`}
+        src={`/api/v1/images/${data.image}`}
         alt={data.image}
         className="w-full h-48 rounded-md object-cover"
       />
