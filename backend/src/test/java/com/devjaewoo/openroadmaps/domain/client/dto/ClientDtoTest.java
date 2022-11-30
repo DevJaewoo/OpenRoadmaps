@@ -45,7 +45,7 @@ class ClientDtoTest {
         client.setRole(Role.CLIENT);
 
         //when
-        ClientDto clientDto = new ClientDto(client);
+        ClientDto clientDto = ClientDto.from(client);
 
         //then
         assertThat(clientDto.id()).isEqualTo(client.getId());

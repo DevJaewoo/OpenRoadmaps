@@ -59,7 +59,7 @@ public class ClientService {
         // Client 권한 부여
         grantAuthority(client);
 
-        return new ClientDto(client);
+        return ClientDto.from(client);
     }
 
     @Transactional
@@ -87,7 +87,7 @@ public class ClientService {
             httpSession.setAttribute(SessionConfig.CLIENT_INFO, new SessionClient(client));
         }
 
-        return new ClientDto(client);
+        return ClientDto.from(client);
     }
 
     public ClientDto login(ClientDto.Register request) {
@@ -114,7 +114,7 @@ public class ClientService {
         // Client 권한 부여
         grantAuthority(client);
 
-        return new ClientDto(client);
+        return ClientDto.from(client);
     }
 
     public void logout() {
@@ -135,6 +135,6 @@ public class ClientService {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND));
 
-        return new ClientDto(client);
+        return ClientDto.from(client);
     }
 }
