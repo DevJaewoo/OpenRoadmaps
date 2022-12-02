@@ -1,4 +1,4 @@
-*.yml
+application-secret.yml
 !**/src/test/**/*.yml
 
 HELP.md

@@ -1,0 +1,8 @@
+FROM openjdk:17-alpine
+RUN mkdir -p /usr/app/backend
+WORKDIR /usr/app/backend
+
+COPY ./build/libs/*-SNAPSHOT.jar .
+
+ENTRYPOINT [ "java", "-jar", "OpenRoadmaps-0.0.1-SNAPSHOT.jar"]
+EXPOSE 8080
