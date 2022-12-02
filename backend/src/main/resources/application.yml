@@ -1,0 +1,44 @@
+spring:
+  profiles:
+    active: develop, secret
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+        default_batch_fetch_size: 1000
+    open-in-view: false
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: client-id
+            client-secret: client-secret
+            redirect-uri: "{baseUrl}/api/{action}/oauth2/code/{registrationId}"
+            scope: profile, email
+          github:
+            client-id: client-id
+            client-secret: client-secret
+            redirect-uri: "{baseUrl}/api/{action}/oauth2/code/{registrationId}"
+
+  redis:
+    host: localhost
+    port: 6379
+
+file:
+  rootDir: /home/files
+
+logging:
+  level:
+    root: info
