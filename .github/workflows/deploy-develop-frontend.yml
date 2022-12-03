@@ -15,7 +15,7 @@ on:
 jobs:
   build-and-push:
     if: ${{ !contains(github.event.head_commit.message, '[skip cd]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     defaults:
       run:
@@ -44,14 +44,14 @@ jobs:
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-modules-
-            
+
       - name: Install NPM Modules
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm install
 
       - name: Build
         run: npm run build
-        
+
       - name: Deploy
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEVELOP }}
