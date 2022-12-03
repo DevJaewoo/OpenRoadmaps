@@ -58,6 +58,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-and-push]
     steps:
+    - name: Get Github action IP
+      id: ip
+      uses: haythem/public-ip@v1.2
+        
+    - name: Add Github Actions IP to Security group
+      run: |
+        aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME_DEVELOP }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEVELOP }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET_DEVELOP }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        
     - name: Deploy to AWS
       uses: appleboy/ssh-action@master
       with:
@@ -68,3 +80,12 @@ jobs:
           sudo docker compose pull
           sudo docker compose up --force-recreate --build -d
           sudo docker image prune -f
+              
+    - name: Remove Github Actions IP from security group
+      run: |
+        aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME_DEVELOP }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEVELOP }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET_DEVELOP }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      if: always()
