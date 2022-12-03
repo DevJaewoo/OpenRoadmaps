@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
     
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -45,3 +45,14 @@ jobs:
         context: ./backend
         build-args: SPRING_PROFILES_ACTIVE="prod"
         tags: devjaewoo/openroadmaps-develop:latest
+        
+    - name: Deploy to AWS
+      uses: appleboy/ssh-action@master
+      with:
+        username: ${{ secrets.AWS_SSH_USERNAME_DEVELOP }}
+        host: ${{ secrets.AWS_SSH_HOST_DEVELOP }}
+        key: ${{ secrets.AWS_SSH_KEY_DEVELOP }}
+        script: |
+          sudo docker compose pull
+          sudo docker compose up --force-recreate --build -d
+          sudo docker image prune -f
