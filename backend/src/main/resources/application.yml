@@ -32,6 +32,9 @@ spring:
             client-secret: client-secret
             redirect-uri: "{baseUrl}/api/{action}/oauth2/code/{registrationId}"
 
+  oauth2:
+    success-uri: http://localhost:3000
+
   redis:
     host: localhost
     port: 6379
