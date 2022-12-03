@@ -45,8 +45,5 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm install
 
-      - name: Build
-        run: npm run build
-
       - name: Run ESLint
         run: npx eslint src --ext .js,.jsx,.ts,.tsx
