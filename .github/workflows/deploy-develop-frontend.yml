@@ -13,9 +13,9 @@ on:
         description: "Tags"
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     if: ${{ !contains(github.event.head_commit.message, '[skip cd]') }}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     defaults:
       run:
@@ -54,7 +54,8 @@ jobs:
 
       - name: Deploy
         env:
+          AWS_EC2_METADATA_DISABLED: true
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEVELOP }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET_DEVELOP }}
         run: |
-          aws s3 sync ./build s3://${{ secrets.AWS_S3_NAME_DEVELOP }}
+          aws s3 sync --region ${{ secrets.AWS_DEFAULT_REGION }} ./build s3://openroadmaps-develop-s3
