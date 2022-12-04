@@ -29,4 +29,21 @@ const useLogin = () => {
   });
 };
 
-export default useLogin;
+const fetchLogout = async (): Promise<{}> => {
+  const response = await axiosInstance.get("/api/v1/client/logout");
+  return response.data;
+};
+
+const useLogout = () => {
+  const [, setClientInfo] = useRecoilState(atomClientInfo);
+  const navigate = useNavigate();
+
+  return useMutation("logout", fetchLogout, {
+    onSuccess: () => {
+      setClientInfo(undefined);
+      navigate("/");
+    },
+  });
+};
+
+export { useLogin, useLogout };
