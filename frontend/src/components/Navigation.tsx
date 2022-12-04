@@ -1,10 +1,12 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "src/logo.svg";
 import {
   OutlinedButton,
   PrimaryButton,
 } from "src/components/button/VariantButtons";
+import { useLogout } from "src/apis/useLogin";
+import useComponentVisible from "src/hooks/useComponentVisible";
 import { useRecoilState } from "recoil";
 import { atomClientInfo } from "src/atoms/client";
 import ProfileImage from "./ProfileImage";
@@ -30,7 +32,11 @@ const NavItem: React.FC<NavItemProps> = ({ text, path }) => {
 };
 
 const Navigation = () => {
+  const navigate = useNavigate();
   const [clientInfo] = useRecoilState(atomClientInfo);
+  const { ref, isVisible, setVisible } =
+    useComponentVisible<HTMLDivElement>(false);
+  const logout = useLogout();
 
   const navItems: NavItemProps[] = [
     {
@@ -50,6 +56,16 @@ const Navigation = () => {
       path: "/community",
     },
   ];
+
+  const handleProfileClick = () => {
+    navigate(`/clients/${clientInfo?.id}`);
+    setVisible(false);
+  };
+
+  const handleLogoutClick = () => {
+    logout.mutate();
+    setVisible(false);
+  };
 
   return (
     <header className="top-0 w-full h-16 min-w-[640px] bg-white shadow-md fixed z-50">
@@ -81,7 +97,34 @@ const Navigation = () => {
               />
             </div>
           ) : (
-            <ProfileImage clientId={clientInfo.id} url={clientInfo.picture} />
+            <button
+              type="button"
+              className="relative"
+              onClick={() => setVisible(true)}
+            >
+              <ProfileImage clientId={clientInfo.id} url={clientInfo.picture} />
+              {isVisible && (
+                <div
+                  ref={ref}
+                  className="flex flex-col items-center absolute w-32 mt-2 right-0 rounded-md border bg-white shadow-lg"
+                >
+                  <button
+                    type="button"
+                    className="w-full h-9 rounded-md hover:bg-gray-100"
+                    onClick={handleProfileClick}
+                  >
+                    프로필
+                  </button>
+                  <button
+                    type="button"
+                    className="w-full h-9 rounded-md hover:bg-gray-100"
+                    onClick={handleLogoutClick}
+                  >
+                    로그아웃
+                  </button>
+                </div>
+              )}
+            </button>
           )}
         </div>
       </nav>
