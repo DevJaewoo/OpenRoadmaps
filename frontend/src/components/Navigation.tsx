@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, MouseEventHandler } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "src/logo.svg";
 import {
@@ -6,7 +6,7 @@ import {
   PrimaryButton,
 } from "src/components/button/VariantButtons";
 import { useLogout } from "src/apis/useLogin";
-import useComponentVisible from "src/hooks/useComponentVisible";
+import useClickOutside from "src/hooks/useClickOutside";
 import { useRecoilState } from "recoil";
 import { atomClientInfo } from "src/atoms/client";
 import ProfileImage from "./ProfileImage";
@@ -17,7 +17,7 @@ interface NavItemProps {
   path: string;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ text, path }) => {
+const NavItem: FC<NavItemProps> = ({ text, path }) => {
   const location = useLocation();
 
   return (
@@ -34,8 +34,9 @@ const NavItem: React.FC<NavItemProps> = ({ text, path }) => {
 const Navigation = () => {
   const navigate = useNavigate();
   const [clientInfo] = useRecoilState(atomClientInfo);
-  const { ref, isVisible, setVisible } =
-    useComponentVisible<HTMLDivElement>(false);
+
+  const { ref, isVisible, setVisible } = useClickOutside<HTMLDivElement>(false);
+
   const logout = useLogout();
 
   const navItems: NavItemProps[] = [
@@ -57,12 +58,14 @@ const Navigation = () => {
     },
   ];
 
-  const handleProfileClick = () => {
+  const handleProfileClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.stopPropagation();
     navigate(`/clients/${clientInfo?.id}`);
     setVisible(false);
   };
 
-  const handleLogoutClick = () => {
+  const handleLogoutClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.stopPropagation();
     logout.mutate();
     setVisible(false);
   };
@@ -97,10 +100,11 @@ const Navigation = () => {
               />
             </div>
           ) : (
-            <button
-              type="button"
+            <div
               className="relative"
               onClick={() => setVisible(true)}
+              role="button"
+              aria-hidden
             >
               <ProfileImage clientId={clientInfo.id} url={clientInfo.picture} />
               {isVisible && (
@@ -124,7 +128,7 @@ const Navigation = () => {
                   </button>
                 </div>
               )}
-            </button>
+            </div>
           )}
         </div>
       </nav>

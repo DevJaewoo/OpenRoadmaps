@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const useComponentVisible = <T extends HTMLElement>(initialState: boolean) => {
+const useClickOutside = <T extends HTMLElement>(initialState: boolean) => {
   const ref = useRef<T>(null);
   const [isVisible, setVisible] = useState(initialState);
 
@@ -15,9 +15,9 @@ const useComponentVisible = <T extends HTMLElement>(initialState: boolean) => {
     document.addEventListener("click", handleClickOutside, true);
     return () =>
       document.removeEventListener("click", handleClickOutside, true);
-  }, []);
+  }, [ref]);
 
   return { ref, isVisible, setVisible };
 };
 
-export default useComponentVisible;
+export default useClickOutside;
