@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-and-deploy:
-    if: ${{ !contains(github.event.head_commit.message, '[skip cd]') }}
+    if: ${{ !contains(github.event.head_commit.message, '[skip cd]') && !contains(github.event.head_commit.message, '[skip frontend]') }}
     runs-on: ubuntu-latest
 
     defaults:
