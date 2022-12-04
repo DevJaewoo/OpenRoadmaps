@@ -1,3 +1,5 @@
+import { atomClientInfo } from "src/atoms/client";
+import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { useMutation, useQuery } from "react-query";
@@ -104,9 +106,14 @@ const useRoadmapList = (
   query: RoadmapSearch,
   onSuccess?: (data: RoadmapList) => void
 ) => {
-  return useQuery(["roadmapList", query], () => fetchRoadmapList(query), {
-    onSuccess,
-  });
+  const [clientInfo] = useRecoilState(atomClientInfo);
+  return useQuery(
+    ["roadmapList", clientInfo?.id, query],
+    () => fetchRoadmapList(query),
+    {
+      onSuccess,
+    }
+  );
 };
 
 const fetchRoadmapCreate = async (
@@ -126,7 +133,12 @@ const fetchRoadmap = async (roadmapId: number): Promise<Roadmap> => {
 };
 
 const useRoadmap = (roadmapId: number) => {
-  return useQuery(["roadmap", roadmapId], () => fetchRoadmap(roadmapId), {});
+  const [clientInfo] = useRecoilState(atomClientInfo);
+  return useQuery(
+    ["roadmap", clientInfo?.id, roadmapId],
+    () => fetchRoadmap(roadmapId),
+    {}
+  );
 };
 
 interface RoadmapLikeRequest {
