@@ -1,5 +1,5 @@
 import { FC, RefObject } from "react";
-import { RoadmapItem } from "src/apis/useRoadmap";
+import { Recommend, RoadmapItem } from "src/apis/useRoadmap";
 import { RoadmapColor } from "src/utils/constants";
 
 interface Props {
@@ -25,7 +25,10 @@ const RoadmapViewItem: FC<Props> = ({
       style={{
         top: `${roadmapItem.y + offsetTop}rem`,
         left: `${roadmapItem.x + offsetLeft}rem`,
-        borderColor: RoadmapColor[roadmapItem.recommend],
+        borderColor:
+          RoadmapColor[
+            roadmapItem.isCleared ? Recommend.NONE : roadmapItem.recommend
+          ],
       }}
       onClick={() => onClick(roadmapItem.id)}
       role="button"
