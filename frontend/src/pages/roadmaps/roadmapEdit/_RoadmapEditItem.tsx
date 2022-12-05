@@ -21,7 +21,7 @@ interface Props {
   onLeave: (id: number) => void;
   onDrag: (id: number, x: number, y: number) => void;
   editMode: TEditMode;
-  children?: ReactNode;
+  children?: ReactNode | ReactNode[];
 }
 
 const RoadmapEditItem: FC<Props> = ({
@@ -141,7 +141,7 @@ const RoadmapEditItem: FC<Props> = ({
     >
       <div
         ref={refs}
-        className={`flex justify-center items-center absolute max-w-xs px-5 py-2 z-10 bg-white border-4 rounded-xl ${
+        className={`flex justify-center items-center absolute max-w-xs px-5 py-2 z-10 bg-white border-4 rounded-xl select-none ${
           editMode === EditMode.Cursor || editMode === EditMode.Delete
             ? "cursor-pointer"
             : "cursor-default"
@@ -170,7 +170,7 @@ const RoadmapEditItem: FC<Props> = ({
             style={{ width: `${inputWidth}px` }}
           />
         ) : (
-          <p className="max-w-sm select-none">{inputText}</p>
+          inputText
         )}
         {children}
       </div>
