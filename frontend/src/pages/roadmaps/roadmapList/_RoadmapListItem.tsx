@@ -35,7 +35,7 @@ const RoadmapListItemComponent: FC<Props> = ({ data }) => {
             event.stopPropagation();
           }}
           className="text-sm"
-        >{`by. ${data.clientId}`}</Link>
+        >{`by. ${data.clientName}`}</Link>
       </div>
     </div>
   );

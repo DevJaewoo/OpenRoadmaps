@@ -22,6 +22,7 @@ export interface RoadmapListItem {
   likes: number;
   createdDate: string;
   clientId: number;
+  clientName: string;
 }
 
 export interface RoadmapList {
@@ -82,6 +83,7 @@ export interface Roadmap {
   createdDate: string;
   roadmapItemList: RoadmapItem[];
   clientId: number;
+  clientName: string;
 }
 
 export interface UploadRoadmap {

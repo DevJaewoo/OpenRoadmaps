@@ -131,7 +131,7 @@ const RoadmapView: FC<Props> = () => {
                 <Link
                   to={`/clients/${roadmap?.clientId}`}
                   className="mt-0.5"
-                >{`by. ${roadmap?.clientId}`}</Link>
+                >{`by. ${roadmap?.clientName}`}</Link>
               </div>
             </div>
           </div>
