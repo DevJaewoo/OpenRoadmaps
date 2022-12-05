@@ -20,7 +20,8 @@ public record RoadmapDto(
         int likes,
         boolean liked,
         LocalDateTime createdDate,
-        Long clientId
+        Long clientId,
+        String clientName
 ) {
 
     public static RoadmapDto from(Roadmap roadmap) {
@@ -38,8 +39,10 @@ public record RoadmapDto(
                 .toList();
 
         Long clientId = null;
+        String clientName = "Anonymous";
         if(roadmap.getClient() != null) {
             clientId = roadmap.getClient().getId();
+            clientName = roadmap.getClient().getName();
         }
 
         return RoadmapDto.builder()
@@ -53,6 +56,7 @@ public record RoadmapDto(
                 .liked(liked)
                 .createdDate(roadmap.getCreatedDate())
                 .clientId(clientId)
+                .clientName(clientName)
                 .build();
     }
 
@@ -66,7 +70,8 @@ public record RoadmapDto(
             boolean liked,
             String createdDate,
             List<RoadmapItemDto.ListItem.Response> roadmapItemList,
-            Long clientId) {
+            Long clientId,
+            String clientName) {
 
         public static Response from(RoadmapDto roadmapDto) {
 
@@ -90,6 +95,7 @@ public record RoadmapDto(
                     .createdDate(createdDate)
                     .roadmapItemList(roadmapItemList)
                     .clientId(roadmapDto.clientId())
+                    .clientName(roadmapDto.clientName())
                     .build();
         }
     }
@@ -103,13 +109,16 @@ public record RoadmapDto(
             boolean isOfficial,
             int likes,
             LocalDateTime createdDate,
-            Long clientId) {
+            Long clientId,
+            String clientName) {
 
         public static ListItem from(Roadmap roadmap) {
 
             Long clientId = null;
+            String clientName = "Anonymous";
             if(roadmap.getClient() != null) {
                 clientId = roadmap.getClient().getId();
+                clientName = roadmap.getClient().getName();
             }
 
             return ListItem.builder()
@@ -121,6 +130,7 @@ public record RoadmapDto(
                     .likes(roadmap.getLikes())
                     .createdDate(roadmap.getCreatedDate())
                     .clientId(clientId)
+                    .clientName(clientName)
                     .build();
         }
 
@@ -133,7 +143,8 @@ public record RoadmapDto(
                 boolean isOfficial,
                 int likes,
                 String createdDate,
-                Long clientId) {
+                Long clientId,
+                String clientName) {
 
             public static Response from(ListItem listItem) {
 
@@ -156,6 +167,7 @@ public record RoadmapDto(
                         .likes(listItem.likes)
                         .createdDate(createdDate)
                         .clientId(listItem.clientId)
+                        .clientName(listItem.clientName)
                         .build();
             }
         }
