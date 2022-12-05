@@ -113,7 +113,7 @@ const RoadmapView: FC<Props> = () => {
         <div className="flex flex-col w-full max-w-7xl">
           <div className="flex flex-row w-full p-10">
             <StableImage
-              className="w-80 h-60 rounded-2xl border-2 border-gray-800"
+              className="w-80 h-60 rounded-2xl border-2 border-gray-800 object-cover"
               src={`/api/v1/images/${roadmap?.image}`}
             />
             <div className="flex flex-col justify-center ml-8 p-2">
