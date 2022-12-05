@@ -83,6 +83,8 @@ const RoadmapEditItem: FC<Props> = ({
   };
 
   const handleClick: MouseEventHandler<HTMLDivElement> = () => {
+    if (editing) return;
+
     const { x, y } = getCurrentPositionRem(refs.current);
     const click = () => {
       if (position === undefined || (position.x === x && position.y === y)) {
