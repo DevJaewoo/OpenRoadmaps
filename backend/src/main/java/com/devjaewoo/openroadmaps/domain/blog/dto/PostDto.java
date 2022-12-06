@@ -52,4 +52,37 @@ public record PostDto(
     ) { }
 
     public record CreateResponse(Long postId) { }
+
+    @Builder
+    public record ListItem(
+            Long id,
+            String title,
+            Accessibility accessibility,
+            int like,
+            Long categoryId,
+            Long roadmapItemId,
+            Long clientId) {
+
+        public static ListItem from(Post post) {
+            Long categoryId = null;
+            if(post.getCategory() != null) {
+                categoryId = post.getCategory().getId();
+            }
+
+            Long roadmapItemId = null;
+            if(post.getRoadmapItem() != null) {
+                roadmapItemId = post.getRoadmapItem().getId();
+            }
+
+            return ListItem.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .accessibility(post.getAccessibility())
+                    .like(post.getLikes())
+                    .categoryId(categoryId)
+                    .roadmapItemId(roadmapItemId)
+                    .clientId(post.getClient().getId())
+                    .build();
+        }
+    }
 }

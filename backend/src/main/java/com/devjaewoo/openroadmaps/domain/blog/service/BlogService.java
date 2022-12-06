@@ -1,5 +1,6 @@
 package com.devjaewoo.openroadmaps.domain.blog.service;
 
+import com.devjaewoo.openroadmaps.domain.blog.dto.CategoryDto;
 import com.devjaewoo.openroadmaps.domain.blog.dto.PostDto;
 import com.devjaewoo.openroadmaps.domain.blog.entity.Category;
 import com.devjaewoo.openroadmaps.domain.blog.entity.Post;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -57,5 +59,16 @@ public class BlogService {
         postRepository.save(post);
 
         return PostDto.from(post);
+    }
+
+    public List<CategoryDto.ListItem> getCategoryList(String clientName) {
+        Client client = clientRepository.findByName(clientName)
+                .orElseThrow(() -> new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND));
+
+        List<Category> categoryList = categoryRepository.findAllByClientId(client.getId());
+
+        return categoryList.stream()
+                .map(CategoryDto.ListItem::from)
+                .toList();
     }
 }
