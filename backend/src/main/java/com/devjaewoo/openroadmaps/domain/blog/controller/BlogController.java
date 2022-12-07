@@ -2,16 +2,19 @@ package com.devjaewoo.openroadmaps.domain.blog.controller;
 
 import com.devjaewoo.openroadmaps.domain.blog.dto.CategoryDto;
 import com.devjaewoo.openroadmaps.domain.blog.dto.PostDto;
+import com.devjaewoo.openroadmaps.domain.blog.dto.PostSearch;
 import com.devjaewoo.openroadmaps.domain.blog.service.BlogService;
 import com.devjaewoo.openroadmaps.domain.client.dto.SessionClient;
+import com.devjaewoo.openroadmaps.global.dto.PageResponseDto;
 import com.devjaewoo.openroadmaps.global.utils.SessionUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/blog")
@@ -20,7 +23,7 @@ public class BlogController {
 
     private final BlogService blogService;
 
-    @PostMapping("/post")
+    @PostMapping("/posts")
     public ResponseEntity<?> post(@Valid @RequestBody PostDto.CreateRequest request) {
         SessionClient currentClient = SessionUtil.getCurrentClient();
         PostDto result = blogService.save(request, currentClient.getId());
@@ -28,14 +31,14 @@ public class BlogController {
     }
 
     @GetMapping("/{clientName}/categories")
-    public ResponseEntity<?> getCategories(@PathVariable @Pattern(regexp = "^@[A-Za-z0-9#_-]{1,10}$") String clientName) {
-        String name = clientName.substring(1).toLowerCase();
+    public ResponseEntity<?> getCategories(@PathVariable String clientName) {
+        String name = clientName.toLowerCase();
 
         List<CategoryDto.ListItem.Response> result = blogService.getCategoryList(name).stream()
                 .map(CategoryDto.ListItem.Response::from)
                 .toList();
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(new CategoryDto.ListItem.ResponseList(result));
     }
 
     @PostMapping("/categories")
@@ -50,5 +53,14 @@ public class BlogController {
         SessionClient currentClient = SessionUtil.getCurrentClient();
         Long result = blogService.deleteCategory(categoryId, currentClient.getId());
         return ResponseEntity.ok(new CategoryDto.DeleteResponse(result));
+    }
+
+    @GetMapping("/posts")
+    public ResponseEntity<?> search(@Valid PostSearch postSearch) {
+        Optional<SessionClient> currentClient = SessionUtil.getOptionalCurrentClient();
+        Long clientId = currentClient.map(SessionClient::getId).orElse(null);
+
+        Page<PostDto.ListItem> result = blogService.search(postSearch, clientId);
+        return ResponseEntity.ok(new PageResponseDto<>(result));
     }
 }

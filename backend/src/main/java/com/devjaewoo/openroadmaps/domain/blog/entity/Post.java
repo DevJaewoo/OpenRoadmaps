@@ -27,6 +27,7 @@ public class Post extends BaseTimeEntity {
     private String content;
 
     private int likes;
+    private boolean isDeleted;
 
     @Enumerated(value = EnumType.STRING)
     private Accessibility accessibility;
@@ -56,6 +57,7 @@ public class Post extends BaseTimeEntity {
         post.content = content;
         post.accessibility = accessibility;
         post.likes = 0;
+        post.isDeleted = false;
 
         post.updateCategory(category);
         post.roadmapItem = roadmapItem;

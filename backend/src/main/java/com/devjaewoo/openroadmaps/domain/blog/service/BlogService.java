@@ -3,6 +3,7 @@ package com.devjaewoo.openroadmaps.domain.blog.service;
 import com.devjaewoo.openroadmaps.domain.blog.dto.BlogErrorCode;
 import com.devjaewoo.openroadmaps.domain.blog.dto.CategoryDto;
 import com.devjaewoo.openroadmaps.domain.blog.dto.PostDto;
+import com.devjaewoo.openroadmaps.domain.blog.dto.PostSearch;
 import com.devjaewoo.openroadmaps.domain.blog.entity.Category;
 import com.devjaewoo.openroadmaps.domain.blog.entity.Post;
 import com.devjaewoo.openroadmaps.domain.blog.repository.CategoryRepository;
@@ -15,6 +16,8 @@ import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapItemRepositor
 import com.devjaewoo.openroadmaps.global.exception.CommonErrorCode;
 import com.devjaewoo.openroadmaps.global.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BlogService {
+
+    public static final int DEFAULT_PAGE_SIZE = 12;
 
     private final ClientRepository clientRepository;
     private final CategoryRepository categoryRepository;
@@ -54,12 +59,22 @@ public class BlogService {
                 .orElseThrow(() -> new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND));
 
         Category category = getCategoryFromId(request.categoryId()).orElse(null);
+        if(category != null && !category.getClient().getId().equals(clientId)) {
+            throw new RestApiException(CommonErrorCode.FORBIDDEN);
+        }
+
         RoadmapItem roadmapItem = getRoadmapItemFromId(request.roadmapItemId()).orElse(null);
 
         Post post = Post.create(request.title(), request.content(), request.accessibility(), category, roadmapItem, client);
         postRepository.save(post);
 
         return PostDto.from(post);
+    }
+
+    public Page<PostDto.ListItem> search(PostSearch postSearch, Long clientId) {
+        PageRequest pageable = PageRequest.of(postSearch.page(), DEFAULT_PAGE_SIZE);
+        return postRepository.search(postSearch, pageable, clientId)
+                .map(PostDto.ListItem::from);
     }
 
     @Transactional

@@ -9,18 +9,12 @@ import java.util.List;
 public record CategoryDto(
         Long id,
         String name,
-        List<PostDto.ListItem> postList,
         Long clientId) {
 
     public static CategoryDto from(Category category) {
         return CategoryDto.builder()
                 .id(category.getId())
                 .name(category.getName())
-                .postList(
-                        category.getPostList().stream()
-                                .map(PostDto.ListItem::from)
-                                .toList()
-                )
                 .clientId(category.getClient().getId())
                 .build();
     }
@@ -53,5 +47,7 @@ public record CategoryDto(
                         .build();
             }
         }
+
+        public record ResponseList(List<Response> categoryList) { }
     }
 }
