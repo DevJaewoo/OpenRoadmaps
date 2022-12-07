@@ -1,5 +1,6 @@
 package com.devjaewoo.openroadmaps.domain.blog.service;
 
+import com.devjaewoo.openroadmaps.domain.blog.dto.BlogErrorCode;
 import com.devjaewoo.openroadmaps.domain.blog.dto.CategoryDto;
 import com.devjaewoo.openroadmaps.domain.blog.dto.PostDto;
 import com.devjaewoo.openroadmaps.domain.blog.entity.Category;
@@ -61,6 +62,21 @@ public class BlogService {
         return PostDto.from(post);
     }
 
+    @Transactional
+    public Long addCategory(String name, Long clientId) {
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND));
+
+        if(categoryRepository.existsByNameAndClientId(name, clientId)) {
+            throw new RestApiException(BlogErrorCode.DUPLICATE_CATEGORY);
+        }
+
+        Category category = Category.create(name, client);
+        categoryRepository.save(category);
+
+        return category.getId();
+    }
+
     public List<CategoryDto.ListItem> getCategoryList(String clientName) {
         Client client = clientRepository.findByName(clientName)
                 .orElseThrow(() -> new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND));
@@ -70,5 +86,21 @@ public class BlogService {
         return categoryList.stream()
                 .map(CategoryDto.ListItem::from)
                 .toList();
+    }
+
+    @Transactional
+    public Long deleteCategory(Long categoryId, Long clientId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
+
+        if(!category.getClient().getId().equals(clientId)) {
+            throw new RestApiException(CommonErrorCode.FORBIDDEN);
+        }
+
+        // category.getPostList().forEach(post -> post.setCategory(null));
+        postRepository.updateCategoryToNull(categoryId);
+        categoryRepository.delete(category);
+
+        return category.getId();
     }
 }

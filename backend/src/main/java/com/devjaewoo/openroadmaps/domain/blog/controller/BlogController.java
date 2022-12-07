@@ -37,4 +37,18 @@ public class BlogController {
 
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/categories")
+    public ResponseEntity<?> addCategory(@RequestBody CategoryDto.CreateRequest request) {
+        SessionClient currentClient = SessionUtil.getCurrentClient();
+        Long result = blogService.addCategory(request.name(), currentClient.getId());
+        return ResponseEntity.ok(new CategoryDto.CreateResponse(result));
+    }
+
+    @DeleteMapping("/categories/{categoryId}")
+    public ResponseEntity<?> deleteCategory(@PathVariable Long categoryId) {
+        SessionClient currentClient = SessionUtil.getCurrentClient();
+        Long result = blogService.deleteCategory(categoryId, currentClient.getId());
+        return ResponseEntity.ok(new CategoryDto.DeleteResponse(result));
+    }
 }

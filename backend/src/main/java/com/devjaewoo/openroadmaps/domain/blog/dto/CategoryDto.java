@@ -25,6 +25,10 @@ public record CategoryDto(
                 .build();
     }
 
+    public record CreateRequest(String name) { }
+    public record CreateResponse(Long categoryId) { }
+    public record DeleteResponse(Long categoryId) { }
+
     @Builder
     public record ListItem(
             Long id,
