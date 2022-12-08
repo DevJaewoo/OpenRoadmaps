@@ -66,7 +66,7 @@ public class BlogService {
 
         RoadmapItem roadmapItem = getRoadmapItemFromId(request.roadmapItemId()).orElse(null);
 
-        Post post = Post.create(request.title(), request.content(), request.accessibility(), category, roadmapItem, client);
+        Post post = Post.create(request.title(), request.content(), request.image(), request.accessibility(), category, roadmapItem, client);
         postRepository.save(post);
 
         return PostDto.from(post);

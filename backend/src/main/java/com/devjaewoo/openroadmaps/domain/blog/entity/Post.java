@@ -26,6 +26,8 @@ public class Post extends BaseTimeEntity {
     @Lob
     private String content;
 
+    private String image;
+
     private int likes;
     private int views;
     private boolean isDeleted;
@@ -52,10 +54,11 @@ public class Post extends BaseTimeEntity {
         }
     }
 
-    public static Post create(String title, String content, Accessibility accessibility, Category category, RoadmapItem roadmapItem, Client client) {
+    public static Post create(String title, String content, String image, Accessibility accessibility, Category category, RoadmapItem roadmapItem, Client client) {
         Post post = new Post();
         post.title = title;
         post.content = content;
+        post.image = image;
         post.accessibility = accessibility;
         post.likes = 0;
         post.isDeleted = false;

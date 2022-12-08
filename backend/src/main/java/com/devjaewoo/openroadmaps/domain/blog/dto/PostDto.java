@@ -11,6 +11,7 @@ public record PostDto(
         Long id,
         String title,
         String content,
+        String image,
         Accessibility accessibility,
         int likes,
         int views,
@@ -35,6 +36,7 @@ public record PostDto(
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .image(post.getImage())
                 .accessibility(post.getAccessibility())
                 .likes(post.getLikes())
                 .views(post.getViews())
@@ -49,6 +51,7 @@ public record PostDto(
             Long id,
             String title,
             String content,
+            String image,
             int likes,
             int views,
             Long categoryId,
@@ -59,6 +62,7 @@ public record PostDto(
                     .id(postDto.id)
                     .title(postDto.title)
                     .content(postDto.content)
+                    .image(postDto.image)
                     .likes(postDto.likes)
                     .views(postDto.views)
                     .categoryId(postDto.categoryId)
@@ -71,6 +75,7 @@ public record PostDto(
             @Size(min = 1, max = 50)
             String title,
             String content,
+            String image,
             Accessibility accessibility,
             Long categoryId,
             Long roadmapItemId
@@ -82,6 +87,7 @@ public record PostDto(
     public record ListItem(
             Long id,
             String title,
+            String image,
             Accessibility accessibility,
             int likes,
             Long categoryId,
@@ -102,6 +108,7 @@ public record PostDto(
             return ListItem.builder()
                     .id(post.getId())
                     .title(post.getTitle())
+                    .image(post.getImage())
                     .accessibility(post.getAccessibility())
                     .likes(post.getLikes())
                     .categoryId(categoryId)
