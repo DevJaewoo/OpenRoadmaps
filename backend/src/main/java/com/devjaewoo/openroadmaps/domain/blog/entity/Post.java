@@ -27,6 +27,7 @@ public class Post extends BaseTimeEntity {
     private String content;
 
     private int likes;
+    private int views;
     private boolean isDeleted;
 
     @Enumerated(value = EnumType.STRING)

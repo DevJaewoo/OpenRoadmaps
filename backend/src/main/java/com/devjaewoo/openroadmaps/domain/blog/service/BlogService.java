@@ -13,6 +13,7 @@ import com.devjaewoo.openroadmaps.domain.client.entity.Client;
 import com.devjaewoo.openroadmaps.domain.client.repository.ClientRepository;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.RoadmapItem;
 import com.devjaewoo.openroadmaps.domain.roadmap.repository.RoadmapItemRepository;
+import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 import com.devjaewoo.openroadmaps.global.exception.CommonErrorCode;
 import com.devjaewoo.openroadmaps.global.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,24 @@ public class BlogService {
 
         Post post = Post.create(request.title(), request.content(), request.accessibility(), category, roadmapItem, client);
         postRepository.save(post);
+
+        return PostDto.from(post);
+    }
+
+    @Transactional
+    public PostDto getPost(String clientName, Long postId, Long clientId) {
+        Post post = postRepository.findByIdAndClientName(postId, clientName)
+                .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
+
+        if(post.isDeleted()) {
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
+        }
+
+        if(post.getAccessibility() != Accessibility.PUBLIC && !post.getClient().getId().equals(clientId)) {
+            throw new RestApiException(CommonErrorCode.FORBIDDEN);
+        }
+
+        post.setViews(post.getViews() + 1);
 
         return PostDto.from(post);
     }

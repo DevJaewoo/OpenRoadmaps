@@ -12,7 +12,8 @@ public record PostDto(
         String title,
         String content,
         Accessibility accessibility,
-        int like,
+        int likes,
+        int views,
         Long categoryId,
         Long roadmapItemId,
         Long clientId
@@ -35,11 +36,35 @@ public record PostDto(
                 .title(post.getTitle())
                 .content(post.getContent())
                 .accessibility(post.getAccessibility())
-                .like(post.getLikes())
+                .likes(post.getLikes())
+                .views(post.getViews())
                 .categoryId(categoryId)
                 .roadmapItemId(roadmapItemId)
                 .clientId(post.getClient().getId())
                 .build();
+    }
+
+    @Builder
+    public record Response(
+            Long id,
+            String title,
+            String content,
+            int likes,
+            int views,
+            Long categoryId,
+            Long roadmapItemId) {
+
+        public static Response from(PostDto postDto) {
+            return Response.builder()
+                    .id(postDto.id)
+                    .title(postDto.title)
+                    .content(postDto.content)
+                    .likes(postDto.likes)
+                    .views(postDto.views)
+                    .categoryId(postDto.categoryId)
+                    .roadmapItemId(postDto.roadmapItemId)
+                    .build();
+        }
     }
 
     public record CreateRequest(
@@ -58,7 +83,7 @@ public record PostDto(
             Long id,
             String title,
             Accessibility accessibility,
-            int like,
+            int likes,
             Long categoryId,
             Long roadmapItemId,
             Long clientId) {
@@ -78,7 +103,7 @@ public record PostDto(
                     .id(post.getId())
                     .title(post.getTitle())
                     .accessibility(post.getAccessibility())
-                    .like(post.getLikes())
+                    .likes(post.getLikes())
                     .categoryId(categoryId)
                     .roadmapItemId(roadmapItemId)
                     .clientId(post.getClient().getId())

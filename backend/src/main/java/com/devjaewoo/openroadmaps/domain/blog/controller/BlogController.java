@@ -30,6 +30,15 @@ public class BlogController {
         return ResponseEntity.ok(new PostDto.CreateResponse(result.id()));
     }
 
+    @GetMapping("/{clientName}/posts/{postId}")
+    public ResponseEntity<?> getPost(@PathVariable String clientName, @PathVariable Long postId) {
+        String name = clientName.toLowerCase();
+        Long currenClientId = SessionUtil.getOptionalCurrentClient().map(SessionClient::getId).orElse(null);
+
+        PostDto result = blogService.getPost(name, postId, currenClientId);
+        return ResponseEntity.ok(PostDto.Response.from(result));
+    }
+
     @GetMapping("/{clientName}/categories")
     public ResponseEntity<?> getCategories(@PathVariable String clientName) {
         String name = clientName.toLowerCase();
