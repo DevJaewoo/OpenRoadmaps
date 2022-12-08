@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { useMutation, useQuery } from "react-query";
 import axiosInstance from "src/apis/axiosInstance";
+import { TAccessibility } from "src/utils/constants";
 
 export interface RoadmapSearch {
   client?: number;
@@ -36,13 +37,6 @@ export const RoadmapOrder = {
   LIKES: "LIKES",
 } as const;
 export type TRoadmapOrder = typeof RoadmapOrder[keyof typeof RoadmapOrder];
-
-export const Accessibility = {
-  PRIVATE: "PRIVATE",
-  PROTECTED: "PROTECTED",
-  PUBLIC: "PUBLIC",
-} as const;
-export type TAccessibility = typeof Accessibility[keyof typeof Accessibility];
 
 export const Recommend = {
   RECOMMEND: "RECOMMEND",

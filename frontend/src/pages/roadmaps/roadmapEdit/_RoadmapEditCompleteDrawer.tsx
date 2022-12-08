@@ -1,11 +1,8 @@
 import { FC, useState, useEffect } from "react";
 import { Drawer, Radio } from "@mantine/core";
 import { Dropzone, FileWithPath, MIME_TYPES } from "@mantine/dropzone";
-import {
-  Accessibility,
-  TAccessibility,
-  UploadRoadmap,
-} from "src/apis/useRoadmap";
+import { UploadRoadmap } from "src/apis/useRoadmap";
+import { Accessibility, TAccessibility } from "src/utils/constants";
 import {
   OutlinedButton,
   PrimaryButton,

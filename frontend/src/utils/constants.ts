@@ -6,3 +6,11 @@ export const RoadmapColor = {
 } as const;
 
 export type TRoadmapColor = typeof RoadmapColor[keyof typeof RoadmapColor];
+
+export const Accessibility = {
+  PRIVATE: "PRIVATE",
+  PROTECTED: "PROTECTED",
+  PUBLIC: "PUBLIC",
+} as const;
+
+export type TAccessibility = typeof Accessibility[keyof typeof Accessibility];

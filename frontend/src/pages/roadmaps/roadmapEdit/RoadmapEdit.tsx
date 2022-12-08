@@ -15,12 +15,12 @@ import { AiOutlinePlusSquare, AiFillDelete } from "react-icons/ai";
 import { MdOutlineMoving } from "react-icons/md";
 import Connector from "@devjaewoo/react-svg-connector";
 import {
-  Accessibility,
   Recommend,
   RoadmapItem,
   UploadRoadmap,
   useRoadmapCreate,
 } from "src/apis/useRoadmap";
+import { Accessibility } from "src/utils/constants";
 import { getCurrentPositionPixel } from "src/utils/positionUtil";
 import { ShapeDirection } from "@devjaewoo/react-svg-connector/lib/SvgConnector";
 import RoadmapEditButton from "./_RoadmapEditButton";
