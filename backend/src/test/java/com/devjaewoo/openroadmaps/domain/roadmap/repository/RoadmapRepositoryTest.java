@@ -51,8 +51,8 @@ class RoadmapRepositoryTest {
         @DisplayName("RoadmapSearch")
         public void findByRoadmapSearch() {
             //given
-            Client client1 = Client.create("name", "email", "password");
-            Client client2 = Client.create("name", "email", "password");
+            Client client1 = Client.create("name1", "email", "password");
+            Client client2 = Client.create("name2", "email", "password");
 
             Roadmap roadmap1 = Roadmap.create("title1", "image", Accessibility.PUBLIC, client1);
             Roadmap roadmap2 = Roadmap.create("title2", "image", Accessibility.PROTECTED, client1);

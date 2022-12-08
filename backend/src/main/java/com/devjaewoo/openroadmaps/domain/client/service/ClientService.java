@@ -49,7 +49,7 @@ public class ClientService {
         // Client 객체 생성 및 저장
         Client client = Client.create("", request.email().toLowerCase(), password);
         clientRepository.save(client);
-        client.setName("User#" + client.getId());
+        client.setName("user" + client.getId());
 
         // SessionAttribute에 Client 정보 저장
         if(httpSession != null) {
@@ -76,10 +76,10 @@ public class ClientService {
             throw new RestApiException(ClientErrorCode.UNSUPPORTED_REGISTRATION);
         }
 
-        // 사용자가 없다면 신규 사용자 생성, 기본 이름은 User#id
+        // 사용자가 없다면 신규 사용자 생성, 기본 이름은 user#id
         if(client == null) {
             client = clientRepository.save(attributes.toClient());
-            client.setName("User#" + client.getId());
+            client.setName("user" + client.getId());
         }
 
         // SessionAttribute에 Client 정보 저장

@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {
+        @UniqueConstraint(name = "unique_name", columnNames = {"name"}),
         @UniqueConstraint(name = "unique_google", columnNames = {"google_oauth_id"}),
         @UniqueConstraint(name = "unique_github", columnNames = {"github_oauth_id"}),
 })

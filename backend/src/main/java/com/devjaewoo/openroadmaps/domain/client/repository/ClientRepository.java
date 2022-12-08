@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
     boolean existsByEmail(String email);
+    Optional<Client> findByName(String name);
     Optional<Client> findByEmailAndPasswordIsNotNull(String email);
     Optional<Client> findByGoogleOAuthId(String googleOAuthId);
     Optional<Client> findByGithubOAuthId(String githubOAuthId);

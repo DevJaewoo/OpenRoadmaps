@@ -68,7 +68,7 @@ class ClientServiceTest {
 
                 //then
                 assertThat(clientDto.id()).isGreaterThan(0);
-                assertThat(clientDto.name()).isEqualTo("User#1");
+                assertThat(clientDto.name()).isEqualTo("user1");
                 assertThat(clientDto.email()).isEqualTo(email.toLowerCase());
             }
 
@@ -117,7 +117,7 @@ class ClientServiceTest {
 
                 //then
                 assertThat(clientDto.id()).isGreaterThan(0);
-                assertThat(clientDto.name()).isEqualTo("User#1");
+                assertThat(clientDto.name()).isEqualTo("user1");
                 assertThat(clientDto.email()).isEqualTo(email);
             }
 

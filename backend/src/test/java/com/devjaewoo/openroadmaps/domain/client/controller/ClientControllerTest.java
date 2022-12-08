@@ -201,7 +201,7 @@ class ClientControllerTest {
 
             //then
             ClientDto.Response client = response.body().jsonPath().getObject(".", ClientDto.Response.class);
-            assertThat(client.name()).startsWith("User#");
+            assertThat(client.name()).startsWith("user");
             assertThat(client.email()).isEqualTo(registerEmail.toLowerCase());
         }
 
@@ -475,7 +475,7 @@ class ClientControllerTest {
             // then
             ClientDto.Response clientDto = response.body().jsonPath().getObject(".", ClientDto.Response.class);
             assertThat(clientDto.email()).isEqualTo(email.toLowerCase());
-            assertThat(clientDto.name()).startsWith("User#");
+            assertThat(clientDto.name()).startsWith("user");
         }
 
         //로그인 후 현재 사용자 조회
@@ -527,7 +527,7 @@ class ClientControllerTest {
             // then
             ClientDto.Response clientDto = response.body().jsonPath().getObject(".", ClientDto.Response.class);
             assertThat(clientDto.email()).isEqualTo(email.toLowerCase());
-            assertThat(clientDto.name()).startsWith("User#");
+            assertThat(clientDto.name()).startsWith("user");
         }
 
         @Test

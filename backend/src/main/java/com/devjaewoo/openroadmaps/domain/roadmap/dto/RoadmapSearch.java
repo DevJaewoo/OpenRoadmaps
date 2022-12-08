@@ -12,7 +12,7 @@ public record RoadmapSearch(
         @Min(1) Long client,
         @Size(min = 1, max = 50) String title,   // null: 전체, exist: contains(name)
         Boolean official,   // null: 전체, true: official, false: custom
-        Order order,        // null, like: 좋아요 순, latest: 최신순
+        Order order,        // null, likes: 좋아요 순, latest: 최신순
         @NotNull Integer page
 ) {
 
