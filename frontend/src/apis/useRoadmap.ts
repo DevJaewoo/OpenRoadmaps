@@ -5,6 +5,7 @@ import { AxiosError } from "axios";
 import { useMutation, useQuery } from "react-query";
 import axiosInstance from "src/apis/axiosInstance";
 import { TAccessibility } from "src/utils/constants";
+import { objectToParams } from "src/utils/utils";
 
 export interface RoadmapSearch {
   client?: number;
@@ -88,13 +89,9 @@ export interface UploadRoadmap {
 }
 
 const fetchRoadmapList = async (query: RoadmapSearch): Promise<RoadmapList> => {
-  const searchParams = new URLSearchParams();
-
-  Object.entries(query).forEach(([k, v]) => {
-    if (v !== undefined) searchParams.append(k, v.toString());
-  });
-
-  const response = await axiosInstance.get(`/api/v1/roadmaps?${searchParams}`);
+  const response = await axiosInstance.get(
+    `/api/v1/roadmaps?${objectToParams(query)}`
+  );
   return response.data;
 };
 
