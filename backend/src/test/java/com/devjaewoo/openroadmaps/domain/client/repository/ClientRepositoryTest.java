@@ -39,10 +39,10 @@ class ClientRepositoryTest {
         public void TestEmailPassword() {
             //given
             String email1 = "client1@gmail.com";
-            Client client1 = Client.create("client", email1, "password");
+            Client client1 = Client.create("client1", email1, "password");
 
             String email2 = "client2@gmail.com";
-            Client client2 = Client.create("client", email2, null);
+            Client client2 = Client.create("client2", email2, null);
 
             clientRepository.save(client1);
             clientRepository.save(client2);
