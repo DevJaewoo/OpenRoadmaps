@@ -3,7 +3,7 @@ import axiosInstance from "src/apis/axiosInstance";
 import { useMutation, useQuery } from "react-query";
 import { TAccessibility } from "src/utils/constants";
 
-interface UploadPost {
+interface PostUploadRequest {
   title: string;
   content: string;
   image: string;
@@ -13,7 +13,7 @@ interface UploadPost {
 }
 
 const fetchPostUpload = async (
-  post: UploadPost
+  post: PostUploadRequest
 ): Promise<{ postId: number }> => {
   const response = await axiosInstance.post("/api/v1/blog/posts", post);
   return response.data;

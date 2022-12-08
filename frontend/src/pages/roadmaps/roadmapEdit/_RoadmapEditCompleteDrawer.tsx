@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from "react";
 import { Drawer, Radio } from "@mantine/core";
 import { Dropzone, FileWithPath, MIME_TYPES } from "@mantine/dropzone";
-import { UploadRoadmap } from "src/apis/useRoadmap";
+import { RoadmapUploadRequest } from "src/apis/useRoadmap";
 import { Accessibility, TAccessibility } from "src/utils/constants";
 import {
   OutlinedButton,
@@ -13,7 +13,7 @@ import StableImage from "src/components/StableImage";
 
 interface Props {
   opened: boolean;
-  roadmap: UploadRoadmap | undefined;
+  roadmap: RoadmapUploadRequest | undefined;
   onClose: () => void;
   onFinish: () => void;
 }

@@ -17,7 +17,7 @@ import Connector from "@devjaewoo/react-svg-connector";
 import {
   Recommend,
   RoadmapItem,
-  UploadRoadmap,
+  RoadmapUploadRequest,
   useRoadmapCreate,
 } from "src/apis/useRoadmap";
 import { Accessibility } from "src/utils/constants";
@@ -85,7 +85,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   );
 
   const [completeDrawerOpen, setCompleteDrawerOpen] = useState<boolean>(false);
-  const [roadmap, setRoadmap] = useState<UploadRoadmap>({
+  const [roadmap, setRoadmap] = useState<RoadmapUploadRequest>({
     title: "",
     image: undefined,
     accessibility: Accessibility.PUBLIC,

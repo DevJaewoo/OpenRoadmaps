@@ -81,7 +81,7 @@ export interface Roadmap {
   clientName: string;
 }
 
-export interface UploadRoadmap {
+export interface RoadmapUploadRequest {
   title: string;
   image?: string;
   accessibility: TAccessibility;
@@ -110,7 +110,7 @@ const useRoadmapList = (
 };
 
 const fetchRoadmapCreate = async (
-  roadmap: UploadRoadmap
+  roadmap: RoadmapUploadRequest
 ): Promise<{ roadmapId: number }> => {
   const response = await axiosInstance.post("/api/v1/roadmaps", roadmap);
   return response.data;
