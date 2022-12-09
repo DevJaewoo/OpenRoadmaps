@@ -5,6 +5,7 @@ import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 import lombok.Builder;
 
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 @Builder
 public record PostDto(
@@ -17,7 +18,9 @@ public record PostDto(
         int views,
         Long categoryId,
         Long roadmapItemId,
-        Long clientId
+        Long clientId,
+        LocalDateTime createdDate,
+        LocalDateTime modifiedDate
 ) {
 
     public static PostDto from(Post post) {
@@ -43,6 +46,8 @@ public record PostDto(
                 .categoryId(categoryId)
                 .roadmapItemId(roadmapItemId)
                 .clientId(post.getClient().getId())
+                .createdDate(post.getCreatedDate())
+                .modifiedDate(post.getModifiedDate())
                 .build();
     }
 
@@ -55,7 +60,9 @@ public record PostDto(
             int likes,
             int views,
             Long categoryId,
-            Long roadmapItemId) {
+            Long roadmapItemId,
+            LocalDateTime createdDate,
+            LocalDateTime modifiedDate) {
 
         public static Response from(PostDto postDto) {
             return Response.builder()
@@ -67,6 +74,8 @@ public record PostDto(
                     .views(postDto.views)
                     .categoryId(postDto.categoryId)
                     .roadmapItemId(postDto.roadmapItemId)
+                    .createdDate(postDto.createdDate)
+                    .modifiedDate(postDto.modifiedDate)
                     .build();
         }
     }
@@ -92,7 +101,9 @@ public record PostDto(
             int likes,
             Long categoryId,
             Long roadmapItemId,
-            Long clientId) {
+            Long clientId,
+            LocalDateTime createdDate,
+            LocalDateTime modifiedDate) {
 
         public static ListItem from(Post post) {
             Long categoryId = null;
@@ -114,6 +125,8 @@ public record PostDto(
                     .categoryId(categoryId)
                     .roadmapItemId(roadmapItemId)
                     .clientId(post.getClient().getId())
+                    .createdDate(post.getCreatedDate())
+                    .modifiedDate(post.getModifiedDate())
                     .build();
         }
     }
