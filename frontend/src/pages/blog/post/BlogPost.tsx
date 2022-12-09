@@ -1,4 +1,5 @@
 import { FC, useRef, useState } from "react";
+import { Button } from "@mantine/core";
 import { RichTextEditor, Link } from "@mantine/tiptap";
 import { useEditor } from "@tiptap/react";
 import Highlight from "@tiptap/extension-highlight";
@@ -10,11 +11,23 @@ import SubScript from "@tiptap/extension-subscript";
 import Image from "@tiptap/extension-image";
 import Color from "@tiptap/extension-color";
 import TextStyle from "@tiptap/extension-text-style";
-import withAuth from "src/hoc/withAuth";
-import { Button } from "@mantine/core";
 import { IconColorPicker } from "@tabler/icons";
+import withAuth from "src/hoc/withAuth";
+import Header from "src/components/Header";
+import { PostUploadRequest, usePostUpload } from "src/apis/usePost";
+import { Accessibility } from "src/utils/constants";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { atomClientInfo } from "src/atoms/client";
+import BlogPostCompleteDrawer from "./_BlogPostCompleteDrawer";
 
-const BlogPost: FC<{}> = () => {
+interface Props {
+  postId?: number;
+  content?: string;
+  roadmapItemId?: number;
+}
+
+const BlogPost: FC<Props> = ({ postId, content, roadmapItemId }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -33,9 +46,47 @@ const BlogPost: FC<{}> = () => {
   const titleRef = useRef<HTMLInputElement>(null);
   const [titleWarning, setTitleWarning] = useState<boolean>(false);
 
+  const [post] = useState<PostUploadRequest>({
+    id: postId,
+    title: "",
+    content: content ?? "",
+    image: undefined,
+    accessibility: Accessibility.PUBLIC,
+    categoryId: undefined,
+    roadmapItemId,
+  });
+
+  const [completeDrawerOpen, setCompleteDrawerOpen] = useState(false);
+
+  const postUpload = usePostUpload();
+
+  const [clientInfo] = useRecoilState(atomClientInfo);
+  const navigate = useNavigate();
+
+  const handleUpload = () => {
+    const title = titleRef.current?.value ?? "";
+    if (title === "") {
+      setTitleWarning(true);
+      return;
+    }
+
+    post.title = title;
+    post.content = editor?.getHTML() ?? "";
+    setCompleteDrawerOpen(true);
+  };
+
+  const handlePostComplete = () => {
+    postUpload.mutate(post, {
+      onSuccess: (data) => {
+        navigate(`/blog/@${clientInfo?.name}/posts/${data.postId}`);
+      },
+    });
+  };
+
   return (
     <div className="flex flex-col items-center w-full">
       <div className="flex flex-col w-full max-w-7xl">
+        <Header title="글 작성하기" text="" />
         <div className="flex flex-row justify-start items-center w-full h-20 mt-10 py-2 border-y">
           <input
             ref={titleRef}
@@ -46,12 +97,7 @@ const BlogPost: FC<{}> = () => {
             placeholder="제목을 입력하세요"
             onChange={() => setTitleWarning(false)}
           />
-          <Button
-            className="w-24 h-14 bg-blue-600"
-            onClick={() => {
-              console.log(editor?.getHTML(), editor?.getJSON());
-            }}
-          >
+          <Button className="w-24 h-14 bg-blue-600" onClick={handleUpload}>
             완료
           </Button>
         </div>
@@ -118,6 +164,12 @@ const BlogPost: FC<{}> = () => {
           <RichTextEditor.Content />
         </RichTextEditor>
       </div>
+      <BlogPostCompleteDrawer
+        post={post}
+        opened={completeDrawerOpen}
+        onClose={() => setCompleteDrawerOpen(false)}
+        onFinish={handlePostComplete}
+      />
     </div>
   );
 };

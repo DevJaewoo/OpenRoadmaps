@@ -3,13 +3,14 @@ import axiosInstance from "src/apis/axiosInstance";
 import { useMutation, useQuery } from "react-query";
 import { TAccessibility } from "src/utils/constants";
 
-interface PostUploadRequest {
+export interface PostUploadRequest {
+  id?: number;
   title: string;
   content: string;
-  image: string;
+  image?: string;
   accessibility: TAccessibility;
-  categoryId: number;
-  roadmapItemId: number;
+  categoryId?: number;
+  roadmapItemId?: number;
 }
 
 const fetchPostUpload = async (
@@ -23,21 +24,21 @@ const usePostUpload = () => {
   return useMutation(fetchPostUpload, {});
 };
 
-interface PostSearch {
-  title: string;
-  clientName: string;
-  categoryId: number;
-  roadmapItemId: number;
+export interface PostSearch {
+  title?: string;
+  clientName?: string;
+  categoryId?: number;
+  roadmapItemId?: number;
   page: number;
 }
 
-interface PostList {
+export interface PostList {
   content: PostListItem[];
   totalElements: number;
   totalPages: number;
 }
 
-interface PostListItem {
+export interface PostListItem {
   id: number;
   title: string;
   accessibility: TAccessibility;
@@ -58,7 +59,7 @@ const usePostList = (query: PostSearch) => {
   return useQuery(["postSearch", query], () => fetchPostList(query), {});
 };
 
-interface Post {
+export interface Post {
   id: number;
   title: string;
   content: string;

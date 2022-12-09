@@ -10,36 +10,39 @@ import { AiFillCloseSquare } from "react-icons/ai";
 import StableImage from "src/components/StableImage";
 import { Accessibility, TAccessibility } from "src/utils/constants";
 import { PostUploadRequest } from "src/apis/usePost";
+import { RoadmapUploadRequest } from "src/apis/useRoadmap";
 
 interface Props {
+  type: string;
   opened: boolean;
-  post: PostUploadRequest | undefined;
+  uploadData: RoadmapUploadRequest | PostUploadRequest | undefined;
   onClose: () => void;
   onFinish: () => void;
 }
 
-const BlogPostCompleteDrawer: FC<Props> = ({
+const CompleteDrawer: FC<Props> = ({
+  type,
   opened,
-  post,
+  uploadData,
   onClose,
   onFinish,
 }) => {
   const [image, setImage] = useState<string | undefined>(undefined);
   const [accessibility, setAccessibility] = useState<TAccessibility>(
-    post?.accessibility ?? Accessibility.PUBLIC
+    uploadData?.accessibility ?? Accessibility.PUBLIC
   );
   const imageUpload = useImageUpload();
 
   useEffect(() => {
-    if (post) {
-      setImage(post.image);
-      setAccessibility(post.accessibility);
+    if (uploadData) {
+      setImage(uploadData.image);
+      setAccessibility(uploadData.accessibility);
     }
-  }, [post]);
+  }, [uploadData]);
 
   const handleAccessibilityChange = (value: TAccessibility) => {
-    if (post) {
-      post.accessibility = value;
+    if (uploadData) {
+      uploadData.accessibility = value;
       setAccessibility(value);
     }
   };
@@ -47,8 +50,8 @@ const BlogPostCompleteDrawer: FC<Props> = ({
   const handleImageDrop = (files: FileWithPath[]) => {
     imageUpload.mutate(files[0], {
       onSuccess: (data) => {
-        if (post) {
-          post.image = data.url;
+        if (uploadData) {
+          uploadData.image = data.url;
           setImage(`/api/v1/images/${data.url}`);
         }
       },
@@ -59,11 +62,11 @@ const BlogPostCompleteDrawer: FC<Props> = ({
     <Drawer opened={opened} onClose={onClose} position="bottom" size="lg">
       <div className="flex flex-row justify-center">
         <div className="flex flex-col max-w-7xl w-full">
-          <h2 className="text-xl pb-2 mb-4 border-b">글 발행</h2>
+          <h2 className="text-xl pb-2 mb-4 border-b">{type} 발행</h2>
           <div className="flex flex-row w-full">
             <div className="flex-1 flex flex-col">
               <h2 className="mt-4 mb-4 text-2xl font-semibold">
-                {post?.title}
+                {uploadData?.title}
               </h2>
               <div className="flex flex-row items-center">
                 <p className="w-20 mr-4 text-lg">공개 여부</p>
@@ -120,4 +123,4 @@ const BlogPostCompleteDrawer: FC<Props> = ({
   );
 };
 
-export default BlogPostCompleteDrawer;
+export default CompleteDrawer;
