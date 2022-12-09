@@ -11,6 +11,9 @@ import StableImage from "src/components/StableImage";
 import { Accessibility, TAccessibility } from "src/utils/constants";
 import { PostUploadRequest } from "src/apis/usePost";
 import { RoadmapUploadRequest } from "src/apis/useRoadmap";
+import { useCategoryList } from "src/apis/useCategory";
+import { useRecoilState } from "recoil";
+import { atomClientInfo } from "src/atoms/client";
 
 interface Props {
   type: string;
@@ -33,6 +36,9 @@ const CompleteDrawer: FC<Props> = ({
   );
   const imageUpload = useImageUpload();
 
+  const [clientInfo] = useRecoilState(atomClientInfo);
+  const { data } = useCategoryList(clientInfo?.name ?? "");
+
   useEffect(() => {
     if (uploadData) {
       setImage(uploadData.image);
@@ -49,10 +55,10 @@ const CompleteDrawer: FC<Props> = ({
 
   const handleImageDrop = (files: FileWithPath[]) => {
     imageUpload.mutate(files[0], {
-      onSuccess: (data) => {
+      onSuccess: ({ url }) => {
         if (uploadData) {
-          uploadData.image = data.url;
-          setImage(`/api/v1/images/${data.url}`);
+          uploadData.image = url;
+          setImage(`/api/v1/images/${url}`);
         }
       },
     });
@@ -77,6 +83,10 @@ const CompleteDrawer: FC<Props> = ({
                   <Radio value={Accessibility.PUBLIC} label="공개" />
                   <Radio value={Accessibility.PRIVATE} label="비공개" />
                 </Radio.Group>
+              </div>
+              <div className="flex flex-row items-center">
+                <p className="w-20 mr-4 text-lg">카테고리</p>
+                <p>{JSON.stringify(data)}</p>
               </div>
             </div>
             <div className="w-40 h-40">

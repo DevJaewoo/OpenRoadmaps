@@ -1,11 +1,11 @@
 import { useMutation, useQuery } from "react-query";
 import axiosInstance from "src/apis/axiosInstance";
 
-interface CategoryList {
-  categoryList: CategoryListItem;
+export interface CategoryList {
+  categoryList: CategoryListItem[];
 }
 
-interface CategoryListItem {
+export interface CategoryListItem {
   id: number;
   name: string;
 }
@@ -25,7 +25,7 @@ const useCategoryList = (clientName: string) => {
   );
 };
 
-interface CategoryUpload {
+export interface CategoryUpload {
   name: string;
 }
 

@@ -4,12 +4,18 @@ import { Dropzone, FileWithPath, MIME_TYPES } from "@mantine/dropzone";
 import {
   OutlinedButton,
   PrimaryButton,
+  SecondaryButton,
 } from "src/components/button/VariantButtons";
 import { useImageUpload } from "src/apis/useImage";
 import { AiFillCloseSquare } from "react-icons/ai";
 import StableImage from "src/components/StableImage";
 import { Accessibility, TAccessibility } from "src/utils/constants";
 import { PostUploadRequest } from "src/apis/usePost";
+import { useRecoilState } from "recoil";
+import { atomClientInfo } from "src/atoms/client";
+import { CategoryListItem, useCategoryList } from "src/apis/useCategory";
+import { useQueryClient } from "react-query";
+import CategorySelectModal from "./_CategorySelectModal";
 
 interface Props {
   opened: boolean;
@@ -30,6 +36,18 @@ const BlogPostCompleteDrawer: FC<Props> = ({
   );
   const imageUpload = useImageUpload();
 
+  const queryClient = useQueryClient();
+  const [clientInfo] = useRecoilState(atomClientInfo);
+  const { data: categoryList } = useCategoryList(clientInfo?.name ?? "");
+
+  const [openCategoryModal, setOpenCategoryModal] = useState(false);
+
+  useEffect(() => {
+    if (opened) {
+      queryClient.invalidateQueries(["categoryList", clientInfo?.name]);
+    }
+  }, [opened, queryClient, clientInfo]);
+
   useEffect(() => {
     if (post) {
       setImage(post.image);
@@ -46,13 +64,19 @@ const BlogPostCompleteDrawer: FC<Props> = ({
 
   const handleImageDrop = (files: FileWithPath[]) => {
     imageUpload.mutate(files[0], {
-      onSuccess: (data) => {
+      onSuccess: ({ url }) => {
         if (post) {
-          post.image = data.url;
-          setImage(`/api/v1/images/${data.url}`);
+          post.image = url;
+          setImage(`/api/v1/images/${url}`);
         }
       },
     });
+  };
+
+  const handleCategorySelect = (category: CategoryListItem) => {
+    if (!post) return;
+    post.categoryId = category.id;
+    setOpenCategoryModal(false);
   };
 
   return (
@@ -74,6 +98,20 @@ const BlogPostCompleteDrawer: FC<Props> = ({
                   <Radio value={Accessibility.PUBLIC} label="공개" />
                   <Radio value={Accessibility.PRIVATE} label="비공개" />
                 </Radio.Group>
+              </div>
+              <div className="flex flex-row items-center mt-2">
+                <p className="w-20 mr-4 text-lg">카테고리</p>
+                <p className="text-sm">
+                  {categoryList?.categoryList.find(
+                    (c) => c.id === post?.categoryId
+                  )?.name ?? "카테고리 없음"}
+                </p>
+                <SecondaryButton
+                  type="button"
+                  className="ml-3 px-2 py-1 text-sm"
+                  text="변경"
+                  onClick={() => setOpenCategoryModal(true)}
+                />
               </div>
             </div>
             <div className="w-40 h-40">
@@ -116,6 +154,12 @@ const BlogPostCompleteDrawer: FC<Props> = ({
           </div>
         </div>
       </div>
+      <CategorySelectModal
+        opened={openCategoryModal}
+        onClose={() => setOpenCategoryModal(false)}
+        onSelect={handleCategorySelect}
+        categoryList={categoryList?.categoryList ?? []}
+      />
     </Drawer>
   );
 };
