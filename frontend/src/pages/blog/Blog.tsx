@@ -5,6 +5,7 @@ import { OutlinedButton } from "src/components/button/VariantButtons";
 import Header from "src/components/Header";
 import NotFound from "src/pages/error/NotFound";
 import BlogPost from "./post/BlogPost";
+import BlogPostView from "./postView/BlogPostView";
 
 const BlogMain: FC<{}> = () => {
   return (
@@ -34,6 +35,7 @@ const Blog: FC<{}> = () => {
     <Routes>
       <Route path="/" element={<BlogMain />} />
       <Route path="/posts/new" element={<BlogPost />} />
+      <Route path="/:clientName/posts/:postId" element={<BlogPostView />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

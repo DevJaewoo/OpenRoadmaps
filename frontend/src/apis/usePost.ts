@@ -46,6 +46,8 @@ export interface PostListItem {
   categoryId: number;
   roadmapItemId: number;
   clientId: number;
+  createdDate: string;
+  modifiedDate: string;
 }
 
 const fetchPostList = async (query: PostSearch): Promise<PostList> => {
@@ -68,11 +70,13 @@ export interface Post {
   categoryId: number;
   roadmapItemId: number;
   clientId: number;
+  createdDate: string;
+  modifiedDate: string;
 }
 
 const fetchPost = async (clientName: string, postId: number): Promise<Post> => {
   const response = await axiosInstance.get(
-    `/api/v1/${clientName}/posts/${postId}`
+    `/api/v1/blog/${clientName}/posts/${postId}`
   );
   return response.data;
 };
