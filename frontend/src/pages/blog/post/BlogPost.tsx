@@ -16,7 +16,7 @@ import withAuth from "src/hoc/withAuth";
 import Header from "src/components/Header";
 import { PostUploadRequest, usePostUpload } from "src/apis/usePost";
 import { Accessibility } from "src/utils/constants";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { atomClientInfo } from "src/atoms/client";
 import BlogPostCompleteDrawer from "./_BlogPostCompleteDrawer";
@@ -24,10 +24,9 @@ import BlogPostCompleteDrawer from "./_BlogPostCompleteDrawer";
 interface Props {
   postId?: number;
   content?: string;
-  roadmapItemId?: number;
 }
 
-const BlogPost: FC<Props> = ({ postId, content, roadmapItemId }) => {
+const BlogPost: FC<Props> = ({ postId, content }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -43,6 +42,8 @@ const BlogPost: FC<Props> = ({ postId, content, roadmapItemId }) => {
     ],
   });
 
+  const [params] = useSearchParams();
+
   const titleRef = useRef<HTMLInputElement>(null);
   const [titleWarning, setTitleWarning] = useState<boolean>(false);
 
@@ -53,7 +54,7 @@ const BlogPost: FC<Props> = ({ postId, content, roadmapItemId }) => {
     image: undefined,
     accessibility: Accessibility.PUBLIC,
     categoryId: undefined,
-    roadmapItemId,
+    roadmapItemId: Number(params.get("roadmap_item")) || undefined,
   });
 
   const [completeDrawerOpen, setCompleteDrawerOpen] = useState(false);
