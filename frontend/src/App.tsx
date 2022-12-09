@@ -8,7 +8,8 @@ import Login from "src/pages/login/Login";
 import OAuth from "src/pages/login/OAuth";
 import Register from "src/pages/login/Register";
 import Main from "src/pages/main/Main";
-import RoadmapMain from "src/pages/roadmaps/Roadmaps";
+import Roadmaps from "src/pages/roadmaps/Roadmaps";
+import Blog from "src/pages/blog/Blog";
 import Profile from "src/pages/profile/Profile";
 import { useCurrentClient } from "src/apis/useClient";
 
@@ -26,7 +27,8 @@ const App: React.FC<{}> = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/oauth" element={<OAuth />} />
-              <Route path="/roadmaps/*" element={<RoadmapMain />} />
+              <Route path="/roadmaps/*" element={<Roadmaps />} />
+              <Route path="/blog/*" element={<Blog />} />
               <Route path="/clients/:clientId" element={<Profile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

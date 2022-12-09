@@ -7,6 +7,13 @@ import { useCurrentClient } from "src/apis/useClient";
 import { atomClientInfo } from "src/atoms/client";
 import { useQueryClient } from "react-query";
 
+/**
+ * 컴포넌트 렌더링 시 인증 진행
+ * @param SpecificComponent Auth가 필요한 컴포넌트
+ * @param option 인증 유형 (true: 인증된 사용자만 접근 가능, false: 미인증된 사용자만 접근 가능)
+ * @param adminRoute 관리자 권한 필요 여부
+ * @returns Auth가 완료된 컴포넌트
+ */
 const withAuth = (
   SpecificComponent: FC,
   option: boolean | null = null,

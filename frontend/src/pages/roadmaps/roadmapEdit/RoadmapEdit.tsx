@@ -15,12 +15,12 @@ import { AiOutlinePlusSquare, AiFillDelete } from "react-icons/ai";
 import { MdOutlineMoving } from "react-icons/md";
 import Connector from "@devjaewoo/react-svg-connector";
 import {
-  Accessibility,
   Recommend,
   RoadmapItem,
-  UploadRoadmap,
+  RoadmapUploadRequest,
   useRoadmapCreate,
 } from "src/apis/useRoadmap";
+import { Accessibility } from "src/utils/constants";
 import { getCurrentPositionPixel } from "src/utils/positionUtil";
 import { ShapeDirection } from "@devjaewoo/react-svg-connector/lib/SvgConnector";
 import RoadmapEditButton from "./_RoadmapEditButton";
@@ -85,7 +85,7 @@ const RoadmapEdit: FC<Props> = ({ defaultValue = [], height = 36 }) => {
   );
 
   const [completeDrawerOpen, setCompleteDrawerOpen] = useState<boolean>(false);
-  const [roadmap, setRoadmap] = useState<UploadRoadmap>({
+  const [roadmap, setRoadmap] = useState<RoadmapUploadRequest>({
     title: "",
     image: undefined,
     accessibility: Accessibility.PUBLIC,

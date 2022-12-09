@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { useMutation, useQuery } from "react-query";
 import axiosInstance from "src/apis/axiosInstance";
+import { TAccessibility } from "src/utils/constants";
+import { objectToParams } from "src/utils/utils";
 
 export interface RoadmapSearch {
   client?: number;
@@ -36,13 +38,6 @@ export const RoadmapOrder = {
   LIKES: "LIKES",
 } as const;
 export type TRoadmapOrder = typeof RoadmapOrder[keyof typeof RoadmapOrder];
-
-export const Accessibility = {
-  PRIVATE: "PRIVATE",
-  PROTECTED: "PROTECTED",
-  PUBLIC: "PUBLIC",
-} as const;
-export type TAccessibility = typeof Accessibility[keyof typeof Accessibility];
 
 export const Recommend = {
   RECOMMEND: "RECOMMEND",
@@ -86,7 +81,7 @@ export interface Roadmap {
   clientName: string;
 }
 
-export interface UploadRoadmap {
+export interface RoadmapUploadRequest {
   title: string;
   image?: string;
   accessibility: TAccessibility;
@@ -94,13 +89,9 @@ export interface UploadRoadmap {
 }
 
 const fetchRoadmapList = async (query: RoadmapSearch): Promise<RoadmapList> => {
-  const searchParams = new URLSearchParams();
-
-  Object.entries(query).forEach(([k, v]) => {
-    if (v !== undefined) searchParams.append(k, v.toString());
-  });
-
-  const response = await axiosInstance.get(`/api/v1/roadmaps?${searchParams}`);
+  const response = await axiosInstance.get(
+    `/api/v1/roadmaps?${objectToParams(query)}`
+  );
   return response.data;
 };
 
@@ -119,7 +110,7 @@ const useRoadmapList = (
 };
 
 const fetchRoadmapCreate = async (
-  roadmap: UploadRoadmap
+  roadmap: RoadmapUploadRequest
 ): Promise<{ roadmapId: number }> => {
   const response = await axiosInstance.post("/api/v1/roadmaps", roadmap);
   return response.data;
