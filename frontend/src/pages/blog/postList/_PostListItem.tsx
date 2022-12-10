@@ -31,7 +31,7 @@ const PostListItemComponent: FC<Props> = ({ data }) => {
           <p className="">{data.likes}</p>
         </div>
         <Link
-          to={`/clients/${data.clientId}`}
+          to={`/blog/@${data.clientName}`}
           onClick={(event) => {
             event.stopPropagation();
           }}
