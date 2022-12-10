@@ -19,6 +19,7 @@ public record PostDto(
         Long categoryId,
         Long roadmapItemId,
         Long clientId,
+        String clientName,
         LocalDateTime createdDate,
         LocalDateTime modifiedDate
 ) {
@@ -35,6 +36,13 @@ public record PostDto(
             roadmapItemId = post.getRoadmapItem().getId();
         }
 
+        Long clientId = null;
+        String clientName = "Anonymous";
+        if(post.getClient() != null) {
+            clientId = post.getClient().getId();
+            clientName = post.getClient().getName();
+        }
+
         return PostDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -45,7 +53,8 @@ public record PostDto(
                 .views(post.getViews())
                 .categoryId(categoryId)
                 .roadmapItemId(roadmapItemId)
-                .clientId(post.getClient().getId())
+                .clientId(clientId)
+                .clientName(clientName)
                 .createdDate(post.getCreatedDate())
                 .modifiedDate(post.getModifiedDate())
                 .build();
@@ -61,6 +70,8 @@ public record PostDto(
             int views,
             Long categoryId,
             Long roadmapItemId,
+            Long clientId,
+            String clientName,
             LocalDateTime createdDate,
             LocalDateTime modifiedDate) {
 
@@ -74,6 +85,8 @@ public record PostDto(
                     .views(postDto.views)
                     .categoryId(postDto.categoryId)
                     .roadmapItemId(postDto.roadmapItemId)
+                    .clientId(postDto.clientId)
+                    .clientName(postDto.clientName)
                     .createdDate(postDto.createdDate)
                     .modifiedDate(postDto.modifiedDate)
                     .build();
@@ -102,6 +115,7 @@ public record PostDto(
             Long categoryId,
             Long roadmapItemId,
             Long clientId,
+            String clientName,
             LocalDateTime createdDate,
             LocalDateTime modifiedDate) {
 
@@ -116,6 +130,13 @@ public record PostDto(
                 roadmapItemId = post.getRoadmapItem().getId();
             }
 
+            Long clientId = null;
+            String clientName = "Anonymous";
+            if(post.getClient() != null) {
+                clientId = post.getClient().getId();
+                clientName = post.getClient().getName();
+            }
+
             return ListItem.builder()
                     .id(post.getId())
                     .title(post.getTitle())
@@ -124,7 +145,8 @@ public record PostDto(
                     .likes(post.getLikes())
                     .categoryId(categoryId)
                     .roadmapItemId(roadmapItemId)
-                    .clientId(post.getClient().getId())
+                    .clientId(clientId)
+                    .clientName(clientName)
                     .createdDate(post.getCreatedDate())
                     .modifiedDate(post.getModifiedDate())
                     .build();

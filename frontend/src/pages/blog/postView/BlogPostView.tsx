@@ -46,7 +46,7 @@ const BlogPostView: FC<Props> = () => {
       <div className="flex flex-col items-center w-full py-24 bg-gray-100">
         <div className="flex flex-col items-center w-full max-w-7xl px-8">
           <h1 className="w-full text-4xl">{data.title}</h1>
-          <div className="flex flex-row justify-start items-center w-full mt-2">
+          <div className="flex flex-row justify-start items-center w-full mt-3">
             <Link
               to={`/blog/${clientName}`}
               className="text-gray-600"
