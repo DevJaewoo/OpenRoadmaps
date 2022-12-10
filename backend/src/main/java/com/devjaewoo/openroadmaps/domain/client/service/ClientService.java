@@ -135,6 +135,21 @@ public class ClientService {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND));
 
+        if(!client.isEnabled()) {
+            throw new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND);
+        }
+
+        return ClientDto.from(client);
+    }
+
+    public ClientDto findClientByName(String name) {
+        Client client = clientRepository.findByName(name)
+                .orElseThrow(() -> new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND));
+
+        if(!client.isEnabled()) {
+            throw new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND);
+        }
+
         return ClientDto.from(client);
     }
 }
