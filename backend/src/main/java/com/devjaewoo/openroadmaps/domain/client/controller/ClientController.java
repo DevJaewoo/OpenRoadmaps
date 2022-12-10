@@ -50,4 +50,10 @@ public class ClientController {
         ClientDto clientDto = clientService.findClientById(id);
         return ResponseEntity.ok(ClientDto.Response.from(clientDto));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> getClientInfo(@RequestParam String name) {
+        ClientDto clientDto = clientService.findClientByName(name);
+        return ResponseEntity.ok(ClientDto.Response.from(clientDto));
+    }
 }
