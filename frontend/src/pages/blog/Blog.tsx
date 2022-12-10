@@ -6,6 +6,7 @@ import { PostList, PostSearch } from "src/apis/usePost";
 import { OutlinedButton } from "src/components/button/VariantButtons";
 import Header from "src/components/Header";
 import NotFound from "src/pages/error/NotFound";
+import BlogHome from "./home/BlogHome";
 import BlogPost from "./post/BlogPost";
 import PostListComponent from "./postList/PostList";
 import BlogPostView from "./postView/BlogPostView";
@@ -83,6 +84,11 @@ const Blog: FC<{}> = () => {
     <Routes>
       <Route path="/" element={<BlogMain />} />
       <Route path="/posts/new" element={<BlogPost />} />
+      <Route path="/:clientName" element={<BlogHome />} />
+      <Route
+        path="/:clientName/categories/:categoryId"
+        element={<BlogHome />}
+      />
       <Route path="/:clientName/posts/:postId" element={<BlogPostView />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
