@@ -41,11 +41,13 @@ export interface PostList {
 export interface PostListItem {
   id: number;
   title: string;
+  image: string;
   accessibility: TAccessibility;
   likes: number;
   categoryId: number;
   roadmapItemId: number;
   clientId: number;
+  clientName: string;
   createdDate: string;
   modifiedDate: string;
 }
@@ -57,8 +59,13 @@ const fetchPostList = async (query: PostSearch): Promise<PostList> => {
   return response.data;
 };
 
-const usePostList = (query: PostSearch) => {
-  return useQuery(["postSearch", query], () => fetchPostList(query), {});
+const usePostList = (
+  query: PostSearch,
+  onSuccess?: (data: PostList) => void
+) => {
+  return useQuery(["postSearch", query], () => fetchPostList(query), {
+    onSuccess,
+  });
 };
 
 export interface Post {
@@ -70,6 +77,7 @@ export interface Post {
   categoryId: number;
   roadmapItemId: number;
   clientId: number;
+  clientName: string;
   createdDate: string;
   modifiedDate: string;
 }
