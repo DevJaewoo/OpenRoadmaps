@@ -1,7 +1,7 @@
 import { Input, Pagination } from "@mantine/core";
 import { FC, useRef, useState, KeyboardEvent } from "react";
 import { FaSearch } from "react-icons/fa";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useCategoryList } from "src/apis/useCategory";
 import { useClientSearch } from "src/apis/useClient";
 import { PostList, PostSearch } from "src/apis/usePost";
@@ -13,6 +13,7 @@ interface Props {}
 const BlogHome: FC<Props> = () => {
   const { clientName, categoryId } = useParams();
   const [params] = useSearchParams();
+  const navigate = useNavigate();
 
   const { data: clientInfo } = useClientSearch({
     name: clientName?.substring(1),
@@ -52,6 +53,11 @@ const BlogHome: FC<Props> = () => {
 
   const onCategorySelect = (selectedCategoryId: number | undefined) => {
     setSearch({ ...search, categoryId: selectedCategoryId });
+    navigate(
+      `/blog/${clientName}${
+        selectedCategoryId ? `/categories/${selectedCategoryId}` : ""
+      }`
+    );
   };
 
   if (!clientInfo || !categoryList) return null;
