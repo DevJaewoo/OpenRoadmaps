@@ -1,8 +1,10 @@
 package com.devjaewoo.openroadmaps.domain.blog.repository;
 
+import com.devjaewoo.openroadmaps.domain.blog.dto.PostOrder;
 import com.devjaewoo.openroadmaps.domain.blog.dto.PostSearch;
 import com.devjaewoo.openroadmaps.domain.blog.entity.Post;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -36,7 +38,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         isAccessible(currentClientId),
                         post.isDeleted.isFalse()
                 )
-                .orderBy(post.createdDate.desc())
+                .orderBy(order(postSearch.order()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -76,5 +78,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private BooleanExpression isAccessible(Long clientId) {
         BooleanExpression defaultAccessibility = post.accessibility.in(Accessibility.PUBLIC, Accessibility.PROTECTED);
         return (clientId != null) ? defaultAccessibility.or(post.client.id.eq(clientId)) : defaultAccessibility;
+    }
+
+    private OrderSpecifier<?> order(PostOrder order) {
+        if(order == null) return post.createdDate.desc();
+        return switch (order) {
+            case LIKES -> post.likes.desc();
+            case LATEST -> post.createdDate.desc();
+        };
     }
 }
