@@ -2,6 +2,7 @@ package com.devjaewoo.openroadmaps.domain.blog.controller;
 
 import com.devjaewoo.openroadmaps.domain.blog.dto.CategoryDto;
 import com.devjaewoo.openroadmaps.domain.blog.dto.PostDto;
+import com.devjaewoo.openroadmaps.domain.blog.dto.PostLikeDto;
 import com.devjaewoo.openroadmaps.domain.blog.dto.PostSearch;
 import com.devjaewoo.openroadmaps.domain.blog.service.BlogService;
 import com.devjaewoo.openroadmaps.domain.client.dto.SessionClient;
@@ -71,5 +72,12 @@ public class BlogController {
 
         Page<PostDto.ListItem> result = blogService.search(postSearch, clientId);
         return ResponseEntity.ok(new PageResponseDto<>(result));
+    }
+
+    @PutMapping("/posts/{postId}/like")
+    public ResponseEntity<?> likePost(@PathVariable Long postId, @Valid @RequestBody PostLikeDto.LikeRequest request) {
+        SessionClient currentClient = SessionUtil.getCurrentClient();
+        PostLikeDto result = blogService.likePost(postId, request.liked(), currentClient.getId());
+        return ResponseEntity.ok(PostLikeDto.LikeResponse.from(result));
     }
 }

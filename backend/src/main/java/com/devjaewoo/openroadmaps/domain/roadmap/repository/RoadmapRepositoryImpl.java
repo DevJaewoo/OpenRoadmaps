@@ -1,5 +1,6 @@
 package com.devjaewoo.openroadmaps.domain.roadmap.repository;
 
+import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapOrder;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapSearch;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.Roadmap;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
@@ -66,7 +67,7 @@ public class RoadmapRepositoryImpl implements RoadmapRepositoryCustom {
         return (isOfficial != null) ? roadmap.isOfficial.eq(isOfficial) : null;
     }
 
-    private OrderSpecifier<?> order(RoadmapSearch.Order order) {
+    private OrderSpecifier<?> order(RoadmapOrder order) {
         if(order == null) return roadmap.createdDate.desc();
         return switch (order) {
             case LIKES -> roadmap.likes.desc();
