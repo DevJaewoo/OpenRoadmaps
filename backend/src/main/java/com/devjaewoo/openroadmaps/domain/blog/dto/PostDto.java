@@ -15,6 +15,7 @@ public record PostDto(
         String image,
         Accessibility accessibility,
         int likes,
+        boolean liked,
         int views,
         Long categoryId,
         Long roadmapItemId,
@@ -25,6 +26,10 @@ public record PostDto(
 ) {
 
     public static PostDto from(Post post) {
+        return from(post, false);
+    }
+
+    public static PostDto from(Post post, boolean liked) {
 
         Long categoryId = null;
         if(post.getCategory() != null) {
@@ -50,6 +55,7 @@ public record PostDto(
                 .image(post.getImage())
                 .accessibility(post.getAccessibility())
                 .likes(post.getLikes())
+                .liked(liked)
                 .views(post.getViews())
                 .categoryId(categoryId)
                 .roadmapItemId(roadmapItemId)
@@ -67,6 +73,7 @@ public record PostDto(
             String content,
             String image,
             int likes,
+            boolean liked,
             int views,
             Long categoryId,
             Long roadmapItemId,
@@ -82,6 +89,7 @@ public record PostDto(
                     .content(postDto.content)
                     .image(postDto.image)
                     .likes(postDto.likes)
+                    .liked(postDto.liked)
                     .views(postDto.views)
                     .categoryId(postDto.categoryId)
                     .roadmapItemId(postDto.roadmapItemId)

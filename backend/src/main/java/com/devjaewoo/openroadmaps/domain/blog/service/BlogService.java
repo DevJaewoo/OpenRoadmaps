@@ -1,12 +1,11 @@
 package com.devjaewoo.openroadmaps.domain.blog.service;
 
-import com.devjaewoo.openroadmaps.domain.blog.dto.BlogErrorCode;
-import com.devjaewoo.openroadmaps.domain.blog.dto.CategoryDto;
-import com.devjaewoo.openroadmaps.domain.blog.dto.PostDto;
-import com.devjaewoo.openroadmaps.domain.blog.dto.PostSearch;
+import com.devjaewoo.openroadmaps.domain.blog.dto.*;
 import com.devjaewoo.openroadmaps.domain.blog.entity.Category;
 import com.devjaewoo.openroadmaps.domain.blog.entity.Post;
+import com.devjaewoo.openroadmaps.domain.blog.entity.PostLike;
 import com.devjaewoo.openroadmaps.domain.blog.repository.CategoryRepository;
+import com.devjaewoo.openroadmaps.domain.blog.repository.PostLikeRepository;
 import com.devjaewoo.openroadmaps.domain.blog.repository.PostRepository;
 import com.devjaewoo.openroadmaps.domain.client.dto.ClientErrorCode;
 import com.devjaewoo.openroadmaps.domain.client.entity.Client;
@@ -36,6 +35,7 @@ public class BlogService {
     private final CategoryRepository categoryRepository;
     private final RoadmapItemRepository roadmapItemRepository;
     private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
 
     private Optional<Category> getCategoryFromId(Long categoryId) {
         if(categoryId == null) return Optional.empty();
@@ -87,6 +87,14 @@ public class BlogService {
 
         post.setViews(post.getViews() + 1);
 
+        if(clientId != null) {
+            boolean liked = postLikeRepository.findByPostIdAndClientId(postId, clientId)
+                    .map(PostLike::isLike)
+                    .orElse(false);
+
+            return PostDto.from(post, liked);
+        }
+
         return PostDto.from(post);
     }
 
@@ -136,5 +144,32 @@ public class BlogService {
         categoryRepository.delete(category);
 
         return category.getId();
+    }
+
+    @Transactional
+    public PostLikeDto likePost(Long postId, boolean like, Long clientId) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
+
+        PostLike postLike = postLikeRepository.findByPostIdAndClientId(postId, clientId)
+                .orElseGet(() -> {
+                    Client client = clientRepository.findById(clientId)
+                            .orElseThrow(() -> new RestApiException(ClientErrorCode.CLIENT_NOT_FOUND));
+
+                    PostLike item = PostLike.create(post, client);
+                    postLikeRepository.save(item);
+
+                    return item;
+                });
+
+        if(postLike.isLike() != like) {
+            // 동시성 문제 발생 가능, 주기적으로 동기화
+            int updatedLikes = Math.max(0, post.getLikes() + (like ? 1 : -1));
+            post.setLikes(updatedLikes);
+            postLike.setLike(like);
+        }
+
+        return PostLikeDto.from(postLike, post.getLikes());
     }
 }

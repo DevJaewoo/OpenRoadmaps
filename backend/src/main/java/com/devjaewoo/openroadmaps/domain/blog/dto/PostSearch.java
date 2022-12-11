@@ -7,5 +7,5 @@ public record PostSearch(
         String clientName,      // 작성자 이름
         Long categoryId,        // 카테고리 ID
         Long roadmapItemId,     // 로드맵 항목 ID
-        @NotNull Integer page) {
-}
+        PostOrder order,
+        @NotNull Integer page) {  }
