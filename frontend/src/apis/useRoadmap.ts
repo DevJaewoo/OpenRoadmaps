@@ -1,11 +1,11 @@
 import { atomClientInfo } from "src/atoms/client";
 import { useRecoilState } from "recoil";
-import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { useMutation, useQuery } from "react-query";
 import axiosInstance from "src/apis/axiosInstance";
 import { TAccessibility } from "src/utils/constants";
 import { objectToParams } from "src/utils/utils";
+import { useRedirectNavigate } from "src/hooks/useRedirectNavigate";
 
 export interface RoadmapSearch {
   client?: number;
@@ -157,7 +157,7 @@ const fetchRoadmapLike = async ({
 };
 
 const useRoadmapLike = () => {
-  const navigate = useNavigate();
+  const navigate = useRedirectNavigate();
   return useMutation(fetchRoadmapLike, {
     onError: (error: AxiosError) => {
       if (error.response?.status === 401) {
@@ -191,7 +191,7 @@ const fetchRoadmapClear = async ({
 };
 
 const useRoadmapItemClear = () => {
-  const navigate = useNavigate();
+  const navigate = useRedirectNavigate();
   return useMutation(fetchRoadmapClear, {
     onError: (error: AxiosError) => {
       if (error.response?.status === 401) {
