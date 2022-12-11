@@ -108,6 +108,7 @@ const BlogHome: FC<Props> = () => {
                   search={search}
                   onSearch={onSearch}
                   className="mt-2"
+                  type="NORMAL"
                 />
               </div>
               <Pagination

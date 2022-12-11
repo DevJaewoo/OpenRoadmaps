@@ -36,7 +36,7 @@ const PostListItemComponent: FC<Props> = ({ data }) => {
             event.stopPropagation();
           }}
           className="text-sm"
-        >{`by. ${data.clientName}`}</Link>
+        >{`by. @${data.clientName}`}</Link>
       </div>
     </div>
   );
