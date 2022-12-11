@@ -1,26 +1,58 @@
-import { Drawer, ScrollArea, Textarea } from "@mantine/core";
+import {
+  Drawer,
+  Pagination,
+  ScrollArea,
+  Select,
+  Textarea,
+} from "@mantine/core";
 import { FC, useEffect, useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
+import { PostList, PostOrder, PostSearch, TPostOrder } from "src/apis/usePost";
 import {
   Recommend,
   RecommendText,
   RoadmapItem,
   useRoadmapItemClear,
 } from "src/apis/useRoadmap";
+import { OutlinedButton } from "src/components/button/VariantButtons";
+import PostListComponent from "src/pages/blog/postList/PostList";
 import RoadmapRecommendIcon from "../roadmapEdit/_RoadmapRecommendIcon";
 
 interface Props {
   roadmapId: number;
   roadmapItem: RoadmapItem | undefined;
+  clientName: string;
   onClose: () => void;
 }
 
-const RoadmapViewDrawer: FC<Props> = ({ roadmapId, roadmapItem, onClose }) => {
+const RoadmapViewDrawer: FC<Props> = ({
+  roadmapId,
+  roadmapItem,
+  clientName,
+  onClose,
+}) => {
   const [itemCleared, setItemCleared] = useState<boolean>(false);
   const roadmapItemClear = useRoadmapItemClear();
+
+  const [totalPage, setTotalPage] = useState(1);
+  const [search, setSearch] = useState<PostSearch>({
+    clientName,
+    roadmapItemId: roadmapItem?.id,
+    order: PostOrder.LATEST,
+    page: 0,
+  });
 
   useEffect(() => {
     setItemCleared(roadmapItem?.isCleared ?? false);
   }, [roadmapItem, setItemCleared]);
+
+  useEffect(() => {
+    if (!roadmapItem) return;
+
+    if (search.roadmapItemId !== roadmapItem.id) {
+      search.roadmapItemId = roadmapItem.id;
+    }
+  }, [search, roadmapItem]);
 
   const onRoadmapItemClearClick = (clear: boolean) => {
     roadmapItemClear.mutate(
@@ -40,6 +72,34 @@ const RoadmapViewDrawer: FC<Props> = ({ roadmapId, roadmapItem, onClose }) => {
     );
   };
 
+  const onSearch = (data: PostList) => {
+    setTotalPage(data.totalPages);
+  };
+
+  const onOrderChange = (order: TPostOrder) => {
+    let currentOrder: TPostOrder | undefined;
+    if (!Object.values(PostOrder).includes(order)) {
+      currentOrder = undefined;
+    } else {
+      currentOrder = order;
+    }
+
+    setSearch({ ...search, order: currentOrder });
+  };
+
+  const onOfficialChange = () => {
+    setSearch({
+      ...search,
+      clientName: search.clientName ? undefined : clientName,
+    });
+  };
+
+  const onPageChange = (page: number) => {
+    if (page > 0 && page <= totalPage) {
+      setSearch({ ...search, page: page - 1 });
+    }
+  };
+
   return (
     <Drawer
       opened={roadmapItem !== undefined}
@@ -47,6 +107,7 @@ const RoadmapViewDrawer: FC<Props> = ({ roadmapId, roadmapItem, onClose }) => {
       position="right"
       padding="xl"
       size="xl"
+      className="overflow-y-auto"
     >
       <div className="flex flex-row justify-between items-center">
         <h2 className="text-2xl font-semibold">{roadmapItem?.name}</h2>
@@ -99,6 +160,52 @@ const RoadmapViewDrawer: FC<Props> = ({ roadmapId, roadmapItem, onClose }) => {
           </div>
         ))}
       </ScrollArea>
+      <div className="flex flex-row justify-between items-center mt-6 pb-3 border-b">
+        <h2 className="text-2xl font-semibold">Posts</h2>
+        <OutlinedButton
+          type="link"
+          to={`/blog/posts/new?roadmap_item=${roadmapItem?.id}`}
+          text={
+            <>
+              이 주제로 글 작성하기
+              <FaArrowRight className="ml-2" />
+            </>
+          }
+          className="px-[1.25rem] py-1"
+        />
+      </div>
+      <div className="flex flex-col items-center mt-6">
+        <div className="flex flex-row w-full justify-between items-center">
+          <button
+            type="button"
+            className={`flex justify-center items-center w-24 h-9 p-2 border-2 text-sm rounded-lg ${
+              search.clientName
+                ? "bg-gray-200 border-gray-400 text-gray-500"
+                : "bg-blue-300 border-blue-500"
+            }`}
+            onClick={onOfficialChange}
+          >
+            전체 글 보기
+          </button>
+          <Select
+            value={search.order}
+            data={[
+              { value: PostOrder.LATEST, label: "최신 순" },
+              { value: PostOrder.LIKES, label: "좋아요 순" },
+            ]}
+            onChange={onOrderChange}
+          />
+        </div>
+        <div className="flex flex-col items-center w-full mt-2 p-2 border border-gray-100 rounded-lg">
+          <PostListComponent search={search} onSearch={onSearch} type="FLAT" />
+          <Pagination
+            className="mt-5"
+            page={search.page + 1}
+            onChange={onPageChange}
+            total={totalPage}
+          />
+        </div>
+      </div>
     </Drawer>
   );
 };

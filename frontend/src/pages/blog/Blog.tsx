@@ -65,6 +65,7 @@ const BlogMain: FC<{}> = () => {
               search={search}
               onSearch={onSearch}
               className="mt-2"
+              type="NORMAL"
             />
           </div>
           <Pagination

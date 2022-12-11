@@ -200,6 +200,7 @@ const RoadmapView: FC<Props> = () => {
       <RoadmapViewDrawer
         roadmapId={roadmap?.id ?? 0}
         roadmapItem={drawerItem}
+        clientName={roadmap.clientName}
         onClose={() => setDrawerItem(undefined)}
       />
     </div>
