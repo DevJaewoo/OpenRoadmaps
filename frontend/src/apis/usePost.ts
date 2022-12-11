@@ -2,6 +2,8 @@ import { objectToParams } from "src/utils/utils";
 import axiosInstance from "src/apis/axiosInstance";
 import { useMutation, useQuery } from "react-query";
 import { TAccessibility } from "src/utils/constants";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 
 export interface PostUploadRequest {
   id?: number;
@@ -80,6 +82,7 @@ export interface Post {
   title: string;
   content: string;
   likes: number;
+  liked: boolean;
   views: number;
   categoryId: number;
   roadmapItemId: number;
@@ -104,4 +107,36 @@ const usePost = (clientName: string, postId: number) => {
   );
 };
 
-export { usePostUpload, usePostList, usePost };
+interface PostLikeRequest {
+  postId: number;
+  liked: boolean;
+}
+
+interface PostLikeResponse {
+  postId: number;
+  liked: boolean;
+  likes: number;
+}
+
+const fetchPostLike = async ({
+  postId,
+  liked,
+}: PostLikeRequest): Promise<PostLikeResponse> => {
+  const response = await axiosInstance.put(`/api/v1/posts/${postId}/like`, {
+    liked,
+  });
+  return response.data;
+};
+
+const usePostLike = () => {
+  const navigate = useNavigate();
+  return useMutation(fetchPostLike, {
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 401) {
+        navigate("/login");
+      }
+    },
+  });
+};
+
+export { usePostUpload, usePostList, usePost, usePostLike };
