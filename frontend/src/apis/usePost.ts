@@ -20,6 +20,12 @@ const fetchPostUpload = async (
   return response.data;
 };
 
+export const PostOrder = {
+  LATEST: "LATEST",
+  LIKES: "LIKES",
+} as const;
+export type TPostOrder = typeof PostOrder[keyof typeof PostOrder];
+
 const usePostUpload = () => {
   return useMutation(fetchPostUpload, {});
 };
@@ -29,6 +35,7 @@ export interface PostSearch {
   clientName?: string;
   categoryId?: number;
   roadmapItemId?: number;
+  order?: TPostOrder;
   page: number;
 }
 
