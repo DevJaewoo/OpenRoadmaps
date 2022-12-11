@@ -2,7 +2,7 @@ package com.devjaewoo.openroadmaps.global.config;
 
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.ConnectionType;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.Recommend;
-import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapSearch;
+import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapOrder;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new RoadmapSearch.Order.OrderConverter());
+        registry.addConverter(new RoadmapOrder.RoadmapOrderConverter());
         registry.addConverter(new Accessibility.AccessibilityConverter());
         registry.addConverter(new ConnectionType.ConnectionTypeConverter());
         registry.addConverter(new Recommend.RecommendConverter());

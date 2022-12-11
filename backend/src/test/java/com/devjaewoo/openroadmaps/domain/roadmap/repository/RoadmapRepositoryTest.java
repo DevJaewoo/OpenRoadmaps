@@ -3,6 +3,7 @@ package com.devjaewoo.openroadmaps.domain.roadmap.repository;
 import com.devjaewoo.openroadmaps.RepositoryTest;
 import com.devjaewoo.openroadmaps.domain.client.entity.Client;
 import com.devjaewoo.openroadmaps.domain.client.repository.ClientRepository;
+import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapOrder;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapSearch;
 import com.devjaewoo.openroadmaps.domain.roadmap.entity.Roadmap;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
@@ -92,8 +93,8 @@ class RoadmapRepositoryTest {
             RoadmapSearch searchOfficialTrue = new RoadmapSearch(null, null, true, null, 0);
             RoadmapSearch searchOfficialFalse = new RoadmapSearch(null, null, false, null, 0);
 
-            RoadmapSearch searchOrderByCreatedDate = new RoadmapSearch(null, null, null, RoadmapSearch.Order.LATEST, 0);
-            RoadmapSearch searchOrderByLike = new RoadmapSearch(null, null, null, RoadmapSearch.Order.LIKES, 0);
+            RoadmapSearch searchOrderByCreatedDate = new RoadmapSearch(null, null, null, RoadmapOrder.LATEST, 0);
+            RoadmapSearch searchOrderByLike = new RoadmapSearch(null, null, null, RoadmapOrder.LIKES, 0);
 
             //when
             PageRequest pageRequest = PageRequest.of(0, 12);
