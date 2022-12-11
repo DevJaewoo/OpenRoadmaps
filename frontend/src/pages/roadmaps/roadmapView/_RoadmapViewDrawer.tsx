@@ -6,6 +6,7 @@ import {
   Textarea,
 } from "@mantine/core";
 import { FC, useEffect, useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
 import { PostList, PostOrder, PostSearch, TPostOrder } from "src/apis/usePost";
 import {
   Recommend,
@@ -13,6 +14,7 @@ import {
   RoadmapItem,
   useRoadmapItemClear,
 } from "src/apis/useRoadmap";
+import { OutlinedButton } from "src/components/button/VariantButtons";
 import PostListComponent from "src/pages/blog/postList/PostList";
 import RoadmapRecommendIcon from "../roadmapEdit/_RoadmapRecommendIcon";
 
@@ -158,15 +160,28 @@ const RoadmapViewDrawer: FC<Props> = ({
           </div>
         ))}
       </ScrollArea>
-      <h2 className="mt-6 text-2xl font-semibold">Posts</h2>
-      <div className="flex flex-col items-center mt-4">
+      <div className="flex flex-row justify-between items-center mt-6 pb-3 border-b">
+        <h2 className="text-2xl font-semibold">Posts</h2>
+        <OutlinedButton
+          type="link"
+          to={`/blog/posts/new?roadmap_item=${roadmapItem?.id}`}
+          text={
+            <>
+              이 주제로 글 작성하기
+              <FaArrowRight className="ml-2" />
+            </>
+          }
+          className="px-[1.25rem] py-1"
+        />
+      </div>
+      <div className="flex flex-col items-center mt-6">
         <div className="flex flex-row w-full justify-between items-center">
           <button
             type="button"
             className={`flex justify-center items-center w-24 h-9 p-2 border-2 text-sm rounded-lg ${
               search.clientName
                 ? "bg-gray-200 border-gray-400 text-gray-500"
-                : "bg-blue-400 border-blue-600"
+                : "bg-blue-300 border-blue-500"
             }`}
             onClick={onOfficialChange}
           >
