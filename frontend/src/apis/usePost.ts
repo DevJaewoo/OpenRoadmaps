@@ -1,9 +1,9 @@
-import { objectToParams } from "src/utils/utils";
-import axiosInstance from "src/apis/axiosInstance";
-import { useMutation, useQuery } from "react-query";
-import { TAccessibility } from "src/utils/constants";
-import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { useMutation, useQuery } from "react-query";
+import axiosInstance from "src/apis/axiosInstance";
+import { objectToParams } from "src/utils/utils";
+import { TAccessibility } from "src/utils/constants";
+import { useRedirectNavigate } from "src/hooks/useRedirectNavigate";
 
 export interface PostUploadRequest {
   id?: number;
@@ -122,14 +122,17 @@ const fetchPostLike = async ({
   postId,
   liked,
 }: PostLikeRequest): Promise<PostLikeResponse> => {
-  const response = await axiosInstance.put(`/api/v1/posts/${postId}/like`, {
-    liked,
-  });
+  const response = await axiosInstance.put(
+    `/api/v1/blog/posts/${postId}/like`,
+    {
+      liked,
+    }
+  );
   return response.data;
 };
 
 const usePostLike = () => {
-  const navigate = useNavigate();
+  const navigate = useRedirectNavigate();
   return useMutation(fetchPostLike, {
     onError: (error: AxiosError) => {
       if (error.response?.status === 401) {
