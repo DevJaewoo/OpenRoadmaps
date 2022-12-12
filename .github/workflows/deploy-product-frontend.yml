@@ -1,14 +1,20 @@
-name: CI Test Frontend
+name: Deploy product server frontend
 
 on:
-  pull_request:
-    branches: ["main"]
+  push:
+    branches: ["deploy"]
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+      tags:
+        description: "Tags"
 
 jobs:
-  build-and-test:
-    # main에 push하거나, Frontend branch에서 pull_request를 요청했을 경우
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[skip frontend]') && (github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.head_ref, '/fe/'))) }}
-
+  build-and-deploy:
+    if: ${{ !contains(github.event.head_commit.message, '[skip frontend]') }}
     runs-on: ubuntu-22.04
 
     defaults:
@@ -43,5 +49,13 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm install
 
-      - name: Run ESLint
-        run: npx eslint src --ext .js,.jsx,.ts,.tsx
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        env:
+          AWS_EC2_METADATA_DISABLED: true
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PRODUCT }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET_PRODUCT }}
+        run: |
+          aws s3 sync --region ${{ secrets.AWS_DEFAULT_REGION }} ./build s3://openroadmaps-product-s3
