@@ -51,7 +51,8 @@ class ClientServiceTest {
             public void success() {
                 //given
                 String email = "DevJaewoo@email.com";
-                ClientDto.Register request = new ClientDto.Register(email, "12345678");
+                String name = "name";
+                ClientDto.Register request = new ClientDto.Register(email, name, "12345678");
 
                 // clientRepository Mock 설정
                 given(clientRepository.existsByEmail(any())).willReturn(false);
@@ -68,7 +69,7 @@ class ClientServiceTest {
 
                 //then
                 assertThat(clientDto.id()).isGreaterThan(0);
-                assertThat(clientDto.name()).isEqualTo("user1");
+                assertThat(clientDto.name()).isEqualTo(name);
                 assertThat(clientDto.email()).isEqualTo(email.toLowerCase());
             }
 
@@ -76,8 +77,22 @@ class ClientServiceTest {
             @DisplayName("이메일 중복")
             public void duplicateEmail() {
                 //given
-                ClientDto.Register request = new ClientDto.Register("asd@email.com", "12345678");
+                ClientDto.Register request = new ClientDto.Register("asd@email.com", "name", "12345678");
                 given(clientRepository.existsByEmail(any())).willReturn(true);
+
+                //when
+                Executable executable = () -> clientService.register(request);
+
+                //then
+                assertThrows(RestApiException.class, executable, ClientErrorCode.DUPLICATE_EMAIL.message);
+            }
+
+            @Test
+            @DisplayName("이메일 중복")
+            public void duplicateName() {
+                //given
+                ClientDto.Register request = new ClientDto.Register("asd@email.com", "name", "12345678");
+                given(clientRepository.existsByName(any())).willReturn(true);
 
                 //when
                 Executable executable = () -> clientService.register(request);
@@ -145,7 +160,7 @@ class ClientServiceTest {
         public void success() {
             //given
             String email = "DevJaewoo@email.com";
-            ClientDto.Register request = new ClientDto.Register(email, "12345678");
+            ClientDto.LoginRequest request = new ClientDto.LoginRequest(email, "12345678");
             Client client = Client.create("name", email, "password");
 
             given(clientRepository.findByEmailAndPasswordIsNotNull(any())).willReturn(Optional.of(client));
@@ -165,7 +180,7 @@ class ClientServiceTest {
         public void incorrectEmail() {
             //given
             String email = "DevJaewoo@email.com";
-            ClientDto.Register request = new ClientDto.Register(email, "12345678");
+            ClientDto.LoginRequest request = new ClientDto.LoginRequest(email, "12345678");
 
             given(clientRepository.findByEmailAndPasswordIsNotNull(any())).willReturn(Optional.empty());
 
@@ -181,7 +196,7 @@ class ClientServiceTest {
         public void incorrectPassword() {
             //given
             String email = "DevJaewoo@email.com";
-            ClientDto.Register request = new ClientDto.Register(email, "12345678");
+            ClientDto.LoginRequest request = new ClientDto.LoginRequest(email, "12345678");
             Client client = Client.create("name", email, "password");
 
             given(clientRepository.findByEmailAndPasswordIsNotNull(any())).willReturn(Optional.of(client));
@@ -199,7 +214,7 @@ class ClientServiceTest {
         public void disabledClient() {
             //given
             String email = "DevJaewoo@email.com";
-            ClientDto.Register request = new ClientDto.Register(email, "12345678");
+            ClientDto.LoginRequest request = new ClientDto.LoginRequest(email, "12345678");
             Client client = Client.create("name", email, "password");
             client.setEnabled(false);
 
@@ -223,7 +238,7 @@ class ClientServiceTest {
         public void success() {
             //given
             String email = "DevJaewoo@email.com";
-            ClientDto.Register request = new ClientDto.Register(email, "12345678");
+            ClientDto.LoginRequest request = new ClientDto.LoginRequest(email, "12345678");
             Client client = Client.create("name", email, "password");
 
             given(clientRepository.findByEmailAndPasswordIsNotNull(any())).willReturn(Optional.of(client));

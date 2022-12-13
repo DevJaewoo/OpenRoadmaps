@@ -22,7 +22,7 @@ const NotFound: React.FC<Props> = ({
         &nbsp;{error}
       </h1>
       <OutlinedButton
-        type="link"
+        type="button"
         onClick={() => {
           if (typeof navigate === "number") navigator(navigate);
           else if (typeof navigate === "string") navigator(navigate);

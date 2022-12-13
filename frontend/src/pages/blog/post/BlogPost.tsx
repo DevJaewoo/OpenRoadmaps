@@ -102,7 +102,7 @@ const BlogPost: FC<Props> = ({ postId, content }) => {
             완료
           </Button>
         </div>
-        <RichTextEditor className="min-h-[36rem]" editor={editor}>
+        <RichTextEditor className="min-h-[36rem] markdown-body" editor={editor}>
           <RichTextEditor.Toolbar sticky stickyOffset={60}>
             <RichTextEditor.ControlsGroup>
               <RichTextEditor.Control interactive={false}>

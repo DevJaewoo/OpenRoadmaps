@@ -32,6 +32,7 @@ const Register: React.FC<{}> = () => {
     if (isLoading) return;
     mutate({
       email: data.email,
+      name: data.name,
       password: data.password,
     });
   };
@@ -60,6 +61,23 @@ const Register: React.FC<{}> = () => {
             })}
           />
           <PatternError field={errors.email as FieldError} />
+        </div>
+        <div className="w-full mb-5">
+          <h3 className="text-lg">닉네임</h3>
+          <input
+            type="text"
+            placeholder="Enter nickname"
+            className="w-full mt-2 p-3 border border-gray-300 rounded-md"
+            {...register("name", {
+              required: "이름을 입력해주세요.",
+              pattern: {
+                value: /^[0-9a-zA-Z가-힣]{1,10}$/,
+                message:
+                  "숫자, 영문, 한글로 이루어진 10자리 이내의 이름이어야 합니다.",
+              },
+            })}
+          />
+          <PatternError field={errors.name as FieldError} />
         </div>
         <div className="w-full mb-5">
           <h3 className="text-lg">비밀번호</h3>

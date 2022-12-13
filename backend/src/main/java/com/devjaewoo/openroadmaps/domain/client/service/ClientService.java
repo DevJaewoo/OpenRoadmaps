@@ -43,13 +43,16 @@ public class ClientService {
             throw new RestApiException(ClientErrorCode.DUPLICATE_EMAIL);
         }
 
+        if(clientRepository.existsByName(request.name())) {
+            throw new RestApiException(ClientErrorCode.DUPLICATE_NAME);
+        }
+
         // 비밀번호 암호화
         String password = passwordEncoder.encode(request.password());
 
         // Client 객체 생성 및 저장
-        Client client = Client.create("", request.email().toLowerCase(), password);
+        Client client = Client.create(request.name(), request.email().toLowerCase(), password);
         clientRepository.save(client);
-        client.setName("user" + client.getId());
 
         // SessionAttribute에 Client 정보 저장
         if(httpSession != null) {
@@ -90,7 +93,7 @@ public class ClientService {
         return ClientDto.from(client);
     }
 
-    public ClientDto login(ClientDto.Register request) {
+    public ClientDto login(ClientDto.LoginRequest request) {
 
         // 강제 로그아웃
         logout();

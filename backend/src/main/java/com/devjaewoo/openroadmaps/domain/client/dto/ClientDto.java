@@ -58,6 +58,25 @@ public record ClientDto(
 
             @NotEmpty
             @Pattern(
+                    regexp = "^[0-9a-zA-Z가-힣]{1,10}$",
+                    message = "숫자, 영문, 한글로 이루어진 10자리 이내의 이름이어야 합니다."
+            )
+            String name,
+
+            @NotEmpty
+            @Pattern(
+                    regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,14}$",
+                    message = "하나 이상의 대문자, 소문자, 숫자, 특수문자를 포함한 8~14 자리의 비밀번호이어야 합니다."
+            )
+            String password) {
+    }
+
+    public record LoginRequest(
+            @NotEmpty @Email
+            String email,
+
+            @NotEmpty
+            @Pattern(
                     regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,14}$",
                     message = "하나 이상의 대문자, 소문자, 숫자, 특수문자를 포함한 8~14 자리의 비밀번호이어야 합니다."
             )

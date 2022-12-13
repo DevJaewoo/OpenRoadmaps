@@ -1,10 +1,10 @@
-import { Input, Pagination } from "@mantine/core";
+import { Input, Pagination, Select } from "@mantine/core";
 import { FC, useRef, useState, KeyboardEvent } from "react";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useCategoryList } from "src/apis/useCategory";
 import { useClientSearch } from "src/apis/useClient";
-import { PostList, PostSearch } from "src/apis/usePost";
+import { PostList, PostOrder, PostSearch, TPostOrder } from "src/apis/usePost";
 import ProfileImage from "src/components/ProfileImage";
 import PostListComponent from "../postList/PostList";
 
@@ -28,6 +28,7 @@ const BlogHome: FC<Props> = () => {
     clientName: clientName?.substring(1),
     categoryId: Number(categoryId) || undefined,
     page: Number(params.get("page")) ?? 1,
+    order: PostOrder.LATEST,
   });
 
   const [totalPage, setTotalPage] = useState(1);
@@ -43,6 +44,17 @@ const BlogHome: FC<Props> = () => {
 
   const onSearch = (data: PostList) => {
     setTotalPage(data.totalPages);
+  };
+
+  const onOrderChange = (order: TPostOrder) => {
+    let currentOrder: TPostOrder | undefined;
+    if (!Object.values(PostOrder).includes(order)) {
+      currentOrder = undefined;
+    } else {
+      currentOrder = order;
+    }
+
+    setSearch({ ...search, order: currentOrder });
   };
 
   const onPageChange = (page: number) => {
@@ -97,12 +109,23 @@ const BlogHome: FC<Props> = () => {
           <div className="flex flex-col flex-1 ml-16">
             <div className="flex flex-col items-center w-full">
               <div className="flex flex-col items-center w-full p-3 bg-gray-300 rounded-lg">
-                <div className="flex flex-row w-full justify-start px-2">
+                <div className="flex flex-row w-full justify-between px-2">
                   <Input
                     ref={titleRef}
                     icon={<FaSearch />}
                     onKeyDown={onKeyDown}
                   />
+                  <div className="flex flex-row items-center">
+                    <p className="mr-2 text-lg font-semibold">정렬</p>
+                    <Select
+                      value={search.order}
+                      data={[
+                        { value: PostOrder.LATEST, label: "최신 순" },
+                        { value: PostOrder.LIKES, label: "좋아요 순" },
+                      ]}
+                      onChange={onOrderChange}
+                    />
+                  </div>
                 </div>
                 <PostListComponent
                   search={search}

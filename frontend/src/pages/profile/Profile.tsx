@@ -1,8 +1,10 @@
 import { Pagination } from "@mantine/core";
 import { FC, useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { useClient } from "src/apis/useClient";
 import { RoadmapList, RoadmapSearch } from "src/apis/useRoadmap";
+import { OutlinedButton } from "src/components/button/VariantButtons";
 import ProfileImage from "src/components/ProfileImage";
 import RoadmapListComponent from "../roadmaps/roadmapList/RoadmapList";
 
@@ -53,6 +55,17 @@ const Profile: FC<{}> = () => {
               page={search.page + 1}
               total={totalPage}
               onChange={onPageChange}
+            />
+          </div>
+          <div className="flex flex-row mt-10">
+            <OutlinedButton
+              type="link"
+              to={`/blog/@${clientInfo?.name}`}
+              text={
+                <>
+                  블로그 <FaArrowRight className="ml-2" />
+                </>
+              }
             />
           </div>
         </div>
