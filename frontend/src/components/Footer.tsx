@@ -31,7 +31,7 @@ const Footer: React.FC<{}> = () => {
           <h3>&copy;DevJaewoo. All rights reserved.</h3>
           <div className="flex justify-end items-center">
             <a
-              href="https://github.com/DevJaewoo"
+              href="https://github.com/DevJaewoo/OpenRoadmaps"
               target="_blank"
               rel="noreferrer"
               className="text-2xl"
