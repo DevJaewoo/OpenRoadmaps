@@ -25,7 +25,7 @@ public class ClientController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody ClientDto.Register request) {
+    public ResponseEntity<?> login(@Valid @RequestBody ClientDto.LoginRequest request) {
         ClientDto client = clientService.login(request);
         return ResponseEntity.ok(ClientDto.Response.from(client));
     }

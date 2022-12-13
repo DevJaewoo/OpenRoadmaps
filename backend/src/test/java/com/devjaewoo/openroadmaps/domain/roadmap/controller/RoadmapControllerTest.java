@@ -34,15 +34,15 @@ class RoadmapControllerTest {
     @Autowired RoadmapRepository roadmapRepository;
 
     public CookieFilter register(boolean success) {
-        return register(success, "email@example.com");
+        return register(success, "email@example.com", "name");
     }
 
-    public CookieFilter register(boolean success, String email) {
+    public CookieFilter register(boolean success, String email, String name) {
 
         CookieFilter cookieFilter = new CookieFilter();
         if(!success) return cookieFilter;
 
-        ClientDto.Register register = new ClientDto.Register(email, "!@QW12qw");
+        ClientDto.Register register = new ClientDto.Register(email, name, "!@QW12qw");
 
         given()
                 .log().all()
@@ -264,10 +264,10 @@ class RoadmapControllerTest {
         @Test
         @DisplayName("권한이 없는 로드맵 조회")
         public void notAccessible() {
-            CookieFilter cookieFilter1 = register(true);
+            CookieFilter cookieFilter1 = register(true, "test@email.com", "name1");
             RoadmapDto.CreateRequest createRequest = new RoadmapDto.CreateRequest("title", null, Accessibility.PRIVATE, List.of());
 
-            CookieFilter cookieFilter2 = register(true, "forbidden@example.com");
+            CookieFilter cookieFilter2 = register(true, "forbidden@example.com", "name2");
 
             ExtractableResponse<Response> createResponse = given()
                     .log().all()

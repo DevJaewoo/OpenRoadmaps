@@ -40,7 +40,7 @@ class ClientControllerTest {
         @DisplayName("성공")
         public void success() {
             String email = "test@email.com";
-            ClientDto.Register register = new ClientDto.Register(email, "!Asd1234");
+            ClientDto.Register register = new ClientDto.Register(email, "name", "!Asd1234");
             ExtractableResponse<Response> response =
                     given()
                             .log().all()
@@ -66,7 +66,7 @@ class ClientControllerTest {
             List<String> emailList = Arrays.asList(null, "", "@email.com", "test@.com", "test@email.");
 
             emailList.forEach((email) -> {
-                    ClientDto.Register register = new ClientDto.Register(email, "!Asd1234");
+                    ClientDto.Register register = new ClientDto.Register(email, "name", "!Asd1234");
                     ExtractableResponse<Response> response =
                             given()
                                     .log().all()
@@ -101,7 +101,7 @@ class ClientControllerTest {
             );
 
             passwordList.forEach((password) -> {
-                ClientDto.Register register = new ClientDto.Register("test@email.com", password);
+                ClientDto.Register register = new ClientDto.Register("test@email.com", "name", password);
                 ExtractableResponse<Response> response =
                         given()
                                 .log().all()
@@ -125,34 +125,70 @@ class ClientControllerTest {
         @DisplayName("이메일 중복")
         public void emailConflict() {
             String email = "test@email.com";
-            ClientDto.Register register = new ClientDto.Register(email, "!Asd1234");
+            ClientDto.Register register1 = new ClientDto.Register(email, "name", "!Asd1234");
 
             given()
                     .port(port)
                     .accept(ContentType.JSON)
                     .contentType(ContentType.JSON)
-                    .body(register)
-            .when()
+                    .body(register1)
+                    .when()
                     .post("/api/v1/client/register")
-            .then()
+                    .then()
                     .statusCode(HttpStatus.SC_OK);
 
+            ClientDto.Register register2 = new ClientDto.Register(email, "name2", "!Asd1234");
             ExtractableResponse<Response> response =
                     given()
                             .log().all()
                             .port(port)
                             .accept(ContentType.JSON)
                             .contentType(ContentType.JSON)
-                            .body(register)
-                    .when()
+                            .body(register2)
+                            .when()
                             .post("/api/v1/client/register")
-                   .then()
+                            .then()
                             .log().all()
                             .statusCode(HttpStatus.SC_CONFLICT)
                             .extract();
 
             ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
             assertThat(errorResponse.code()).isEqualTo(ClientErrorCode.DUPLICATE_EMAIL.name());
+        }
+
+        @Test
+        @DisplayName("이메일 중복")
+        public void nameConflict() {
+            String name = "name";
+            ClientDto.Register register1 = new ClientDto.Register("test@email.com", name, "!Asd1234");
+
+            given()
+                    .port(port)
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .body(register1)
+                    .when()
+                    .post("/api/v1/client/register")
+                    .then()
+                    .statusCode(HttpStatus.SC_OK);
+
+            ClientDto.Register register2 = new ClientDto.Register("test2@email.com", name, "!Asd1234");
+            ExtractableResponse<Response> response =
+                    given()
+                            .log().all()
+                            .port(port)
+                            .accept(ContentType.JSON)
+                            .contentType(ContentType.JSON)
+                            .body(register2)
+                            .when()
+                            .post("/api/v1/client/register")
+                            .then()
+                            .log().all()
+                            .statusCode(HttpStatus.SC_CONFLICT)
+                            .extract();
+
+            ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
+            assertThat(errorResponse.code()).isEqualTo(ClientErrorCode.DUPLICATE_NAME.name());
         }
     }
 
@@ -161,11 +197,12 @@ class ClientControllerTest {
     class Login {
 
         String registerEmail = "test@email.com";
+        String registerName = "name";
         String registerPassword = "!Asd1234";
 
         @BeforeEach
         void register() {
-            ClientDto.Register register = new ClientDto.Register(registerEmail, registerPassword);
+            ClientDto.Register register = new ClientDto.Register(registerEmail, registerName, registerPassword);
 
             given()
                     .port(port)
@@ -183,7 +220,7 @@ class ClientControllerTest {
         @DisplayName("성공")
         public void success() {
             //given
-            ClientDto.Register register = new ClientDto.Register(registerEmail, registerPassword);
+            ClientDto.LoginRequest register = new ClientDto.LoginRequest(registerEmail, registerPassword);
 
             //when
             ExtractableResponse<Response> response =
@@ -201,7 +238,7 @@ class ClientControllerTest {
 
             //then
             ClientDto.Response client = response.body().jsonPath().getObject(".", ClientDto.Response.class);
-            assertThat(client.name()).startsWith("user");
+            assertThat(client.name()).isEqualTo(registerName);
             assertThat(client.email()).isEqualTo(registerEmail.toLowerCase());
         }
 
@@ -211,7 +248,7 @@ class ClientControllerTest {
             List<String> emailList = Arrays.asList(null, "", "@email.com", "test@.com", "test@email.");
 
             emailList.forEach((email) -> {
-                ClientDto.Register register = new ClientDto.Register(email, "!Asd1234");
+                ClientDto.LoginRequest register = new ClientDto.LoginRequest(email, "!Asd1234");
                 ExtractableResponse<Response> response =
                         given()
                                 .log().all()
@@ -246,7 +283,7 @@ class ClientControllerTest {
             );
 
             passwordList.forEach((password) -> {
-                ClientDto.Register register = new ClientDto.Register("test@email.com", password);
+                ClientDto.LoginRequest register = new ClientDto.LoginRequest("test@email.com", password);
                 ExtractableResponse<Response> response =
                         given()
                                 .log().all()
@@ -270,7 +307,7 @@ class ClientControllerTest {
         @DisplayName("존재하지 않는 사용자")
         public void incorrectEmail() {
             //given
-            ClientDto.Register register = new ClientDto.Register("incorrect@email.com", registerPassword);
+            ClientDto.LoginRequest register = new ClientDto.LoginRequest("incorrect@email.com", registerPassword);
 
             //when
             ExtractableResponse<Response> response =
@@ -295,7 +332,7 @@ class ClientControllerTest {
         @DisplayName("비밀번호 불일치")
         public void incorrectPassword() {
             //given
-            ClientDto.Register register = new ClientDto.Register(registerEmail, "P@ssw0rd");
+            ClientDto.LoginRequest register = new ClientDto.LoginRequest(registerEmail, "P@ssw0rd");
 
             //when
             ExtractableResponse<Response> response =
@@ -321,7 +358,7 @@ class ClientControllerTest {
         public void disabledClient() {
             //given
             jdbcTemplate.execute("UPDATE client set is_enabled='f' WHERE email='" + registerEmail + "'");
-            ClientDto.Register register = new ClientDto.Register(registerEmail, registerPassword);
+            ClientDto.LoginRequest register = new ClientDto.LoginRequest(registerEmail, registerPassword);
 
             //when
             ExtractableResponse<Response> response =
@@ -351,7 +388,7 @@ class ClientControllerTest {
         @DisplayName("성공")
         public void success() {
             //given
-            ClientDto.Register register = new ClientDto.Register("test@email.com", "!Asd1234");
+            ClientDto.Register register = new ClientDto.Register("test@email.com", "name", "!Asd1234");
             CookieFilter cookieFilter = new CookieFilter(false);
 
             given()
@@ -444,7 +481,8 @@ class ClientControllerTest {
         public void getCurrentClientAfterRegister() {
             // given
             String email = "TEST@email.com";
-            ClientDto.Register register = new ClientDto.Register(email, "!Asd1234");
+            String name = "name";
+            ClientDto.Register register = new ClientDto.Register(email, name, "!Asd1234");
             CookieFilter cookieFilter = new CookieFilter(false);
 
             // 회원가입 및 세션 쿠키 저장
@@ -475,7 +513,7 @@ class ClientControllerTest {
             // then
             ClientDto.Response clientDto = response.body().jsonPath().getObject(".", ClientDto.Response.class);
             assertThat(clientDto.email()).isEqualTo(email.toLowerCase());
-            assertThat(clientDto.name()).startsWith("user");
+            assertThat(clientDto.name()).isEqualTo(name);
         }
 
         //로그인 후 현재 사용자 조회
@@ -484,7 +522,8 @@ class ClientControllerTest {
         public void getCurrentClientAfterLogin() {
             // given
             String email = "TEST@email.com";
-            ClientDto.Register register = new ClientDto.Register(email, "!Asd1234");
+            String name = "name";
+            ClientDto.Register register = new ClientDto.Register(email, name, "!Asd1234");
             CookieFilter cookieFilter = new CookieFilter(false);
 
             // 회원가입
@@ -527,7 +566,7 @@ class ClientControllerTest {
             // then
             ClientDto.Response clientDto = response.body().jsonPath().getObject(".", ClientDto.Response.class);
             assertThat(clientDto.email()).isEqualTo(email.toLowerCase());
-            assertThat(clientDto.name()).startsWith("user");
+            assertThat(clientDto.name()).isEqualTo(name);
         }
 
         @Test
@@ -535,7 +574,7 @@ class ClientControllerTest {
         public void findClientById() {
             // given
             String email = "TEST@email.com";
-            ClientDto.Register register = new ClientDto.Register(email, "!Asd1234");
+            ClientDto.Register register = new ClientDto.Register(email, "name", "!Asd1234");
 
             // 회원가입
             ExtractableResponse<Response> registerResponse = given()
