@@ -20,4 +20,4 @@ code {
     monospace;
 }
 
-@import "./markdown.scss";
+@import "./markdown.css";
