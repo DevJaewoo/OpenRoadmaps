@@ -83,12 +83,14 @@ const BlogPostView: FC<Props> = () => {
           </p>
         </div>
       </div>
-      <div
-        className="flex flex-col w-full max-w-7xl min-h-[30rem] p-8"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
-      >
-        {}
+      <div className="flex flex-col w-full max-w-7xl min-h-[30rem] p-8">
+        <div
+          className="markdown-body"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
+        >
+          {}
+        </div>
       </div>
     </div>
   );

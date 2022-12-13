@@ -29,6 +29,14 @@ const App: React.FC<{}> = () => {
               <Route path="/oauth" element={<OAuth />} />
               <Route path="/roadmaps/*" element={<Roadmaps />} />
               <Route path="/blog/*" element={<Blog />} />
+              <Route
+                path="/projects/*"
+                element={<NotFound error="추가중인 기능입니다." navigate="/" />}
+              />
+              <Route
+                path="/community/*"
+                element={<NotFound error="추가중인 기능입니다." navigate="/" />}
+              />
               <Route path="/clients/:clientId" element={<Profile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
