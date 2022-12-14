@@ -2,9 +2,11 @@ import { useCurrentClient } from "src/apis/useClient";
 import withAuth from "src/hoc/withAuth";
 
 const Client: React.FC<{}> = () => {
-  const { data } = useCurrentClient();
+  const { data, isLoading } = useCurrentClient();
   return (
-    <div className="text-3xl font-semibold">{`Hello, ${data?.name}!`}</div>
+    <div className="text-3xl font-semibold">
+      {isLoading ? "Loading..." : `Hello, ${data?.name}!`}
+    </div>
   );
 };
 
