@@ -58,8 +58,8 @@ public record ClientDto(
 
             @NotEmpty
             @Pattern(
-                    regexp = "^[0-9a-zA-Z가-힣]{1,10}$",
-                    message = "숫자, 영문, 한글로 이루어진 10자리 이내의 이름이어야 합니다."
+                    regexp = "^[0-9a-z가-힣]{1,10}$",
+                    message = "숫자, 영문 소문자, 한글로 이루어진 10자리 이내의 이름이어야 합니다."
             )
             String name,
 
