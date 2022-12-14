@@ -66,20 +66,46 @@ class ClientControllerTest {
             List<String> emailList = Arrays.asList(null, "", "@email.com", "test@.com", "test@email.");
 
             emailList.forEach((email) -> {
-                    ClientDto.Register register = new ClientDto.Register(email, "name", "!Asd1234");
-                    ExtractableResponse<Response> response =
-                            given()
-                                    .log().all()
-                                    .port(port)
-                                    .accept(ContentType.JSON)
-                                    .contentType(ContentType.JSON)
-                                    .body(register)
-                            .when()
-                                    .post("/api/v1/client/register")
-                            .then()
-                                    .log().all()
-                                    .statusCode(HttpStatus.SC_BAD_REQUEST)
-                                    .extract();
+                ClientDto.Register register = new ClientDto.Register(email, "name", "!Asd1234");
+                ExtractableResponse<Response> response =
+                        given()
+                                .log().all()
+                                .port(port)
+                                .accept(ContentType.JSON)
+                                .contentType(ContentType.JSON)
+                                .body(register)
+                                .when()
+                                .post("/api/v1/client/register")
+                                .then()
+                                .log().all()
+                                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                                .extract();
+
+                ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
+                assertThat(errorResponse.code()).isEqualTo(CommonErrorCode.INVALID_PARAMETER.name());
+            });
+        }
+
+        @Test
+        @DisplayName("이름 형식 오류")
+        public void namePatternError() {
+            List<String> nameList = Arrays.asList(null, "", "A", "abcdefghijklmnop", "!@#$");
+
+            nameList.forEach((name) -> {
+                ClientDto.Register register = new ClientDto.Register("test@gmail.com", name, "!Asd1234");
+                ExtractableResponse<Response> response =
+                        given()
+                                .log().all()
+                                .port(port)
+                                .accept(ContentType.JSON)
+                                .contentType(ContentType.JSON)
+                                .body(register)
+                                .when()
+                                .post("/api/v1/client/register")
+                                .then()
+                                .log().all()
+                                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                                .extract();
 
                 ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
                 assertThat(errorResponse.code()).isEqualTo(CommonErrorCode.INVALID_PARAMETER.name());

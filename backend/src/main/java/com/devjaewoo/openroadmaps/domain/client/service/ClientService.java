@@ -51,7 +51,7 @@ public class ClientService {
         String password = passwordEncoder.encode(request.password());
 
         // Client 객체 생성 및 저장
-        Client client = Client.create(request.name(), request.email().toLowerCase(), password);
+        Client client = Client.create(request.name().toLowerCase(), request.email().toLowerCase(), password);
         clientRepository.save(client);
 
         // SessionAttribute에 Client 정보 저장

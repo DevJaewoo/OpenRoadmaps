@@ -51,7 +51,7 @@ class ClientServiceTest {
             public void success() {
                 //given
                 String email = "DevJaewoo@email.com";
-                String name = "name";
+                String name = "Name";
                 ClientDto.Register request = new ClientDto.Register(email, name, "12345678");
 
                 // clientRepository Mock 설정
@@ -69,7 +69,7 @@ class ClientServiceTest {
 
                 //then
                 assertThat(clientDto.id()).isGreaterThan(0);
-                assertThat(clientDto.name()).isEqualTo(name);
+                assertThat(clientDto.name()).isEqualTo(name.toLowerCase());
                 assertThat(clientDto.email()).isEqualTo(email.toLowerCase());
             }
 
