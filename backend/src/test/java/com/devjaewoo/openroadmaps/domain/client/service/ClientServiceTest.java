@@ -88,7 +88,7 @@ class ClientServiceTest {
             }
 
             @Test
-            @DisplayName("이메일 중복")
+            @DisplayName("닉네임 중복")
             public void duplicateName() {
                 //given
                 ClientDto.Register request = new ClientDto.Register("asd@email.com", "name", "12345678");

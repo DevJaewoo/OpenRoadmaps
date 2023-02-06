@@ -7,13 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {
-        @UniqueConstraint(name = "unique_category_name", columnNames = {"name"}),
+        @UniqueConstraint(name = "unique_category", columnNames = {"name", "client_id"}),
 })
 public class Category extends BaseTimeEntity {
 
@@ -23,7 +24,7 @@ public class Category extends BaseTimeEntity {
     private String name;
 
     @OneToMany(mappedBy = "category")
-    private List<Post> postList;
+    private List<Post> postList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
