@@ -22,6 +22,8 @@ public class RoadmapItem extends BaseTimeEntity {
     private Long id;
 
     private String name;
+
+    @Column(length = 2048)
     private String content;
 
     private double x;

@@ -164,7 +164,7 @@ public record RoadmapItemDto(
             @Size(min = 1, max = 50)
             String name,
 
-            @Size(max = 500)
+            @Size(max = 2048, message = "Content는 2048글자를 초과할 수 없습니다.")
             String content,
 
             @NotNull double x,
