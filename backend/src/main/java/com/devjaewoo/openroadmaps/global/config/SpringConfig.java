@@ -4,6 +4,7 @@ import com.devjaewoo.openroadmaps.domain.blog.dto.PostOrder;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.ConnectionType;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.Recommend;
 import com.devjaewoo.openroadmaps.domain.roadmap.dto.RoadmapOrder;
+import com.devjaewoo.openroadmaps.global.aop.RequestLoggingAop;
 import com.devjaewoo.openroadmaps.global.domain.Accessibility;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,5 +28,10 @@ public class SpringConfig implements WebMvcConfigurer {
         registry.addConverter(new Accessibility.AccessibilityConverter());
         registry.addConverter(new ConnectionType.ConnectionTypeConverter());
         registry.addConverter(new Recommend.RecommendConverter());
+    }
+
+    @Bean
+    public RequestLoggingAop requestLoggingAop() {
+        return new RequestLoggingAop();
     }
 }
