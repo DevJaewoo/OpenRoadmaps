@@ -19,14 +19,14 @@ public class RequestLoggingAop {
         try {
             Object result = joinPoint.proceed();
             if(request != null) {
-                log.info("Request URI: {}, Time elapsed: {}", request.getRequest().getRequestURI(), System.currentTimeMillis() - start);
+                log.info("Request URI: {}, Time elapsed: {}ms", request.getRequest().getRequestURI(), System.currentTimeMillis() - start);
             }
 
             return result;
         }
         catch (Throwable e) {
             if(request != null) {
-                log.info("Request URI: {}, Time elapsed: {}, Exception: {}", request.getRequest().getRequestURI(), System.currentTimeMillis() - start, e.getMessage());
+                log.info("Request URI: {}, Time elapsed: {}ms, Exception: {}", request.getRequest().getRequestURI(), System.currentTimeMillis() - start, e.getMessage());
             }
 
             throw e;
